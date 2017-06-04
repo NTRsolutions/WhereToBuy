@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/overall_margin">
+
+    <TextView
+        android:id="@+id/detailLongName"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_margin="@dimen/overall_margin"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/textsize_large"
+        tools:text="Swisse Men's Ultivite 120 Tablets"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="6"
+        android:layout_margin="@dimen/overall_margin">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2">
+            <ImageView
+            android:id="@+id/detailImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/sws002"
+            android:scaleType="fitCenter"
+            android:layout_margin="@dimen/overall_margin"/>
+        </LinearLayout>
+
+
+            <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_weight="2">
+
+            <TextView
+                android:id="@+id/detailCMWLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                android:text="@string/chemist_warehouse"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textsize_big"
+                android:layout_margin="@dimen/overall_margin"/>
+
+            <TextView
+                android:id="@+id/detailPLLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textsize_big"
+                android:text="@string/priceline_pharmacy"
+                android:layout_margin="@dimen/overall_margin"/>
+
+            <TextView
+                android:id="@+id/detailFLLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textsize_big"
+                android:text="@string/pharmacy_4less"
+                android:layout_margin="@dimen/overall_margin"/>
+
+            <TextView
+                android:id="@+id/detailTWLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textsize_big"
+                android:text="@string/terrywhite_chemmart"
+                android:layout_margin="@dimen/overall_margin"/>
+
+            <TextView
+                android:id="@+id/detailHWLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/overall_margin"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textsize_big"
+                android:text="@string/healthyworld_pharmacy"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/detailCMWPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                tools:text="$99.99"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textsize_big"
+                android:layout_margin="@dimen/overall_margin"/>
+
+            <TextView
+                android:id="@+id/detailPLPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                tools:text="$99.99"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textsize_big"
+                android:layout_margin="@dimen/overall_margin"/>
+
+            <TextView
+                android:id="@+id/detailFLPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                tools:text="$99.99"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textsize_big"
+                android:layout_margin="@dimen/overall_margin"/>
+
+            <TextView
+                android:id="@+id/detailTWPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                tools:text="$99.99"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textsize_big"
+                android:layout_margin="@dimen/overall_margin"/>
+
+            <TextView
+                android:id="@+id/detailHWPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textsize_big"
+                tools:text="$99.99"
+                android:layout_margin="@dimen/overall_margin"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

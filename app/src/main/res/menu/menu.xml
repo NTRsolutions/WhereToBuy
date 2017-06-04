@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".ui.MainActivity"
+    >
+    <item android:id="@+id/swisse"
+          android:title="Swisse"
+          app:showAsAction="never"/>
+    <item android:id="@+id/blackmores"
+          android:title="Blackmores"
+          app:showAsAction="never"/>
+    <item android:id="@+id/bioIsland"
+          android:title="Bio Island"
+          app:showAsAction="never"/>
+    <item android:id="@+id/ostelin"
+          android:title="Ostelin"
+          app:showAsAction="never"/>
+
+
+</menu>

@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">WhereToBuy</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="short_name">Short Name</string>
+    <string name="dollar_sign">$</string>
+    <string name="save">Save</string>
+    <string name="rrp">RRP</string>
+    <string name="chemist_warehouse">Chemist Warehouse</string>
+    <string name="priceline_pharmacy">Priceline Pharmacy</string>
+    <string name="pharmacy_4less">Pharmacy 4Less</string>
+    <string name="terrywhite_chemmart">TerryWhite Chemmart</string>
+    <string name="healthyworld_pharmacy">HealthyWorld Pharmacy</string>
+    <string name="recommendations">Recommendations:</string>
+    <string name="NA">NA</string>
+    <string name="last_update_date_is">Latest update: on </string>
+    <string name="text_for_first_run">Sorry! Products\' information needs to be downloaded</string>
+</resources>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/overall_margin">
+
+        <TextView
+            android:id="@+id/bestChoiceLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:gravity="start"
+            android:textSize="@dimen/textsize_big"
+            android:text="@string/recommendations"/>
+
+        <ImageView
+            android:id="@+id/refreshImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/item_height"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@mipmap/refresh"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="@dimen/item_width"
+            android:layout_height="@dimen/item_height"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/rate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:gravity="end"
+            android:textSize="@dimen/textsize_big"
+            tools:text="AUD/CNY:5.05"
+            android:paddingRight="20dp"/>
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/lastUpdateDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Last update date is 2017-06-01"
+        android:textSize="@dimen/textsize_medium"
+        android:gravity="center"
+        android:textColor="@android:color/black"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/bestChoiceRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+</LinearLayout>
