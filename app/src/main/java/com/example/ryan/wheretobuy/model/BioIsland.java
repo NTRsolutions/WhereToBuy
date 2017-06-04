@@ -26,7 +26,7 @@ public class BioIsland {
             "Bio Island Milk Calcium Kids 90 Caps",
             "Bio Island Zinc 120 Chewable Tablets",
             "Bio Island Cod Liver Fish Oil Kids 90 Caps",
-            "Bio Island DHA Kids 60 Capsules",
+            "Bio Island DHA Kids 60 Caps",
             "Bio Island Kangaroo Essence 50000 90 Caps"
     };
 
