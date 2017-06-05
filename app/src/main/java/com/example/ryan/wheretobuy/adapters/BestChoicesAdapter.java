@@ -2,17 +2,12 @@ package com.example.ryan.wheretobuy.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.ryan.wheretobuy.R;
@@ -22,14 +17,10 @@ import com.example.ryan.wheretobuy.model.Blackmores;
 import com.example.ryan.wheretobuy.model.Ostelin;
 import com.example.ryan.wheretobuy.model.Swisse;
 import com.example.ryan.wheretobuy.ui.MainActivity;
-import com.example.ryan.wheretobuy.ui.ProductDetailFragment;
 import com.example.ryan.wheretobuy.ui.ProductsActivity;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.zip.Inflater;
-
-import static com.example.ryan.wheretobuy.ui.ProductsActivity.KEY_PRODUCT_INDEX;
 
 
 public class BestChoicesAdapter extends RecyclerView.Adapter<BestChoicesAdapter.BestChoiceViewHolder> {
@@ -136,31 +127,11 @@ public class BestChoicesAdapter extends RecyclerView.Adapter<BestChoicesAdapter.
 
         @Override
         public void onClick(View v) {
-            int index = getIndexFromID(mId);
             Intent intent = new Intent(mContext, ProductsActivity.class);
             intent.putExtra(MainActivity.FRAGMENT_NAME, "FRAGMENT_DETAIL");
-            switch (mId.substring(0,3)) {
-                case "SWS":
-                    intent.putExtra(MainActivity.ITEM_NAME, "SWISSE");
-                    break;
-                case "BKM":
-                    intent.putExtra(MainActivity.ITEM_NAME, "BLACKMORES");
-                    break;
-                case "BOI":
-                    intent.putExtra(MainActivity.ITEM_NAME, "BIOISLAND");
-                    break;
-                case "OST":
-                    intent.putExtra(MainActivity.ITEM_NAME, "OSTELIN");
-                    break;
-            }
-            intent.putExtra(MainActivity.INDEX, index);
+            intent.putExtra(ProductsActivity.PRODUCT_ID, mId);
             mContext.startActivity(intent);
         }
-    }
-
-    private int getIndexFromID(String id) {
-        String idWithoutCharacter = id.substring(3);
-        return Integer.parseInt(idWithoutCharacter) - 1;
     }
 
 }

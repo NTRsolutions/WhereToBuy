@@ -4,9 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by admin on 2017/5/30.
- */
 
 public class ProductsSQLiteHelper extends SQLiteOpenHelper{
     private static final String DB_NAME = "products.db";
@@ -14,6 +11,8 @@ public class ProductsSQLiteHelper extends SQLiteOpenHelper{
     //Products Table functionality
     public static final String PRODUCTS_TABLE = "PRODUCTS";
     public static final String COLUMN_ID ="ID";
+    public static final String COLUMN_SHORT_NAME ="SHORT_NAME";
+    public static final String COLUMN_LONG_NAME ="LONG_NAME";
     public static final String COLUMN_LOWEST_PRICE = "LOWEST_PRICE";
     public static final String COLUMN_HIGHEST_PRICE = "HIGHEST_PRICE";
     public static final String COLUMN_WHICH_IS_LOWEST ="WHICH_IS_LOWEST";
@@ -22,10 +21,13 @@ public class ProductsSQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_FL_PRICE = "FL_PRICE";
     public static final String COLUMN_TW_PRICE = "TW_PRICE";
     public static final String COLUMN_HW_PRICE = "HW_PRICE";
+    public static final String COLUMN_CUSTOMISE_FLAG = "CUSTOMISE_FLAG";
     public static final String COLUMN_LAST_UPDATE_DATE = "LAST_UPDATE_DATE";
     public static final String CREATE_TABLE_PRODUCTS =
             "CREATE TABLE " + PRODUCTS_TABLE + "("
             + COLUMN_ID + " TEXT PRIMARY KEY," +
+                    COLUMN_SHORT_NAME + " TEXT," +
+                    COLUMN_LONG_NAME + " TEXT," +
                     COLUMN_LOWEST_PRICE + " REAL," +
                     COLUMN_HIGHEST_PRICE + " REAL," +
                     COLUMN_WHICH_IS_LOWEST + " TEXT," +
@@ -34,6 +36,7 @@ public class ProductsSQLiteHelper extends SQLiteOpenHelper{
                     COLUMN_FL_PRICE + " REAL," +
                     COLUMN_TW_PRICE + " REAL," +
                     COLUMN_HW_PRICE + " REAL," +
+                    COLUMN_CUSTOMISE_FLAG + " TEXT," +
                     COLUMN_LAST_UPDATE_DATE + " TEXT)";
 
     public ProductsSQLiteHelper(Context context) {

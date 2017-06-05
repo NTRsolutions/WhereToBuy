@@ -1,28 +1,43 @@
 package com.example.ryan.wheretobuy.adapters;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ryan.wheretobuy.R;
+import com.example.ryan.wheretobuy.database.ProductsDataSource;
 import com.example.ryan.wheretobuy.model.BioIsland;
 import com.example.ryan.wheretobuy.model.Blackmores;
 import com.example.ryan.wheretobuy.model.Ostelin;
+import com.example.ryan.wheretobuy.model.ProductPrice;
 import com.example.ryan.wheretobuy.model.Swisse;
 import com.example.ryan.wheretobuy.ui.ProductsFragment;
 import com.example.ryan.wheretobuy.util.GetInfoFromModel;
 
+import java.util.ArrayList;
+
 public class ProductsAdapter extends RecyclerView.Adapter{
     private final ProductsFragment.onProductSelectedInterface mListener;
     private String mItemName;
+    private Context mContext;
+    private ArrayList<ProductPrice> mProductPrices = new ArrayList<>();
 
 
-    public ProductsAdapter(ProductsFragment.onProductSelectedInterface listener, String itemName) {
+    public ProductsAdapter(ProductsFragment.onProductSelectedInterface listener,
+                           ArrayList<ProductPrice> productPrices,
+                           String ItemName,
+                           Context context) {
         mListener = listener;
-        mItemName = itemName;
+        mProductPrices = productPrices;
+        mItemName = ItemName;
+        mContext = context;
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -38,13 +53,8 @@ public class ProductsAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemCount() {
-        int index = 0;
-        if (mItemName.equals("SWISSE")) index = Swisse.id.length;
-        if (mItemName.equals("BLACKMORES")) index = Blackmores.id.length;
-        if (mItemName.equals("BIOISLAND")) index = BioIsland.id.length;
-        if (mItemName.equals("OSTELIN")) index = Ostelin.id.length;
 
-        return index;
+        return mProductPrices.size();
     }
 
     private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -54,7 +64,9 @@ public class ProductsAdapter extends RecyclerView.Adapter{
         private TextView mFLPrice;
         private TextView mTWPrice;
         private TextView mHWPrice;
+        private TextView mAddText;
         private int mIndex;
+        private String mId;
 
         public ListViewHolder(View itemView) {
             super(itemView);
@@ -65,18 +77,22 @@ public class ProductsAdapter extends RecyclerView.Adapter{
             mFLPrice = (TextView) itemView.findViewById(R.id.fl_price);
             mTWPrice = (TextView) itemView.findViewById(R.id.tw_price);
             mHWPrice = (TextView) itemView.findViewById(R.id.hw_price);
+            mAddText = (TextView) itemView.findViewById(R.id.addText);
+
+            mAddText.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
 
         public void bindView(int position){
             mIndex = position;
-            String shortName = GetInfoFromModel.getShortName(mItemName, mIndex);
-            float lowestPrice = GetInfoFromModel.getLowestPrice(mItemName, mIndex);
-            float cmwPrice = GetInfoFromModel.getCMWPrice(mItemName, mIndex);
-            float plPrice = GetInfoFromModel.getPLPrice(mItemName, mIndex);
-            float flPrice = GetInfoFromModel.getFLPrice(mItemName, mIndex);
-            float twPrice = GetInfoFromModel.getTWPrice(mItemName, mIndex);
-            float hwPrice = GetInfoFromModel.getHWPrice(mItemName, mIndex);
+            mId = mProductPrices.get(position).getID();
+            String shortName = mProductPrices.get(position).getShortName();
+            float lowestPrice = mProductPrices.get(position).getLowestPrice();
+            float cmwPrice = mProductPrices.get(position).getCMWPrice();
+            float plPrice = mProductPrices.get(position).getPLPrice();
+            float flPrice = mProductPrices.get(position).getFLPrice();
+            float twPrice = mProductPrices.get(position).getTWPrice();
+            float hwPrice = mProductPrices.get(position).getHWPrice();
 
             mShortName.setText(shortName);
             //if price == 0, display NA;if not, display int with rounded value
@@ -125,11 +141,21 @@ public class ProductsAdapter extends RecyclerView.Adapter{
                 if (hwPrice == lowestPrice) mHWPrice.setTextColor(Color.RED);
             }
 
+            if (mItemName.equals("MYLIST")) {
+                mAddText.setText("-");
+            } else {
+                mAddText.setText("+");
+            }
+
         }
 
         @Override
         public void onClick(View v) {
-            mListener.onProductSelected(mIndex, mItemName);
+            if (v.getId() == mAddText.getId()) {
+                mListener.onAddSelected(mId, mItemName);
+            } else {
+                mListener.onProductSelected(mId, mItemName);
+            }
         }
     }
 

@@ -16,6 +16,9 @@
     <item android:id="@+id/ostelin"
           android:title="Ostelin"
           app:showAsAction="never"/>
+    <item android:id="@+id/customise"
+          android:title="My List"
+          app:showAsAction="never"/>
 
 
 </menu>

@@ -7,6 +7,16 @@ import com.example.ryan.wheretobuy.model.Swisse;
 
 public class GetInfoFromModel {
 
+    public static String getId(String itemName, int index) {
+        String id = "";
+        if (itemName.equals("SWISSE")) id = Swisse.id[index];
+        if (itemName.equals("BLACKMORES")) id = Blackmores.id[index];
+        if (itemName.equals("BIOISLAND")) id = BioIsland.id[index];
+        if (itemName.equals("OSTELIN")) id = Ostelin.id[index];
+
+        return id;
+    }
+    
     public static String getLongName(String itemName, int index) {
         String longName = "";
         if (itemName.equals("SWISSE")) longName = Swisse.longName[index];

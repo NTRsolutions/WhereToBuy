@@ -2,11 +2,9 @@ package com.example.ryan.wheretobuy.ui;
 
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.system.Os;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +13,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.ryan.wheretobuy.R;
+import com.example.ryan.wheretobuy.database.ProductsDataSource;
 import com.example.ryan.wheretobuy.model.BioIsland;
 import com.example.ryan.wheretobuy.model.Blackmores;
 import com.example.ryan.wheretobuy.model.Ostelin;
+import com.example.ryan.wheretobuy.model.ProductPrice;
 import com.example.ryan.wheretobuy.model.Swisse;
 import com.example.ryan.wheretobuy.util.GetInfoFromModel;
 
@@ -35,8 +35,8 @@ public class ProductDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        int index = getArguments().getInt(ProductsActivity.KEY_PRODUCT_INDEX);
-        String itemName = getArguments().getString(MainActivity.ITEM_NAME);
+        String id = getArguments().getString(ProductsActivity.PRODUCT_ID);
+        String itemName = getArguments().getString(MainActivity.LIST_NAME);
         View view = inflater.inflate(R.layout.fragment_product_detail, container, false);
 
         mDetailLongName = (TextView) view.findViewById(R.id.detailLongName);
@@ -47,26 +47,30 @@ public class ProductDetailFragment extends Fragment {
         mDetailTWPrice = (TextView) view.findViewById(R.id.detailTWPrice);
         mDetailHWPrice = (TextView) view.findViewById(R.id.detailHWPrice);
 
-        String shortName = GetInfoFromModel.getShortName(itemName, index);
-        String longName = GetInfoFromModel.getLongName(itemName, index);
-        float lowestPrice = GetInfoFromModel.getLowestPrice(itemName, index);
-        float cmwPrice = GetInfoFromModel.getCMWPrice(itemName, index);
-        float plPrice = GetInfoFromModel.getPLPrice(itemName, index);
-        float flPrice = GetInfoFromModel.getFLPrice(itemName, index);
-        float twPrice = GetInfoFromModel.getTWPrice(itemName, index);
-        float hwPrice = GetInfoFromModel.getHWPrice(itemName, index);
+        ProductsDataSource dataSource = new ProductsDataSource(getActivity());
+        ProductPrice productPrice = dataSource.readProductsTableWithId(id);
 
-        if (itemName.equals("SWISSE")) {
-            Glide.with(getActivity()).load(Swisse.getSwisseImageId(Swisse.id[index])).into(mDetailImageView);
+        String shortName = productPrice.getShortName();
+        String longName = productPrice.getLongName();
+        float lowestPrice = productPrice.getLowestPrice();
+        float cmwPrice = productPrice.getCMWPrice();
+        float plPrice = productPrice.getPLPrice();
+        float flPrice = productPrice.getFLPrice();
+        float twPrice = productPrice.getTWPrice();
+        float hwPrice = productPrice.getHWPrice();
+
+
+        if (id.substring(0,3).equals("SWS")) {
+            Glide.with(getActivity()).load(Swisse.getSwisseImageId(id)).into(mDetailImageView);
         }
-        if (itemName.equals("BLACKMORES")){
-        Glide.with(getActivity()).load(Blackmores.getBlackmoresImageId(Blackmores.id[index])).into(mDetailImageView);
+        if (id.substring(0,3).equals("BKM")){
+        Glide.with(getActivity()).load(Blackmores.getBlackmoresImageId(id)).into(mDetailImageView);
         }
-        if (itemName.equals("BIOISLAND")){
-            Glide.with(getActivity()).load(BioIsland.getBioIslandImageId(BioIsland.id[index])).into(mDetailImageView);
+        if (id.substring(0,3).equals("BOI")){
+            Glide.with(getActivity()).load(BioIsland.getBioIslandImageId(id)).into(mDetailImageView);
         }
-        if (itemName.equals("OSTELIN")){
-            Glide.with(getActivity()).load(Ostelin.getOstelinImageId(Ostelin.id[index])).into(mDetailImageView);
+        if (id.substring(0,3).equals("OST")){
+            Glide.with(getActivity()).load(Ostelin.getOstelinImageId(id)).into(mDetailImageView);
         }
 
         getActivity().setTitle(shortName);
