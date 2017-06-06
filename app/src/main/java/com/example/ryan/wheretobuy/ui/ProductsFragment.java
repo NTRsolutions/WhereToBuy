@@ -32,11 +32,11 @@ public class ProductsFragment extends Fragment {
 
         ProductsDataSource dataSource = new ProductsDataSource(getActivity());
         ArrayList<ProductPrice> productPrices = new ArrayList<>();
-        if (itemName.equals("SWISSE")) productPrices = dataSource.readProductsTableWithListName("SWS");
-        if (itemName.equals("BLACKMORES")) productPrices = dataSource.readProductsTableWithListName("BKM");
-        if (itemName.equals("BIOISLAND")) productPrices = dataSource.readProductsTableWithListName("BOI");
-        if (itemName.equals("OSTELIN")) productPrices = dataSource.readProductsTableWithListName("OST");
-        if (itemName.equals("MYLIST")) productPrices = dataSource.readProductsTableWithCustomisedFlag("Y");
+        if (itemName.equals("SWISSE")) productPrices=dataSource.readProductsTableWithCondition("ID", "SWS");
+        if (itemName.equals("BLACKMORES")) productPrices=dataSource.readProductsTableWithCondition("ID", "BKM");
+        if (itemName.equals("BIOISLAND")) productPrices=dataSource.readProductsTableWithCondition("ID", "BOI");
+        if (itemName.equals("OSTELIN")) productPrices=dataSource.readProductsTableWithCondition("ID", "OST");
+        if (itemName.equals("MYLIST")) productPrices=dataSource.readProductsTableWithCondition("CUSTOMISE_FLAG", "Y");
 
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.productsRecyclerView);

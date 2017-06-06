@@ -446,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadDataToGridList() {
         //get best choices
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-        ArrayList<ProductPrice> recommendedProcutPrices = dataSource.readProductsTableWithRecommendationFlag("Y");
+        ArrayList<ProductPrice> recommendedProcutPrices = dataSource.readProductsTableWithCondition("RECOMMENDATION_FLAG", "Y");
         GridAdapter RecommendedProductsAdapter = new GridAdapter(this, recommendedProcutPrices);
 
         mBestChoiceRecyclerView.setAdapter(RecommendedProductsAdapter);
