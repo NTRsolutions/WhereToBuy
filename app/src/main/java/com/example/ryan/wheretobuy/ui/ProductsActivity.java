@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.ryan.wheretobuy.R;
@@ -57,6 +58,38 @@ public class ProductsActivity extends AppCompatActivity
             }
 
         }
+    }
+
+    //menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(this, ProductsActivity.class);
+        switch (item.getItemId()) {
+            case R.id.swisse:
+                loadProductFragment("SWISSE", "replace");
+                return true;
+            case R.id.blackmores:
+                loadProductFragment("BLACKMORES", "replace");
+                return true;
+            case R.id.bioIsland:
+                loadProductFragment("BIOISLAND", "replace");
+                return true;
+            case R.id.ostelin:
+                loadProductFragment("OSTELIN", "replace");
+                return true;
+            case R.id.customise:
+                loadProductFragment("MYLIST", "replace");
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
