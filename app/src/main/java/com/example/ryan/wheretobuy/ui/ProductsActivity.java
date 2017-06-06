@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.Toast;
 
 import com.example.ryan.wheretobuy.R;
@@ -26,6 +27,7 @@ public class ProductsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products_);
 
+
         Intent intent = getIntent();
         String fragmentName = intent.getStringExtra(MainActivity.FRAGMENT_NAME);
         String itemName = intent.getStringExtra(MainActivity.LIST_NAME);
@@ -33,22 +35,11 @@ public class ProductsActivity extends AppCompatActivity
         int index = intent.getIntExtra(MainActivity.INDEX, 0);
 
         if (fragmentName.equals("FRAGMENT_PRODUCTS")) {
-            if (itemName.equals("SWISSE")) setTitle("Swisse");
-            if (itemName.equals("BLACKMORES")) setTitle("Blackmores");
-            if (itemName.equals("BIOISLAND")) setTitle("Bio Island");
-            if (itemName.equals("OSTELIN")) setTitle("Ostelin");
-            if (itemName.equals("MYLIST")) setTitle("My List");
+            setTitle(getTitleFromItemName(itemName));
 
             ProductsFragment savedFragment = (ProductsFragment) getSupportFragmentManager().findFragmentByTag(PRODUCTS_FRAGMENT);
             if (savedFragment == null) {
-                ProductsFragment productsFragment = new ProductsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(MainActivity.LIST_NAME, itemName);
-                productsFragment.setArguments(bundle);
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(R.id.products_placeholder, productsFragment, PRODUCTS_FRAGMENT);
-                fragmentTransaction.commit();
+                loadProductFragment(itemName, "add");
             }
         }
         if (fragmentName.equals("FRAGMENT_DETAIL")){
@@ -66,9 +57,7 @@ public class ProductsActivity extends AppCompatActivity
             }
 
         }
-
     }
-
 
     @Override
     public void onProductSelected(String id, String listName) {
@@ -89,6 +78,7 @@ public class ProductsActivity extends AppCompatActivity
     public void onAddSelected(String id, String listName) {
         final String itemId = id;
         if (listName.equals("MYLIST")) {
+            //delete alerdialog
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Delete item to my list")
                     .setMessage("please confirm you want to delete this product from my list")
@@ -98,15 +88,7 @@ public class ProductsActivity extends AppCompatActivity
                             ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
                             dataSource.updateCustomiseFlagInTable(itemId, "N");
                             //reload fragment again
-                            ProductsFragment productsFragment = new ProductsFragment();
-                            Bundle bundle = new Bundle();
-                            String itemName = "MYLIST";
-                            bundle.putString(MainActivity.LIST_NAME, itemName);
-                            productsFragment.setArguments(bundle);
-                            FragmentManager fragmentManager = getSupportFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.products_placeholder, productsFragment, PRODUCTS_FRAGMENT);
-                            fragmentTransaction.commit();
+                            loadProductFragment("MYLIST", "replace");
                         }
 
                     })
@@ -117,6 +99,7 @@ public class ProductsActivity extends AppCompatActivity
                     });
             builder.create().show();
         } else {
+            //add alerdialog
             ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
             ProductPrice productPrice = dataSource.readProductsTableWithId(itemId);
             if (productPrice.getCustomiseFlag().equals("Y")) {
@@ -146,4 +129,29 @@ public class ProductsActivity extends AppCompatActivity
             }
         }
     }
+
+    private String getTitleFromItemName(String itemName) {
+        String title = "";
+        if (itemName.equals("SWISSE")) title = "Swisse";
+        if (itemName.equals("BLACKMORES")) title = "Blackmores";
+        if (itemName.equals("BIOISLAND")) title = "Bio Island";
+        if (itemName.equals("OSTELIN")) title = "Ostelin";
+        if (itemName.equals("MYLIST")) title = "My List";
+
+        return title;
+    }
+
+    private void loadProductFragment(String itemName, String operation) {
+        ProductsFragment productsFragment = new ProductsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(MainActivity.LIST_NAME, itemName);
+        productsFragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if (operation.equals("add")) fragmentTransaction.add(R.id.products_placeholder, productsFragment, PRODUCTS_FRAGMENT);
+        if (operation.equals("replace")) fragmentTransaction.replace(R.id.products_placeholder, productsFragment, PRODUCTS_FRAGMENT);
+        fragmentTransaction.commit();
+    }
+
+
 }
