@@ -86,24 +86,43 @@ public class ProductsActivity extends AppCompatActivity
     @Override
     public void onAddSelected(String id, String listName) {
         final String itemId = id;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("add item to my list")
-                .setMessage("please confirm you want to add this product to my list")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
-                        dataSource.updateCustomiseFlagInTable(itemId, "Y");
-                    }
+        if (listName.equals("MYLIST")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Delete item to my list")
+                    .setMessage("please confirm you want to delete this product from my list")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
+                            dataSource.updateCustomiseFlagInTable(itemId, "N");
+                        }
 
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+            builder.create().show();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("add item to my list")
+                    .setMessage("please confirm you want to add this product to my list")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
+                            dataSource.updateCustomiseFlagInTable(itemId, "Y");
+                        }
 
-                    }
-                });
-        builder.create().show();
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
+                        }
+                    });
+            builder.create().show();
+        }
     }
 }
