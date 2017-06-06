@@ -16,6 +16,7 @@ public class ProductPrice implements Serializable {
     private float mTWPrice;
     private float mHWPrice;
     private String mCustomiseFlag;
+    private String mRecommendationFlag;
     private String mLastUpdateDateString;
 
 
@@ -32,6 +33,7 @@ public class ProductPrice implements Serializable {
                         float TWPrice,
                         float HWPrice,
                         String customiseFlag,
+                        String recommendationFlag,
                         String lastUpdateDateString) {
         mID = id;
         mShortName = shortName;
@@ -45,6 +47,7 @@ public class ProductPrice implements Serializable {
         mTWPrice = TWPrice;
         mHWPrice = HWPrice;
         mCustomiseFlag = customiseFlag;
+        mRecommendationFlag = recommendationFlag;
         mLastUpdateDateString = lastUpdateDateString;
     }
 
@@ -173,5 +176,13 @@ public class ProductPrice implements Serializable {
 
     public void setCustomiseFlag(String customiseFlag) {
         mCustomiseFlag = customiseFlag;
+    }
+
+    public String getRecommendationFlag() {
+        return mRecommendationFlag;
+    }
+
+    public void setRecommendationFlag(String recommendationFlag) {
+        mRecommendationFlag = recommendationFlag;
     }
 }

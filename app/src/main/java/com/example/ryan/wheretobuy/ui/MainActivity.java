@@ -22,9 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ryan.wheretobuy.R;
-import com.example.ryan.wheretobuy.adapters.BestChoicesAdapter;
+import com.example.ryan.wheretobuy.adapters.GridAdapter;
 import com.example.ryan.wheretobuy.database.ProductsDataSource;
-import com.example.ryan.wheretobuy.model.BestChoice;
 import com.example.ryan.wheretobuy.model.BioIsland;
 import com.example.ryan.wheretobuy.model.Blackmores;
 import com.example.ryan.wheretobuy.model.Ostelin;
@@ -108,15 +107,10 @@ public class MainActivity extends AppCompatActivity {
                 if (isNetworkAvailable()) {
                     toggleRefresh();
                     new DownloadPriceInBackground().execute();
-                    getProductsPriceFromDatabase();
-                    loadDataToGridList();
                 }
-            } else {
-                //if last update date is today, get the data from the database
-                getProductsPriceFromDatabase();
-                //load recommations to the list
-                loadDataToGridList();
             }
+            //load recommations to the list
+            loadDataToGridList();
         }
 
     }
@@ -182,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
             GetInfoFromWebsite.GetBlackmoresPrice();
             GetInfoFromWebsite.GetBioIslandPrice();
             GetInfoFromWebsite.GetOstelinPrice();
+            createValueInTable();
             return null;
         }
 
@@ -195,11 +190,11 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             mProgressDialogFirstTime.dismiss();
             //app first run, load all products' price to database
-            createValueInTable();
             toggleRefresh();
             //load recommations to the list
             loadDataToGridList();
-            mLastUpdateDateTextView.setText("Last Update Date is " + mCurrentDate );
+            String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mCurrentDate;
+            mLastUpdateDateTextView.setText(lastUpdateSummary);
             mLastUpdateDateTextView.setTextColor(Color.BLACK);
         }
     }
@@ -209,7 +204,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mLastUpdateDateTextView.setText("Last update is " + mLastUpdateDate + ", the latest price is downloading");
+            String message = String.format("Last update is %s, the latest price is downloading", mLastUpdateDate);
+            mLastUpdateDateTextView.setText(message);
         }
 
         @Override
@@ -235,7 +231,8 @@ public class MainActivity extends AppCompatActivity {
             //load recommations to the list
             loadDataToGridList();
             Toast.makeText(MainActivity.this, "lastest price information was updated", Toast.LENGTH_SHORT).show();
-            mLastUpdateDateTextView.setText("Last Update Date is " + mCurrentDate );
+            String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mCurrentDate;
+            mLastUpdateDateTextView.setText(lastUpdateSummary);
             mLastUpdateDateTextView.setTextColor(Color.BLACK);
         }
 
@@ -267,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String currentDateString = dateFormat.format(new Date());
         for (int i = 0; i < Swisse.id.length; i++) {
+            String recommendationFlag = getRecomendationFlag(Swisse.lowestPrice[i], Swisse.highestPrice[i]);
             ProductPrice productPrice = new ProductPrice(
                     Swisse.id[i],
                     Swisse.shortName[i],
@@ -280,10 +278,12 @@ public class MainActivity extends AppCompatActivity {
                     Swisse.twPrice[i],
                     Swisse.hwPrice[i],
                     "N",
+                    recommendationFlag,
                     currentDateString);
             dataSource.createContents(productPrice);
         }
         for (int i = 0; i < Blackmores.id.length; i++) {
+            String recommendationFlag = getRecomendationFlag(Blackmores.lowestPrice[i], Blackmores.highestPrice[i]);
             ProductPrice productPrice = new ProductPrice(
                     Blackmores.id[i],
                     Blackmores.shortName[i],
@@ -297,10 +297,12 @@ public class MainActivity extends AppCompatActivity {
                     Blackmores.twPrice[i],
                     Blackmores.hwPrice[i],
                     "N",
+                    recommendationFlag,
                     currentDateString);
             dataSource.createContents(productPrice);
         }
         for (int i = 0; i < BioIsland.id.length; i++) {
+            String recommendationFlag = getRecomendationFlag(BioIsland.lowestPrice[i], BioIsland.highestPrice[i]);
             ProductPrice productPrice = new ProductPrice(
                     BioIsland.id[i],
                     BioIsland.shortName[i],
@@ -314,10 +316,12 @@ public class MainActivity extends AppCompatActivity {
                     BioIsland.twPrice[i],
                     BioIsland.hwPrice[i],
                     "N",
+                    recommendationFlag,
                     currentDateString);
             dataSource.createContents(productPrice);
         }
         for (int i = 0; i < Ostelin.id.length; i++) {
+            String recommendationFlag = getRecomendationFlag(Ostelin.lowestPrice[i], Ostelin.highestPrice[i]);
             ProductPrice productPrice = new ProductPrice(
                     Ostelin.id[i],
                     Ostelin.shortName[i],
@@ -331,10 +335,19 @@ public class MainActivity extends AppCompatActivity {
                     Ostelin.twPrice[i],
                     Ostelin.hwPrice[i],
                     "N",
+                    recommendationFlag,
                     currentDateString);
             dataSource.createContents(productPrice);
         }
+    }
 
+    private String getRecomendationFlag(Float lowestPrice, Float highestPrice) {
+        Float savePrice = highestPrice - lowestPrice;
+        if (savePrice/highestPrice >= 0.4) {
+            return "Y";
+        } else {
+            return "N";
+        }
     }
 
     private void updateValueInTable() {
@@ -404,122 +417,10 @@ public class MainActivity extends AppCompatActivity {
             );
             dataSource.updatePriceInTable(productPrice);
         }
-
-
-    }
-
-    private void getProductsPriceFromDatabase() {
-
-
-        for (int i = 0; i < Swisse.id.length; i++) {
-            ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-            Swisse.lowestPrice[i] = dataSource.readProductsTableWithId(Swisse.id[i]).getLowestPrice();
-            Swisse.highestPrice[i] = dataSource.readProductsTableWithId(Swisse.id[i]).getHighestPrice();
-            Swisse.whichIsLowest[i] = dataSource.readProductsTableWithId(Swisse.id[i]).getWhichIsLowest();
-            Swisse.cmwPrice[i] = dataSource.readProductsTableWithId(Swisse.id[i]).getCMWPrice();
-            Swisse.plPrice[i] = dataSource.readProductsTableWithId(Swisse.id[i]).getPLPrice();
-            Swisse.flPrice[i] = dataSource.readProductsTableWithId(Swisse.id[i]).getFLPrice();
-            Swisse.twPrice[i] = dataSource.readProductsTableWithId(Swisse.id[i]).getTWPrice();
-            Swisse.hwPrice[i] = dataSource.readProductsTableWithId(Swisse.id[i]).getHWPrice();
-        }
-
-        for (int i = 0; i < Blackmores.id.length; i++) {
-            ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-            Blackmores.lowestPrice[i] = dataSource.readProductsTableWithId(Blackmores.id[i]).getLowestPrice();
-            Blackmores.highestPrice[i] = dataSource.readProductsTableWithId(Blackmores.id[i]).getHighestPrice();
-            Blackmores.whichIsLowest[i] = dataSource.readProductsTableWithId(Blackmores.id[i]).getWhichIsLowest();
-            Blackmores.cmwPrice[i] = dataSource.readProductsTableWithId(Blackmores.id[i]).getCMWPrice();
-            Blackmores.plPrice[i] = dataSource.readProductsTableWithId(Blackmores.id[i]).getPLPrice();
-            Blackmores.flPrice[i] = dataSource.readProductsTableWithId(Blackmores.id[i]).getFLPrice();
-            Blackmores.twPrice[i] = dataSource.readProductsTableWithId(Blackmores.id[i]).getTWPrice();
-            Blackmores.hwPrice[i] = dataSource.readProductsTableWithId(Blackmores.id[i]).getHWPrice();
-        }
-
-        for (int i = 0; i < BioIsland.id.length; i++) {
-            ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-            BioIsland.lowestPrice[i] = dataSource.readProductsTableWithId(BioIsland.id[i]).getLowestPrice();
-            BioIsland.highestPrice[i] = dataSource.readProductsTableWithId(BioIsland.id[i]).getHighestPrice();
-            BioIsland.whichIsLowest[i] = dataSource.readProductsTableWithId(BioIsland.id[i]).getWhichIsLowest();
-            BioIsland.cmwPrice[i] = dataSource.readProductsTableWithId(BioIsland.id[i]).getCMWPrice();
-            BioIsland.plPrice[i] = dataSource.readProductsTableWithId(BioIsland.id[i]).getPLPrice();
-            BioIsland.flPrice[i] = dataSource.readProductsTableWithId(BioIsland.id[i]).getFLPrice();
-            BioIsland.twPrice[i] = dataSource.readProductsTableWithId(BioIsland.id[i]).getTWPrice();
-            BioIsland.hwPrice[i] = dataSource.readProductsTableWithId(BioIsland.id[i]).getHWPrice();
-        }
-
-        for (int i = 0; i < Ostelin.id.length; i++) {
-            ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-            Ostelin.lowestPrice[i] = dataSource.readProductsTableWithId(Ostelin.id[i]).getLowestPrice();
-            Ostelin.highestPrice[i] = dataSource.readProductsTableWithId(Ostelin.id[i]).getHighestPrice();
-            Ostelin.whichIsLowest[i] = dataSource.readProductsTableWithId(Ostelin.id[i]).getWhichIsLowest();
-            Ostelin.cmwPrice[i] = dataSource.readProductsTableWithId(Ostelin.id[i]).getCMWPrice();
-            Ostelin.plPrice[i] = dataSource.readProductsTableWithId(Ostelin.id[i]).getPLPrice();
-            Ostelin.flPrice[i] = dataSource.readProductsTableWithId(Ostelin.id[i]).getFLPrice();
-            Ostelin.twPrice[i] = dataSource.readProductsTableWithId(Ostelin.id[i]).getTWPrice();
-            Ostelin.hwPrice[i] = dataSource.readProductsTableWithId(Ostelin.id[i]).getHWPrice();
-        }
-
     }
 
     private boolean lastUpdateIsToday() {
         return mCurrentDate.equals(mLastUpdateDate);
-    }
-
-    public static ArrayList<BestChoice> GetBestChoices() {
-        ArrayList<BestChoice> bestChoices = new ArrayList<>();
-        for (int i = 0; i < Swisse.id.length; i++) {
-            float savePrice = Swisse.highestPrice[i] - Swisse.lowestPrice[i];
-            if (savePrice/Swisse.highestPrice[i] >= 0.4) {
-                BestChoice bestChoice = new BestChoice(
-                        Swisse.id[i],
-                        Swisse.longName[i],
-                        Swisse.lowestPrice[i],
-                        Swisse.whichIsLowest[i],
-                        Swisse.highestPrice[i]);
-                bestChoices.add(bestChoice);
-            }
-        }
-        for (int i = 0; i < Blackmores.id.length; i++) {
-            float savePrice = Blackmores.highestPrice[i] - Blackmores.lowestPrice[i];
-            if (savePrice/Blackmores.highestPrice[i] >= 0.4) {
-                BestChoice bestChoice = new BestChoice(
-                        Blackmores.id[i],
-                        Blackmores.longName[i],
-                        Blackmores.lowestPrice[i],
-                        Blackmores.whichIsLowest[i],
-                        Blackmores.highestPrice[i]);
-                bestChoices.add(bestChoice);
-            }
-        }
-
-        for (int i = 0; i < BioIsland.id.length; i++) {
-            float savePrice = BioIsland.highestPrice[i] - BioIsland.lowestPrice[i];
-            if (savePrice/BioIsland.highestPrice[i] >= 0.4) {
-                BestChoice bestChoice = new BestChoice(
-                        BioIsland.id[i],
-                        BioIsland.longName[i],
-                        BioIsland.lowestPrice[i],
-                        BioIsland.whichIsLowest[i],
-                        BioIsland.highestPrice[i]);
-                bestChoices.add(bestChoice);
-            }
-        }
-
-        for (int i = 0; i < Ostelin.id.length; i++) {
-            float savePrice = Ostelin.highestPrice[i] - Ostelin.lowestPrice[i];
-            if (savePrice/Ostelin.highestPrice[i] >= 0.4) {
-                BestChoice bestChoice = new BestChoice(
-                        Ostelin.id[i],
-                        Ostelin.longName[i],
-                        Ostelin.lowestPrice[i],
-                        Ostelin.whichIsLowest[i],
-                        Ostelin.highestPrice[i]);
-                bestChoices.add(bestChoice);
-            }
-        }
-        
-        
-        return bestChoices;
     }
 
     private boolean isNetworkAvailable() {
@@ -544,10 +445,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadDataToGridList() {
         //get best choices
-        ArrayList<BestChoice> bestChoices = GetBestChoices();
-        BestChoicesAdapter bestChoicesAdapter = new BestChoicesAdapter(this, bestChoices);
+        ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
+        ArrayList<ProductPrice> recommendedProcutPrices = dataSource.readProductsTableWithRecommendationFlag("Y");
+        GridAdapter RecommendedProductsAdapter = new GridAdapter(this, recommendedProcutPrices);
 
-        mBestChoiceRecyclerView.setAdapter(bestChoicesAdapter);
+        mBestChoiceRecyclerView.setAdapter(RecommendedProductsAdapter);
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int numColumns = 0;

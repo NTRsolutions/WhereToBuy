@@ -12,14 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ryan.wheretobuy.R;
-import com.example.ryan.wheretobuy.database.ProductsDataSource;
-import com.example.ryan.wheretobuy.model.BioIsland;
-import com.example.ryan.wheretobuy.model.Blackmores;
-import com.example.ryan.wheretobuy.model.Ostelin;
 import com.example.ryan.wheretobuy.model.ProductPrice;
-import com.example.ryan.wheretobuy.model.Swisse;
 import com.example.ryan.wheretobuy.ui.ProductsFragment;
-import com.example.ryan.wheretobuy.util.GetInfoFromModel;
 
 import java.util.ArrayList;
 

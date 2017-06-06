@@ -36,7 +36,7 @@ public class ProductsFragment extends Fragment {
         if (itemName.equals("BLACKMORES")) productPrices = dataSource.readProductsTableWithListName("BKM");
         if (itemName.equals("BIOISLAND")) productPrices = dataSource.readProductsTableWithListName("BOI");
         if (itemName.equals("OSTELIN")) productPrices = dataSource.readProductsTableWithListName("OST");
-        if (itemName.equals("MYLIST")) productPrices = dataSource.readProductsTableWithListName("MYLIST");
+        if (itemName.equals("MYLIST")) productPrices = dataSource.readProductsTableWithCustomisedFlag("Y");
 
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.productsRecyclerView);

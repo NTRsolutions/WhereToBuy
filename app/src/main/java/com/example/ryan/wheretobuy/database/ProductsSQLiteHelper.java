@@ -22,6 +22,7 @@ public class ProductsSQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_TW_PRICE = "TW_PRICE";
     public static final String COLUMN_HW_PRICE = "HW_PRICE";
     public static final String COLUMN_CUSTOMISE_FLAG = "CUSTOMISE_FLAG";
+    public static final String COLUMN_RECOMMENDATION_FLAG = "RECOMMENDATION_FLAG";
     public static final String COLUMN_LAST_UPDATE_DATE = "LAST_UPDATE_DATE";
     public static final String CREATE_TABLE_PRODUCTS =
             "CREATE TABLE " + PRODUCTS_TABLE + "("
@@ -37,6 +38,7 @@ public class ProductsSQLiteHelper extends SQLiteOpenHelper{
                     COLUMN_TW_PRICE + " REAL," +
                     COLUMN_HW_PRICE + " REAL," +
                     COLUMN_CUSTOMISE_FLAG + " TEXT," +
+                    COLUMN_RECOMMENDATION_FLAG + " TEXT," +
                     COLUMN_LAST_UPDATE_DATE + " TEXT)";
 
     public ProductsSQLiteHelper(Context context) {

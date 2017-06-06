@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.ryan.wheretobuy.R;
-import com.example.ryan.wheretobuy.model.BestChoice;
 import com.example.ryan.wheretobuy.model.BioIsland;
 import com.example.ryan.wheretobuy.model.Blackmores;
 import com.example.ryan.wheretobuy.model.Ostelin;
+import com.example.ryan.wheretobuy.model.ProductPrice;
 import com.example.ryan.wheretobuy.model.Swisse;
 import com.example.ryan.wheretobuy.ui.MainActivity;
 import com.example.ryan.wheretobuy.ui.ProductsActivity;
@@ -23,39 +23,38 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
-public class BestChoicesAdapter extends RecyclerView.Adapter<BestChoicesAdapter.BestChoiceViewHolder> {
+public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder> {
 
-    private ArrayList<BestChoice> mBestChoices;
+    private ArrayList<ProductPrice> mRecommendedProductPrices;
     private Context mContext;
 
-    public BestChoicesAdapter(Context context, ArrayList<BestChoice> bestChoices) {
-        mBestChoices = bestChoices;
+    public GridAdapter(Context context, ArrayList<ProductPrice> recommendedProductPrices) {
+        mRecommendedProductPrices = recommendedProductPrices;
         mContext = context;
     }
 
 
     @Override
-    public BestChoiceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GridViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.best_choices_item, parent, false);
-        BestChoiceViewHolder viewHolder = new BestChoiceViewHolder(view);
 
-        return viewHolder;
+        return new GridViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(BestChoiceViewHolder holder, int position) {
-        holder.bindBestChoice(mBestChoices.get(position));
+    public void onBindViewHolder(GridViewHolder holder, int position) {
+        holder.bindRecommendedProduct(mRecommendedProductPrices.get(position));
     }
 
 
 
     @Override
     public int getItemCount() {
-        return mBestChoices.size();
+        return mRecommendedProductPrices.size();
     }
 
-    public class BestChoiceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class GridViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mGridImageView;
         private TextView mGridName1;
         private TextView mGridName2;
@@ -65,7 +64,7 @@ public class BestChoicesAdapter extends RecyclerView.Adapter<BestChoicesAdapter.
         private TextView mGridLongName;
         private String mId;
 
-        public BestChoiceViewHolder(View itemView) {
+        public GridViewHolder(View itemView) {
             super(itemView);
 
             mGridLongName = (TextView) itemView.findViewById(R.id.gridLongName);
@@ -80,14 +79,13 @@ public class BestChoicesAdapter extends RecyclerView.Adapter<BestChoicesAdapter.
             itemView.setOnClickListener(this);
         }
 
-        public void bindBestChoice(BestChoice bestChoice) {
+        public void bindRecommendedProduct(ProductPrice recommendedProductPrice) {
 
-            mId = bestChoice.getID();
+            mId = recommendedProductPrice.getID();
 
-            mGridLongName.setText(bestChoice.getLongName());
+            mGridLongName.setText(recommendedProductPrice.getLongName());
 
             if (mId.substring(0,3).equals("SWS")){
-
                 Glide.with(mContext).load(Swisse.getSwisseImageId(mId)).into(mGridImageView);
             }
             if (mId.substring(0,3).equals("BKM")){
@@ -102,16 +100,16 @@ public class BestChoicesAdapter extends RecyclerView.Adapter<BestChoicesAdapter.
                 Glide.with(mContext).load(Ostelin.getOstelinImageId(mId)).into(mGridImageView);
             }
 
-            String[] names = bestChoice.getWhichIsLowest().split(" ");
+            String[] names = recommendedProductPrice.getWhichIsLowest().split(" ");
             mGridName1.setText(names[0]);
             mGridName2.setText(names[1]);
 
-            String lowestPriceString = mContext.getString(R.string.dollar_sign) + String.valueOf(bestChoice.getLowestPrice());
+            String lowestPriceString = mContext.getString(R.string.dollar_sign) + String.valueOf(recommendedProductPrice.getLowestPrice());
             mGridLowestPrice.setText(lowestPriceString);
 
             DecimalFormat df = new DecimalFormat();
             df.setMaximumFractionDigits(2);
-            float savePrice = bestChoice.getHighestPrice() - bestChoice.getLowestPrice();
+            float savePrice = recommendedProductPrice.getHighestPrice() - recommendedProductPrice.getLowestPrice();
             String savePriceString = mContext.getString(R.string.save) +
                     " " +
                     mContext.getString(R.string.dollar_sign) +
@@ -120,7 +118,7 @@ public class BestChoicesAdapter extends RecyclerView.Adapter<BestChoicesAdapter.
 
             String rrpPriceString = mContext.getString(R.string.rrp) + " " +
                     mContext.getString(R.string.dollar_sign) +
-                    String.valueOf(bestChoice.getHighestPrice());
+                    String.valueOf(recommendedProductPrice.getHighestPrice());
             mGridRrpPrice.setText(rrpPriceString);
 
         }

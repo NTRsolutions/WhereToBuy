@@ -19,7 +19,6 @@ import com.example.ryan.wheretobuy.model.Blackmores;
 import com.example.ryan.wheretobuy.model.Ostelin;
 import com.example.ryan.wheretobuy.model.ProductPrice;
 import com.example.ryan.wheretobuy.model.Swisse;
-import com.example.ryan.wheretobuy.util.GetInfoFromModel;
 
 
 public class ProductDetailFragment extends Fragment {

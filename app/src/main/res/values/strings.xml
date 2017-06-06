@@ -2,7 +2,6 @@
     <string name="app_name">WhereToBuy</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="short_name">Short Name</string>
     <string name="dollar_sign">$</string>
     <string name="save">Save</string>
