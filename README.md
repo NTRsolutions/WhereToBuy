@@ -14,7 +14,7 @@ GridView with Image to display some products with the over 40% discount
 
 Menu to display a list for each brand.
 
-allow user to add her/his favourite products from list. 
+allow user to add and delete her/his favourite products from list. 
 
 Click on one product to display the product price and image in full screen
 
