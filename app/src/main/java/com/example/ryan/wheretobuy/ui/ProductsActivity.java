@@ -7,9 +7,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.ryan.wheretobuy.R;
 import com.example.ryan.wheretobuy.database.ProductsDataSource;
+import com.example.ryan.wheretobuy.model.ProductPrice;
 
 public class ProductsActivity extends AppCompatActivity
         implements ProductsFragment.onProductSelectedInterface {
@@ -95,6 +97,16 @@ public class ProductsActivity extends AppCompatActivity
                         public void onClick(DialogInterface dialog, int which) {
                             ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
                             dataSource.updateCustomiseFlagInTable(itemId, "N");
+                            //reload fragment again
+                            ProductsFragment productsFragment = new ProductsFragment();
+                            Bundle bundle = new Bundle();
+                            String itemName = "MYLIST";
+                            bundle.putString(MainActivity.LIST_NAME, itemName);
+                            productsFragment.setArguments(bundle);
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.products_placeholder, productsFragment, PRODUCTS_FRAGMENT);
+                            fragmentTransaction.commit();
                         }
 
                     })
@@ -105,24 +117,33 @@ public class ProductsActivity extends AppCompatActivity
                     });
             builder.create().show();
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("add item to my list")
-                    .setMessage("please confirm you want to add this product to my list")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
-                            dataSource.updateCustomiseFlagInTable(itemId, "Y");
-                        }
+            ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
+            ProductPrice productPrice = dataSource.readProductsTableWithId(itemId);
+            if (productPrice.getCustomiseFlag().equals("Y")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProductsActivity.this);
+                builder.setTitle("Product already exists")
+                        .setMessage("This product already exists in MyList, no need to add again");
+                builder.create().show();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("add item to my list")
+                        .setMessage("please confirm you want to add this product to my list")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
+                                dataSource.updateCustomiseFlagInTable(itemId, "Y");
+                            }
 
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                        }
-                    });
-            builder.create().show();
+                            }
+                        });
+                builder.create().show();
+            }
         }
     }
 }
