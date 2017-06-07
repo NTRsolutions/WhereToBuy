@@ -1,6 +1,6 @@
-package com.example.ryan.wheretobuy.model;
+package com.mainframevampire.ryan.wheretobuy.model;
 
-import com.example.ryan.wheretobuy.R;
+import com.mainframevampire.ryan.wheretobuy.R;
 
 public class BioIsland {
     public static final String[] id = new String[]{

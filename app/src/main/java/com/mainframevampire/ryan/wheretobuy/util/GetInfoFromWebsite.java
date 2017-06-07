@@ -1,9 +1,9 @@
-package com.example.ryan.wheretobuy.util;
+package com.mainframevampire.ryan.wheretobuy.util;
 
-import com.example.ryan.wheretobuy.model.BioIsland;
-import com.example.ryan.wheretobuy.model.Blackmores;
-import com.example.ryan.wheretobuy.model.Ostelin;
-import com.example.ryan.wheretobuy.model.Swisse;
+import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
+import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
+import com.mainframevampire.ryan.wheretobuy.model.Ostelin;
+import com.mainframevampire.ryan.wheretobuy.model.Swisse;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

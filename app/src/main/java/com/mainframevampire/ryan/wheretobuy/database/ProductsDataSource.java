@@ -1,11 +1,11 @@
-package com.example.ryan.wheretobuy.database;
+package com.mainframevampire.ryan.wheretobuy.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.ryan.wheretobuy.model.ProductPrice;
+import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 
 import java.util.ArrayList;
 
@@ -152,6 +152,21 @@ public class ProductsDataSource {
 
         return queryString;
     }
+
+    public int readProductsTableToGetCustomisedProduct() {
+        SQLiteDatabase database = open();
+
+        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
+                " WHERE CUSTOMISE_FLAG = " + "'Y'", null);
+
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        close(database);
+
+        return count;
+    }
+
 
     private String getStringFromColumnName(Cursor cursor, String ColumnName) {
         int columnIndex = cursor.getColumnIndex(ColumnName);

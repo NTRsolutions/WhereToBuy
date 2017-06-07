@@ -1,4 +1,4 @@
-package com.example.ryan.wheretobuy.ui;
+package com.mainframevampire.ryan.wheretobuy.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,11 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.example.ryan.wheretobuy.R;
-import com.example.ryan.wheretobuy.database.ProductsDataSource;
-import com.example.ryan.wheretobuy.model.ProductPrice;
+import com.mainframevampire.ryan.wheretobuy.R;
+import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
+import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 
 public class ProductsActivity extends AppCompatActivity
         implements ProductsFragment.onProductSelectedInterface {
@@ -85,7 +84,17 @@ public class ProductsActivity extends AppCompatActivity
                 loadProductFragment("OSTELIN", "replace");
                 return true;
             case R.id.customise:
-                loadProductFragment("MYLIST", "replace");
+                //if no products in MYLIST, show alert
+                ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
+                int countCustomisedProducts = dataSource.readProductsTableToGetCustomisedProduct();
+                if (countCustomisedProducts == 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProductsActivity.this);
+                    builder.setTitle("No Products in MYLIST")
+                            .setMessage("Please add your favourite products in each branch list");
+                    builder.create().show();
+                } else {
+                    loadProductFragment("MYLIST", "replace");
+                }
                 return true;
         }
 

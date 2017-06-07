@@ -1,19 +1,16 @@
-package com.example.ryan.wheretobuy.adapters;
+package com.mainframevampire.ryan.wheretobuy.adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.ryan.wheretobuy.R;
-import com.example.ryan.wheretobuy.model.ProductPrice;
-import com.example.ryan.wheretobuy.ui.ProductsFragment;
+import com.mainframevampire.ryan.wheretobuy.R;
+import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
+import com.mainframevampire.ryan.wheretobuy.ui.ProductsFragment;
 
 import java.util.ArrayList;
 

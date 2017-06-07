@@ -1,4 +1,4 @@
-package com.example.ryan.wheretobuy;
+package com.mainframevampire.ryan.wheretobuy;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

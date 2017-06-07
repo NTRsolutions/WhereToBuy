@@ -1,4 +1,4 @@
-package com.example.ryan.wheretobuy.model;
+package com.mainframevampire.ryan.wheretobuy.model;
 
 
 import java.io.Serializable;

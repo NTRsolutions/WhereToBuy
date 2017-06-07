@@ -1,4 +1,4 @@
-package com.example.ryan.wheretobuy.adapters;
+package com.mainframevampire.ryan.wheretobuy.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,14 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.ryan.wheretobuy.R;
-import com.example.ryan.wheretobuy.model.BioIsland;
-import com.example.ryan.wheretobuy.model.Blackmores;
-import com.example.ryan.wheretobuy.model.Ostelin;
-import com.example.ryan.wheretobuy.model.ProductPrice;
-import com.example.ryan.wheretobuy.model.Swisse;
-import com.example.ryan.wheretobuy.ui.MainActivity;
-import com.example.ryan.wheretobuy.ui.ProductsActivity;
+import com.mainframevampire.ryan.wheretobuy.R;
+import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
+import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
+import com.mainframevampire.ryan.wheretobuy.model.Ostelin;
+import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
+import com.mainframevampire.ryan.wheretobuy.model.Swisse;
+import com.mainframevampire.ryan.wheretobuy.ui.MainActivity;
+import com.mainframevampire.ryan.wheretobuy.ui.ProductsActivity;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

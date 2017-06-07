@@ -1,4 +1,4 @@
-package com.example.ryan.wheretobuy.database;
+package com.mainframevampire.ryan.wheretobuy.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

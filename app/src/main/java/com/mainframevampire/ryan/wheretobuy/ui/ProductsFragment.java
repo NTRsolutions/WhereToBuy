@@ -1,4 +1,4 @@
-package com.example.ryan.wheretobuy.ui;
+package com.mainframevampire.ryan.wheretobuy.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,10 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ryan.wheretobuy.R;
-import com.example.ryan.wheretobuy.adapters.ProductsAdapter;
-import com.example.ryan.wheretobuy.database.ProductsDataSource;
-import com.example.ryan.wheretobuy.model.ProductPrice;
+import com.mainframevampire.ryan.wheretobuy.R;
+import com.mainframevampire.ryan.wheretobuy.adapters.ProductsAdapter;
+import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
+import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 
 import java.util.ArrayList;
 

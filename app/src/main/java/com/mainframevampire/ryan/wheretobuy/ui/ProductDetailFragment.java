@@ -1,4 +1,4 @@
-package com.example.ryan.wheretobuy.ui;
+package com.mainframevampire.ryan.wheretobuy.ui;
 
 
 import android.graphics.Color;
@@ -12,13 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.ryan.wheretobuy.R;
-import com.example.ryan.wheretobuy.database.ProductsDataSource;
-import com.example.ryan.wheretobuy.model.BioIsland;
-import com.example.ryan.wheretobuy.model.Blackmores;
-import com.example.ryan.wheretobuy.model.Ostelin;
-import com.example.ryan.wheretobuy.model.ProductPrice;
-import com.example.ryan.wheretobuy.model.Swisse;
+import com.mainframevampire.ryan.wheretobuy.R;
+import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
+import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
+import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
+import com.mainframevampire.ryan.wheretobuy.model.Ostelin;
+import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
+import com.mainframevampire.ryan.wheretobuy.model.Swisse;
 
 
 public class ProductDetailFragment extends Fragment {

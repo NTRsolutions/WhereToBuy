@@ -1,4 +1,4 @@
-package com.example.ryan.wheretobuy.ui;
+package com.mainframevampire.ryan.wheretobuy.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,21 +22,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ryan.wheretobuy.R;
-import com.example.ryan.wheretobuy.adapters.GridAdapter;
-import com.example.ryan.wheretobuy.database.ProductsDataSource;
-import com.example.ryan.wheretobuy.model.BioIsland;
-import com.example.ryan.wheretobuy.model.Blackmores;
-import com.example.ryan.wheretobuy.model.Ostelin;
-import com.example.ryan.wheretobuy.model.ProductPrice;
-import com.example.ryan.wheretobuy.model.Swisse;
-import com.example.ryan.wheretobuy.util.GetInfoFromWebsite;
+import com.mainframevampire.ryan.wheretobuy.R;
+import com.mainframevampire.ryan.wheretobuy.adapters.GridAdapter;
+import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
+import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
+import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
+import com.mainframevampire.ryan.wheretobuy.model.Ostelin;
+import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
+import com.mainframevampire.ryan.wheretobuy.model.Swisse;
+import com.mainframevampire.ryan.wheretobuy.util.GetInfoFromWebsite;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
 
         mIsTablet = getResources().getBoolean(R.bool.is_tablet);
 
@@ -126,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent(this, ProductsActivity.class);
+        ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
+        int countCustomisedProducts = dataSource.readProductsTableToGetCustomisedProduct();
         switch (item.getItemId()) {
             case R.id.swisse:
                 intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
@@ -148,9 +149,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.customise:
-                intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
-                intent.putExtra(LIST_NAME, "MYLIST");
-                startActivity(intent);
+                if (countCustomisedProducts == 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("No Products in MYLIST")
+                            .setMessage("Please add your favourite products in each branch list");
+                    builder.create().show();
+                } else {
+                    intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
+                    intent.putExtra(LIST_NAME, "MYLIST");
+                    startActivity(intent);
+                }
                 return true;
         }
 
