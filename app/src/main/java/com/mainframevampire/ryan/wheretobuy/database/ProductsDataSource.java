@@ -167,6 +167,19 @@ public class ProductsDataSource {
         return count;
     }
 
+    public int readProductsTableGetCount() {
+        SQLiteDatabase database = open();
+
+        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE, null);
+
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        close(database);
+
+        return count;
+    }
+
 
     private String getStringFromColumnName(Cursor cursor, String ColumnName) {
         int columnIndex = cursor.getColumnIndex(ColumnName);

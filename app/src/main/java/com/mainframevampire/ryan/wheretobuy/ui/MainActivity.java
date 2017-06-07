@@ -36,6 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static android.R.id.progress;
+
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -79,39 +81,37 @@ public class MainActivity extends AppCompatActivity {
         String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mLastUpdateDate;
         mLastUpdateDateTextView.setText(lastUpdateSummary);
 
-
+        int countOfTable = dataSource.readProductsTableGetCount();
         if (isNetworkAvailable()) {
             new getRateInBackGround().execute();
-        } else {
-            Toast.makeText(this, "Network is not available", Toast.LENGTH_SHORT).show();
-        }
-
-        prefs = getSharedPreferences("com.example.ryan.wheretobuy", MODE_PRIVATE);
-        //if firsr run
-        if (prefs.getBoolean("firstrun", true)){
-            if (isNetworkAvailable()) {
+            if (countOfTable == 0) {
+                //if count == 0, then app first run
                 toggleRefresh();
                 new DownloadPriceFirstTime().execute();
-                prefs.edit().putBoolean("firstrun", false).apply();
             } else {
+                //if last update date is not today, download the data in the background
+                if(!lastUpdateIsToday()){
+                    if (isNetworkAvailable()) {
+                        toggleRefresh();
+                        new DownloadPriceInBackground().execute();
+                    }
+                }
+                //load recommations to the list
+                loadDataToGridList();
+            }
+        } else {
+            if (countOfTable == 0) {
                 mProgressDialogFirstTime = new ProgressDialog(MainActivity.this);
+                mProgressDialogFirstTime.setCancelable(false);
+                mProgressDialogFirstTime.setIndeterminate(false);
                 mProgressDialogFirstTime.setTitle("please open your network");
                 mProgressDialogFirstTime.setMessage("This is the app's first run, products' info needs to be downloaded");
                 mProgressDialogFirstTime.show();
-                prefs.edit().putBoolean("firstrun", true).apply();
             }
-        } else {
-            //if last update date is not today, download the data in the background
-            if(!lastUpdateIsToday()){
-                if (isNetworkAvailable()) {
-                    toggleRefresh();
-                    new DownloadPriceInBackground().execute();
-                }
+            else {
+                loadDataToGridList();
             }
-            //load recommations to the list
-            loadDataToGridList();
         }
-
     }
 
     //menu
@@ -165,7 +165,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class DownloadPriceFirstTime extends AsyncTask<Void, Void, Void> {
+    private class DownloadPriceFirstTime extends AsyncTask<Void, Integer, Void> {
+
+        int countOfProducts = Swisse.id.length + Blackmores.id.length + BioIsland.id.length + Ostelin.id.length;
 
         @Override
         protected void onPreExecute() {
@@ -173,24 +175,40 @@ public class MainActivity extends AppCompatActivity {
             mProgressDialogFirstTime = new ProgressDialog(MainActivity.this);
             mProgressDialogFirstTime.setTitle("Downloading info from Websites");
             mProgressDialogFirstTime.setMessage("Products'information needs to be downloaded for app's first run");
+            //mProgressDialogFirstTime.show();
+            //mLastUpdateDateTextView.setText(R.string.text_for_first_run);
+            //mLastUpdateDateTextView.setTextColor(Color.RED);
+            mProgressDialogFirstTime.setCancelable(false);
+            mProgressDialogFirstTime.setIndeterminate(false);
+            mProgressDialogFirstTime.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialogFirstTime.setMax(100);
             mProgressDialogFirstTime.show();
             mLastUpdateDateTextView.setText(R.string.text_for_first_run);
             mLastUpdateDateTextView.setTextColor(Color.RED);
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
-            GetInfoFromWebsite.GetSwissePrice();
-            GetInfoFromWebsite.GetBlackmoresPrice();
-            GetInfoFromWebsite.GetBioIslandPrice();
-            GetInfoFromWebsite.GetOstelinPrice();
-            createValueInTable();
-            return null;
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            mProgressDialogFirstTime.setProgress(progress[0]);
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
+        protected Void doInBackground(Void... params) {
+            GetInfoFromWebsite.GetSwissePrice();
+            publishProgress((int) ((Swisse.id.length
+                    / (float) countOfProducts) * 100));
+            GetInfoFromWebsite.GetBlackmoresPrice();
+            publishProgress((int) ((Blackmores.id.length + Swisse.id.length
+                    / (float) countOfProducts) * 100));
+            GetInfoFromWebsite.GetBioIslandPrice();
+            publishProgress((int) ((BioIsland.id.length + Blackmores.id.length + Swisse.id.length
+                    / (float) countOfProducts) * 100));
+            GetInfoFromWebsite.GetOstelinPrice();
+            publishProgress((int) ((Ostelin.id.length + BioIsland.id.length + Blackmores.id.length + Swisse.id.length
+                    / (float) countOfProducts) * 100));
+            createValueInTable();
+            return null;
         }
 
         @Override
