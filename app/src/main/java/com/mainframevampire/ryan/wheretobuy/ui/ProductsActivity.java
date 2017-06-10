@@ -9,18 +9,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 
 public class ProductsActivity extends AppCompatActivity
-        implements ProductsFragment.onProductSelectedInterface {
+        implements ProductsFragment.onProductListSelectedInterface {
 
     public static final String KEY_PRODUCT_INDEX = "KEY_PRODUCT_INDEX";
     public static final String PRODUCTS_FRAGMENT = "PRODUCTS_FRAGMENT" ;
     public static final String PRODUCT_DETAIL_FRAGMENT = "PRODUCT_DETAIL_FRAGMENT";
     public static final String PRODUCT_ID = "PRODUCT_ID";
+
+    private String mFragmentName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,20 +32,18 @@ public class ProductsActivity extends AppCompatActivity
 
 
         Intent intent = getIntent();
-        String fragmentName = intent.getStringExtra(MainActivity.FRAGMENT_NAME);
+        mFragmentName = intent.getStringExtra(MainActivity.FRAGMENT_NAME);
         String itemName = intent.getStringExtra(MainActivity.LIST_NAME);
         String id = intent.getStringExtra(PRODUCT_ID);
-        int index = intent.getIntExtra(MainActivity.INDEX, 0);
 
-        if (fragmentName.equals("FRAGMENT_PRODUCTS")) {
+        if (mFragmentName.equals("FRAGMENT_PRODUCTS")) {
             setTitle(getTitleFromItemName(itemName));
-
             ProductsFragment savedFragment = (ProductsFragment) getSupportFragmentManager().findFragmentByTag(PRODUCTS_FRAGMENT);
             if (savedFragment == null) {
                 loadProductFragment(itemName, "add");
             }
         }
-        if (fragmentName.equals("FRAGMENT_DETAIL")){
+        if (mFragmentName.equals("FRAGMENT_DETAIL")) {
             ProductDetailFragment savedFragment = (ProductDetailFragment) getSupportFragmentManager().findFragmentByTag(PRODUCT_DETAIL_FRAGMENT);
             if (savedFragment == null) {
                 ProductDetailFragment productDetailFragment = new ProductDetailFragment();
@@ -55,7 +56,6 @@ public class ProductsActivity extends AppCompatActivity
                 fragmentTransaction.add(R.id.products_placeholder, productDetailFragment, PRODUCT_DETAIL_FRAGMENT);
                 fragmentTransaction.commit();
             }
-
         }
     }
 
@@ -69,7 +69,6 @@ public class ProductsActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(this, ProductsActivity.class);
         switch (item.getItemId()) {
             case R.id.swisse:
                 loadProductFragment("SWISSE", "replace");
@@ -103,6 +102,7 @@ public class ProductsActivity extends AppCompatActivity
 
     @Override
     public void onProductSelected(String id, String listName) {
+
         ProductDetailFragment productDetailFragment = new ProductDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PRODUCT_ID, id);

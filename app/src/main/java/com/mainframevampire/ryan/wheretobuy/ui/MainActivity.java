@@ -40,12 +40,10 @@ import static android.R.id.progress;
 
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = MainActivity.class.getSimpleName();
     public static final String LIST_NAME = "LIST_NAME";
     public static final String FRAGMENT_NAME = "FRAGMENT_NAME";
     public static final String INDEX = "INDEX";
     private ProgressDialog mProgressDialogFirstTime;
-    private SharedPreferences prefs = null;
     private float mFloat = 0;
     private String mLastUpdateDate;
     private String mCurrentDate;

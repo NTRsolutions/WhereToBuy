@@ -20,5 +20,4 @@
           android:title="My List"
           app:showAsAction="never"/>
 
-
 </menu>

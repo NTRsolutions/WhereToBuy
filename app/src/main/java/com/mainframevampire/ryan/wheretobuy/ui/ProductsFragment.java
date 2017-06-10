@@ -6,8 +6,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.adapters.ProductsAdapter;
@@ -18,7 +22,8 @@ import java.util.ArrayList;
 
 public class ProductsFragment extends Fragment {
 
-    public interface onProductSelectedInterface {
+    private String mItemName = "";
+    public interface onProductListSelectedInterface {
         void onProductSelected(String id, String listName);
         void onAddSelected(String id, String listName);
     }
@@ -26,21 +31,21 @@ public class ProductsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        onProductSelectedInterface listener = (onProductSelectedInterface) getActivity();
-        String itemName = getArguments().getString(MainActivity.LIST_NAME);
+        onProductListSelectedInterface listener = (onProductListSelectedInterface) getActivity();
+        mItemName = getArguments().getString(MainActivity.LIST_NAME);
         View view = inflater.inflate(R.layout.fragment_products, container, false);
 
         ProductsDataSource dataSource = new ProductsDataSource(getActivity());
         ArrayList<ProductPrice> productPrices = new ArrayList<>();
-        if (itemName.equals("SWISSE")) productPrices=dataSource.readProductsTableWithCondition("ID", "SWS");
-        if (itemName.equals("BLACKMORES")) productPrices=dataSource.readProductsTableWithCondition("ID", "BKM");
-        if (itemName.equals("BIOISLAND")) productPrices=dataSource.readProductsTableWithCondition("ID", "BOI");
-        if (itemName.equals("OSTELIN")) productPrices=dataSource.readProductsTableWithCondition("ID", "OST");
-        if (itemName.equals("MYLIST")) productPrices=dataSource.readProductsTableWithCondition("CUSTOMISE_FLAG", "Y");
+        if (mItemName.equals("SWISSE")) productPrices=dataSource.readProductsTableWithCondition("ID", "SWS");
+        if (mItemName.equals("BLACKMORES")) productPrices=dataSource.readProductsTableWithCondition("ID", "BKM");
+        if (mItemName.equals("BIOISLAND")) productPrices=dataSource.readProductsTableWithCondition("ID", "BOI");
+        if (mItemName.equals("OSTELIN")) productPrices=dataSource.readProductsTableWithCondition("ID", "OST");
+        if (mItemName.equals("MYLIST")) productPrices=dataSource.readProductsTableWithCondition("CUSTOMISE_FLAG", "Y");
 
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.productsRecyclerView);
-        ProductsAdapter productsAdapter = new ProductsAdapter(listener, productPrices, itemName, getActivity());
+        ProductsAdapter productsAdapter = new ProductsAdapter(listener, productPrices, mItemName, getActivity());
         recyclerView.setAdapter(productsAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -50,8 +55,16 @@ public class ProductsFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(mItemName);
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         getActivity().setTitle(getResources().getString(R.string.app_name));
     }
+
+
 }

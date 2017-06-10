@@ -15,13 +15,13 @@ import com.mainframevampire.ryan.wheretobuy.ui.ProductsFragment;
 import java.util.ArrayList;
 
 public class ProductsAdapter extends RecyclerView.Adapter{
-    private final ProductsFragment.onProductSelectedInterface mListener;
+    private final ProductsFragment.onProductListSelectedInterface mListener;
     private String mItemName;
     private Context mContext;
     private ArrayList<ProductPrice> mProductPrices = new ArrayList<>();
 
 
-    public ProductsAdapter(ProductsFragment.onProductSelectedInterface listener,
+    public ProductsAdapter(ProductsFragment.onProductListSelectedInterface listener,
                            ArrayList<ProductPrice> productPrices,
                            String ItemName,
                            Context context) {

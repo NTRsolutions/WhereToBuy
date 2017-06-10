@@ -63,6 +63,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder
         private TextView mGridRrpPrice;
         private TextView mGridLongName;
         private String mId;
+        private String mListName;
 
         public GridViewHolder(View itemView) {
             super(itemView);
@@ -87,17 +88,21 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder
 
             if (mId.substring(0,3).equals("SWS")){
                 Glide.with(mContext).load(Swisse.getSwisseImageId(mId)).into(mGridImageView);
+                mListName = "SWISSE";
             }
             if (mId.substring(0,3).equals("BKM")){
                 Glide.with(mContext).load(Blackmores.getBlackmoresImageId(mId)).into(mGridImageView);
+                mListName = "BLACKMORES";
             }
             if (mId.substring(0,3).equals("BOI")){
                 Glide.with(mContext).load(BioIsland.getBioIslandImageId(mId)).into(mGridImageView);
+                mListName = "BIOISLAND";
             }
             if (mId.substring(0,3).equals("OST")){
                 //Drawable drawable = mContext.getResources().getDrawable(Ostelin.getOstelinImageId(mId));
                 //mGridImageView.setImageDrawable(drawable);
                 Glide.with(mContext).load(Ostelin.getOstelinImageId(mId)).into(mGridImageView);
+                mListName = "OSTELIN";
             }
 
             String[] names = recommendedProductPrice.getWhichIsLowest().split(" ");
@@ -128,6 +133,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder
             Intent intent = new Intent(mContext, ProductsActivity.class);
             intent.putExtra(MainActivity.FRAGMENT_NAME, "FRAGMENT_DETAIL");
             intent.putExtra(ProductsActivity.PRODUCT_ID, mId);
+            intent.putExtra(MainActivity.LIST_NAME, mListName);
             mContext.startActivity(intent);
         }
     }
