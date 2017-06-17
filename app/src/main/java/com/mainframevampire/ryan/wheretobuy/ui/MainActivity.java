@@ -1,19 +1,22 @@
 package com.mainframevampire.ryan.wheretobuy.ui;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +30,7 @@ import com.mainframevampire.ryan.wheretobuy.adapters.GridAdapter;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
 import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
+import com.mainframevampire.ryan.wheretobuy.model.ListName;
 import com.mainframevampire.ryan.wheretobuy.model.Ostelin;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 import com.mainframevampire.ryan.wheretobuy.model.Swisse;
@@ -36,13 +40,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static android.R.id.progress;
-
 
 public class MainActivity extends AppCompatActivity {
     public static final String LIST_NAME = "LIST_NAME";
     public static final String FRAGMENT_NAME = "FRAGMENT_NAME";
     public static final String INDEX = "INDEX";
+    public static final String IS_FIRST_RUN = "IS_FIRST_RUN";
     private ProgressDialog mProgressDialogFirstTime;
     private float mFloat = 0;
     private String mLastUpdateDate;
@@ -55,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLastUpdateDateTextView;
     private RecyclerView mBestChoiceRecyclerView;
 
+    //define a custom intent action
+    public static final String BROADCAST_ACTION = "com.mainframevampire.ryan.wheretobuy.BROADCAST";
+    public static final String KEY_MESSAGE = "com.mainframevampire.ryan.wheretobuy.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +77,14 @@ public class MainActivity extends AppCompatActivity {
 
         mProgressBar.setVisibility(View.INVISIBLE);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver,
+                new IntentFilter(BROADCAST_ACTION));
+
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-        mLastUpdateDate = dataSource.readProductsTableWithId("SWS001").getLastUpdateDateString();
+        mLastUpdateDate = dataSource.readProductsTableWithId("OST004").getLastUpdateDateString();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        mCurrentDate = dateFormat.format(new Date());
+        //mCurrentDate = dateFormat.format(new Date());
+        mCurrentDate = "2017-06-16";
 
         String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mLastUpdateDate;
         mLastUpdateDateTextView.setText(lastUpdateSummary);
@@ -91,7 +101,16 @@ public class MainActivity extends AppCompatActivity {
                 if(!lastUpdateIsToday()){
                     if (isNetworkAvailable()) {
                         toggleRefresh();
-                        new DownloadPriceInBackground().execute();
+                        //new DownloadPriceInBackground().execute();
+                        String message = String.format("Last update is %s, the latest price is downloading", mLastUpdateDate);
+                        mLastUpdateDateTextView.setText(message);
+                        for (String brand : ListName.Brands) {
+                            Intent intent = new Intent(this, DownloadService.class);
+                            boolean isFirstRun = false;
+                            intent.putExtra(IS_FIRST_RUN, isFirstRun);
+                            intent.putExtra(LIST_NAME, brand);
+                            startService(intent);
+                        }
                     }
                 }
                 //load recommations to the list
@@ -112,11 +131,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra(KEY_MESSAGE);
+            Log.d("receiver", "Got message:" + message);
+            Toast.makeText(MainActivity.this, message + "price is downloaded", Toast.LENGTH_SHORT).show();
+            //load recommations to the list
+            loadDataToGridList();
+            if (message.equals("OSTELIN")) {
+                toggleRefresh();
+                String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mCurrentDate;
+                mLastUpdateDateTextView.setText(lastUpdateSummary);
+                mLastUpdateDateTextView.setTextColor(Color.BLACK);
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+        super.onDestroy();
+    }
+
     //menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-
         return true;
     }
 
@@ -125,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProductsActivity.class);
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
         int countCustomisedProducts = dataSource.readProductsTableToGetCustomisedProduct();
+        int countBlackmoresProducts = dataSource.readProductsTableToGetBrandProduct("BKM");
+        int countBioislandProducts = dataSource.readProductsTableToGetBrandProduct("BOI");
+        int countOsterlinProducts = dataSource.readProductsTableToGetBrandProduct("OST");
         switch (item.getItemId()) {
             case R.id.swisse:
                 intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
@@ -132,19 +176,40 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.blackmores:
-                intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
-                intent.putExtra(LIST_NAME, "BLACKMORES");
-                startActivity(intent);
+                if (countBlackmoresProducts != Blackmores.id.length) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("still downloading")
+                            .setMessage("Please wait for Blackmores products' price to be downloaded");
+                    builder.create().show();
+                } else {
+                    intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
+                    intent.putExtra(LIST_NAME, "BLACKMORES");
+                    startActivity(intent);
+                }
                 return true;
             case R.id.bioIsland:
-                intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
-                intent.putExtra(LIST_NAME, "BIOISLAND");
-                startActivity(intent);
+                if (countBioislandProducts != BioIsland.id.length) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("still downloading")
+                            .setMessage("Please wait for BioIsland products' price to be downloaded");
+                    builder.create().show();
+                } else {
+                    intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
+                    intent.putExtra(LIST_NAME, "BIOISLAND");
+                    startActivity(intent);
+                }
                 return true;
             case R.id.ostelin:
-                intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
-                intent.putExtra(LIST_NAME, "OSTELIN");
-                startActivity(intent);
+                if (countOsterlinProducts != Ostelin.id.length) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("still downloading")
+                            .setMessage("Please wait for Ostelin products' price to be downloaded");
+                    builder.create().show();
+                } else {
+                    intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
+                    intent.putExtra(LIST_NAME, "OSTELIN");
+                    startActivity(intent);
+                }
                 return true;
             case R.id.customise:
                 if (countCustomisedProducts == 0) {
@@ -163,9 +228,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class DownloadPriceFirstTime extends AsyncTask<Void, Integer, Void> {
 
-        int countOfProducts = Swisse.id.length + Blackmores.id.length + BioIsland.id.length + Ostelin.id.length;
+
+    private class DownloadPriceFirstTime extends AsyncTask<Void, Integer, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -178,34 +243,15 @@ public class MainActivity extends AppCompatActivity {
             //mLastUpdateDateTextView.setTextColor(Color.RED);
             mProgressDialogFirstTime.setCancelable(false);
             mProgressDialogFirstTime.setIndeterminate(false);
-            mProgressDialogFirstTime.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialogFirstTime.setMax(100);
             mProgressDialogFirstTime.show();
             mLastUpdateDateTextView.setText(R.string.text_for_first_run);
             mLastUpdateDateTextView.setTextColor(Color.RED);
         }
 
         @Override
-        protected void onProgressUpdate(Integer... progress) {
-            super.onProgressUpdate(progress);
-            mProgressDialogFirstTime.setProgress(progress[0]);
-        }
-
-        @Override
         protected Void doInBackground(Void... params) {
-            GetInfoFromWebsite.GetSwissePrice();
-            publishProgress((int) ((Swisse.id.length
-                    / (float) countOfProducts) * 100));
-            GetInfoFromWebsite.GetBlackmoresPrice();
-            publishProgress((int) ((Blackmores.id.length + Swisse.id.length
-                    / (float) countOfProducts) * 100));
-            GetInfoFromWebsite.GetBioIslandPrice();
-            publishProgress((int) ((BioIsland.id.length + Blackmores.id.length + Swisse.id.length
-                    / (float) countOfProducts) * 100));
-            GetInfoFromWebsite.GetOstelinPrice();
-            publishProgress((int) ((Ostelin.id.length + BioIsland.id.length + Blackmores.id.length + Swisse.id.length
-                    / (float) countOfProducts) * 100));
-            createValueInTable();
+            GetInfoFromWebsite.getSwissePrice();
+            createSwisseValueInTable();
             return null;
         }
 
@@ -213,60 +259,25 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mProgressDialogFirstTime.dismiss();
-            //app first run, load all products' price to database
-            toggleRefresh();
             //load recommations to the list
             loadDataToGridList();
-            String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mCurrentDate;
-            mLastUpdateDateTextView.setText(lastUpdateSummary);
-            mLastUpdateDateTextView.setTextColor(Color.BLACK);
+            for (String brand : ListName.Brands) {
+                if (!brand.equals("SWISSE")) {
+                    Intent intent = new Intent(MainActivity.this, DownloadService.class);
+                    intent.putExtra(IS_FIRST_RUN, true);
+                    intent.putExtra(LIST_NAME, brand);
+                    startService(intent);
+                }
+            }
+            mLastUpdateDateTextView.setText("Other products' price is still downloading");
         }
-    }
-
-    private class DownloadPriceInBackground extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            String message = String.format("Last update is %s, the latest price is downloading", mLastUpdateDate);
-            mLastUpdateDateTextView.setText(message);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            GetInfoFromWebsite.GetSwissePrice();
-            GetInfoFromWebsite.GetBlackmoresPrice();
-            GetInfoFromWebsite.GetBioIslandPrice();
-            GetInfoFromWebsite.GetOstelinPrice();
-            //update all products' price to database
-            updateValueInTable();
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            toggleRefresh();
-            //load recommations to the list
-            loadDataToGridList();
-            Toast.makeText(MainActivity.this, "lastest price information was updated", Toast.LENGTH_SHORT).show();
-            String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mCurrentDate;
-            mLastUpdateDateTextView.setText(lastUpdateSummary);
-            mLastUpdateDateTextView.setTextColor(Color.BLACK);
-        }
-
     }
 
     private class getRateInBackGround extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
-            mFloat = GetInfoFromWebsite.GetExchangeRate();
+            mFloat = GetInfoFromWebsite.getExchangeRate();
             return null;
         }
 
@@ -283,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void createValueInTable() {
+    private void createSwisseValueInTable() {
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String currentDateString = dateFormat.format(new Date());
@@ -306,64 +317,9 @@ public class MainActivity extends AppCompatActivity {
                     currentDateString);
             dataSource.createContents(productPrice);
         }
-        for (int i = 0; i < Blackmores.id.length; i++) {
-            String recommendationFlag = getRecomendationFlag(Blackmores.lowestPrice[i], Blackmores.highestPrice[i]);
-            ProductPrice productPrice = new ProductPrice(
-                    Blackmores.id[i],
-                    Blackmores.shortName[i],
-                    Blackmores.longName[i],
-                    Blackmores.lowestPrice[i],
-                    Blackmores.highestPrice[i],
-                    Blackmores.whichIsLowest[i],
-                    Blackmores.cmwPrice[i],
-                    Blackmores.plPrice[i],
-                    Blackmores.flPrice[i],
-                    Blackmores.twPrice[i],
-                    Blackmores.hwPrice[i],
-                    "N",
-                    recommendationFlag,
-                    currentDateString);
-            dataSource.createContents(productPrice);
-        }
-        for (int i = 0; i < BioIsland.id.length; i++) {
-            String recommendationFlag = getRecomendationFlag(BioIsland.lowestPrice[i], BioIsland.highestPrice[i]);
-            ProductPrice productPrice = new ProductPrice(
-                    BioIsland.id[i],
-                    BioIsland.shortName[i],
-                    BioIsland.longName[i],
-                    BioIsland.lowestPrice[i],
-                    BioIsland.highestPrice[i],
-                    BioIsland.whichIsLowest[i],
-                    BioIsland.cmwPrice[i],
-                    BioIsland.plPrice[i],
-                    BioIsland.flPrice[i],
-                    BioIsland.twPrice[i],
-                    BioIsland.hwPrice[i],
-                    "N",
-                    recommendationFlag,
-                    currentDateString);
-            dataSource.createContents(productPrice);
-        }
-        for (int i = 0; i < Ostelin.id.length; i++) {
-            String recommendationFlag = getRecomendationFlag(Ostelin.lowestPrice[i], Ostelin.highestPrice[i]);
-            ProductPrice productPrice = new ProductPrice(
-                    Ostelin.id[i],
-                    Ostelin.shortName[i],
-                    Ostelin.longName[i],
-                    Ostelin.lowestPrice[i],
-                    Ostelin.highestPrice[i],
-                    Ostelin.whichIsLowest[i],
-                    Ostelin.cmwPrice[i],
-                    Ostelin.plPrice[i],
-                    Ostelin.flPrice[i],
-                    Ostelin.twPrice[i],
-                    Ostelin.hwPrice[i],
-                    "N",
-                    recommendationFlag,
-                    currentDateString);
-            dataSource.createContents(productPrice);
-        }
     }
+
+
 
     private String getRecomendationFlag(Float lowestPrice, Float highestPrice) {
         Float savePrice = highestPrice - lowestPrice;
@@ -371,75 +327,6 @@ public class MainActivity extends AppCompatActivity {
             return "Y";
         } else {
             return "N";
-        }
-    }
-
-    private void updateValueInTable() {
-        ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String currentDateString = dateFormat.format(new Date());
-        for (int i = 0; i < Swisse.id.length; i++) {
-            ProductPrice productPrice = new ProductPrice(
-                    Swisse.id[i],
-                    Swisse.lowestPrice[i],
-                    Swisse.highestPrice[i],
-                    Swisse.whichIsLowest[i],
-                    Swisse.cmwPrice[i],
-                    Swisse.plPrice[i],
-                    Swisse.flPrice[i],
-                    Swisse.twPrice[i],
-                    Swisse.hwPrice[i],
-                    currentDateString
-            );
-            dataSource.updatePriceInTable(productPrice);
-        }
-
-        for (int i = 0; i < Blackmores.id.length; i++) {
-            ProductPrice productPrice = new ProductPrice(
-                    Blackmores.id[i],
-                    Blackmores.lowestPrice[i],
-                    Blackmores.highestPrice[i],
-                    Blackmores.whichIsLowest[i],
-                    Blackmores.cmwPrice[i],
-                    Blackmores.plPrice[i],
-                    Blackmores.flPrice[i],
-                    Blackmores.twPrice[i],
-                    Blackmores.hwPrice[i],
-                    currentDateString
-            );
-            dataSource.updatePriceInTable(productPrice);
-        }
-
-        for (int i = 0; i < BioIsland.id.length; i++) {
-            ProductPrice productPrice = new ProductPrice(
-                    BioIsland.id[i],
-                    BioIsland.lowestPrice[i],
-                    BioIsland.highestPrice[i],
-                    BioIsland.whichIsLowest[i],
-                    BioIsland.cmwPrice[i],
-                    BioIsland.plPrice[i],
-                    BioIsland.flPrice[i],
-                    BioIsland.twPrice[i],
-                    BioIsland.hwPrice[i],
-                    currentDateString
-            );
-            dataSource.updatePriceInTable(productPrice);
-        }
-
-        for (int i = 0; i < Ostelin.id.length; i++) {
-            ProductPrice productPrice = new ProductPrice(
-                    Ostelin.id[i],
-                    Ostelin.lowestPrice[i],
-                    Ostelin.highestPrice[i],
-                    Ostelin.whichIsLowest[i],
-                    Ostelin.cmwPrice[i],
-                    Ostelin.plPrice[i],
-                    Ostelin.flPrice[i],
-                    Ostelin.twPrice[i],
-                    Ostelin.hwPrice[i],
-                    currentDateString
-            );
-            dataSource.updatePriceInTable(productPrice);
         }
     }
 
@@ -486,4 +373,5 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numColumns);
         mBestChoiceRecyclerView.setLayoutManager(layoutManager);
     }
+
 }

@@ -61,6 +61,7 @@ public class ProductPrice implements Serializable {
                         float FLPrice,
                         float TWPrice,
                         float HWPrice,
+                        String recommendationFlag,
                         String lastUpdateDateString) {
         mID = id;
         mLowestPrice = lowestPrice;
@@ -71,6 +72,7 @@ public class ProductPrice implements Serializable {
         mFLPrice = FLPrice;
         mTWPrice = TWPrice;
         mHWPrice = HWPrice;
+        mRecommendationFlag = recommendationFlag;
         mLastUpdateDateString = lastUpdateDateString;
     }
 

@@ -15,7 +15,7 @@ import java.io.IOException;
 public class GetInfoFromWebsite {
     //call this method to parse the data from the URLs and get the products' price
 
-    public static void GetSwissePrice() {
+    public static void getSwissePrice() {
 
         //chemist warehouse:Swisse
         String[] cmwURls = new String[] {
@@ -285,7 +285,7 @@ public class GetInfoFromWebsite {
 
     }
 
-    public static void GetBlackmoresPrice() {
+    public static void getBlackmoresPrice() {
 
         //chemist warehouse：Blackmores
         String[] cmwURls = new String[] {
@@ -513,10 +513,9 @@ public class GetInfoFromWebsite {
             if (Blackmores.hwPrice[i] == lowest) Blackmores.whichIsLowest[i] =  "HealthyWorld Pharmacy";
 
         }
-
     }
 
-    public static void GetBioIslandPrice() {
+    public static void getBioIslandPrice() {
 
         //chemist warehouse：BioIsland
         String[] cmwURls = new String[]{
@@ -615,7 +614,7 @@ public class GetInfoFromWebsite {
         }
     }
 
-    public static void GetOstelinPrice() {
+    public static void getOstelinPrice() {
         //chemist warehouse：Ostelin
         String[] cmwURls = new String[] {
                 "http://www.chemistwarehouse.com.au/Shop-Online/903/Ostelin"};
@@ -800,7 +799,7 @@ public class GetInfoFromWebsite {
 
     }
 
-    public static float GetExchangeRate() {
+    public static float getExchangeRate() {
 
         //chemist warehouse
         String url = "http://www.rba.gov.au/statistics/frequency/exchange-rates.html";

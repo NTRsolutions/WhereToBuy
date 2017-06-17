@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
+import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
+import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
+import com.mainframevampire.ryan.wheretobuy.model.Ostelin;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 
 public class ProductsActivity extends AppCompatActivity
@@ -69,23 +72,47 @@ public class ProductsActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
+        int countCustomisedProducts = dataSource.readProductsTableToGetCustomisedProduct();
+        int countBlackmoresProducts = dataSource.readProductsTableToGetBrandProduct("BKM");
+        int countBioislandProducts = dataSource.readProductsTableToGetBrandProduct("BOI");
+        int countOsterlinProducts = dataSource.readProductsTableToGetBrandProduct("OST");
         switch (item.getItemId()) {
             case R.id.swisse:
                 loadProductFragment("SWISSE", "replace");
                 return true;
             case R.id.blackmores:
-                loadProductFragment("BLACKMORES", "replace");
+                if (countBlackmoresProducts != Blackmores.id.length) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProductsActivity.this);
+                    builder.setTitle("still downloading")
+                            .setMessage("Please wait for Blackmores products' price to be downloaded");
+                    builder.create().show();
+                } else {
+                    loadProductFragment("BLACKMORES", "replace");
+                }
                 return true;
             case R.id.bioIsland:
-                loadProductFragment("BIOISLAND", "replace");
+                if (countBioislandProducts != BioIsland.id.length) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProductsActivity.this);
+                    builder.setTitle("still downloading")
+                            .setMessage("Please wait for BioIsland products' price to be downloaded");
+                    builder.create().show();
+                } else {
+                    loadProductFragment("BIOISLAND", "replace");
+                }
                 return true;
             case R.id.ostelin:
-                loadProductFragment("OSTELIN", "replace");
+                if (countOsterlinProducts != Ostelin.id.length) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProductsActivity.this);
+                    builder.setTitle("still downloading")
+                            .setMessage("Please wait for Ostelin products' price to be downloaded");
+                    builder.create().show();
+                } else {
+                    loadProductFragment("OSTELIN", "replace");
+                }
                 return true;
             case R.id.customise:
                 //if no products in MYLIST, show alert
-                ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
-                int countCustomisedProducts = dataSource.readProductsTableToGetCustomisedProduct();
                 if (countCustomisedProducts == 0) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ProductsActivity.this);
                     builder.setTitle("No Products in MYLIST")

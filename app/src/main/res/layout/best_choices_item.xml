@@ -83,7 +83,7 @@
                     tools:text="$29.99"
                     android:gravity="center"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/textsize_medium"/>
+                    android:textSize="@dimen/textsize_middlle"/>
 
                 <TextView
                     android:id="@+id/gridSavePrice"

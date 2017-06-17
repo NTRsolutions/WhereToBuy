@@ -153,6 +153,20 @@ public class ProductsDataSource {
         return queryString;
     }
 
+    public int readProductsTableToGetBrandProduct(String listName) {
+        SQLiteDatabase database = open();
+
+        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
+                " WHERE SUBSTR(ID,1,3) = " + "'" + listName + "'", null);
+
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        close(database);
+
+        return count;
+    }
+
     public int readProductsTableToGetCustomisedProduct() {
         SQLiteDatabase database = open();
 
@@ -204,6 +218,7 @@ public class ProductsDataSource {
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_FL_PRICE, productPrice.getFLPrice());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_TW_PRICE, productPrice.getTWPrice());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_HW_PRICE, productPrice.getHWPrice());
+        updateProductValue.put(ProductsSQLiteHelper.COLUMN_RECOMMENDATION_FLAG, productPrice.getRecommendationFlag());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_LAST_UPDATE_DATE, productPrice.getLastUpdateDateString());
 
 

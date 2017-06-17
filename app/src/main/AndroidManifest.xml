@@ -21,6 +21,7 @@
         </activity>
         <activity android:name="com.mainframevampire.ryan.wheretobuy.ui.ProductsActivity">
         </activity>
+        <service android:name=".ui.DownloadService"/>
     </application>
 
 </manifest>
