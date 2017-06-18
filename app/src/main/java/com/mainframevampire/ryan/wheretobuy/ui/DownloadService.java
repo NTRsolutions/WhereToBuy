@@ -1,11 +1,17 @@
 package com.mainframevampire.ryan.wheretobuy.ui;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
 import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
@@ -20,7 +26,11 @@ import java.util.Date;
 
 public class DownloadService extends IntentService{
 
-    private static final String TAG = DownloadService.class.getSimpleName() ;
+    private static final String TAG = DownloadService.class.getSimpleName();
+    private static final int REQEUST_OPEN = 93;
+
+    private NotificationManager mNotificationManager;
+    private static final int NOTIFICATION_ID = 76;
 
     public DownloadService() {
         super("DownloadService");
@@ -31,6 +41,21 @@ public class DownloadService extends IntentService{
     protected void onHandleIntent(@Nullable Intent intent) {
         boolean isFirstRun = intent.getBooleanExtra(MainActivity.IS_FIRST_RUN, false);
         String brand = intent.getStringExtra(MainActivity.LIST_NAME);
+
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                REQEUST_OPEN, mainIntent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.icon24)
+                .setContentTitle("Downloading")
+                .setContentText(brand)
+                .setContentIntent(pendingIntent);
+
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(NOTIFICATION_ID, builder.build());
+
         downloadPrice(brand, isFirstRun);
         Intent messageIntent = new Intent(MainActivity.BROADCAST_ACTION);
         messageIntent.putExtra(MainActivity.KEY_MESSAGE, brand);
@@ -52,6 +77,7 @@ public class DownloadService extends IntentService{
             if (brand.equals("OSTELIN")) {
                 GetInfoFromWebsite.getOstelinPrice();
                 createOstelinValueInTable();
+                mNotificationManager.cancel(NOTIFICATION_ID);
             }
         } else {
             if (brand.equals("SWISSE")) {
@@ -69,6 +95,7 @@ public class DownloadService extends IntentService{
             if (brand.equals("OSTELIN")) {
                 GetInfoFromWebsite.getOstelinPrice();
                 updateOstelinValueInTable();
+                mNotificationManager.cancel(NOTIFICATION_ID);
             }
         }
         Log.d(TAG, brand + " price downloaded");
