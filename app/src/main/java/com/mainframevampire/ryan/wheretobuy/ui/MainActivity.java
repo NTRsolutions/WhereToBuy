@@ -83,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
         mLastUpdateDate = dataSource.readProductsTableWithId("OST004").getLastUpdateDateString();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        //mCurrentDate = dateFormat.format(new Date());
-        mCurrentDate = "2017-06-17";
+        mCurrentDate = dateFormat.format(new Date());
 
         String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mLastUpdateDate;
         mLastUpdateDateTextView.setText(lastUpdateSummary);
