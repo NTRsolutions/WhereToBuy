@@ -77,13 +77,11 @@ public class MainActivity extends AppCompatActivity {
 
         mProgressBar.setVisibility(View.INVISIBLE);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver,
-                new IntentFilter(BROADCAST_ACTION));
-
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
         mLastUpdateDate = dataSource.readProductsTableWithId("OST004").getLastUpdateDateString();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        mCurrentDate = dateFormat.format(new Date());
+        //mCurrentDate = dateFormat.format(new Date());
+        mCurrentDate = "2017-06-18";
 
         String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mLastUpdateDate;
         mLastUpdateDateTextView.setText(lastUpdateSummary);
@@ -98,18 +96,16 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 //if last update date is not today, download the data in the background
                 if(!lastUpdateIsToday()){
-                    if (isNetworkAvailable()) {
-                        toggleRefresh();
-                        //new DownloadPriceInBackground().execute();
-                        String message = String.format("Last update is %s, the latest price is downloading", mLastUpdateDate);
-                        mLastUpdateDateTextView.setText(message);
-                        for (String brand : ListName.Brands) {
-                            Intent intent = new Intent(this, DownloadService.class);
-                            boolean isFirstRun = false;
-                            intent.putExtra(IS_FIRST_RUN, isFirstRun);
-                            intent.putExtra(LIST_NAME, brand);
-                            startService(intent);
-                        }
+                    toggleRefresh();
+                    //new DownloadPriceInBackground().execute();
+                    String message = String.format("Last update is %s, the latest price is downloading", mLastUpdateDate);
+                    mLastUpdateDateTextView.setText(message);
+                    for (String brand : ListName.Brands) {
+                        Intent intent = new Intent(this, DownloadService.class);
+                        boolean isFirstRun = false;
+                        intent.putExtra(IS_FIRST_RUN, isFirstRun);
+                        intent.putExtra(LIST_NAME, brand);
+                        startService(intent);
                     }
                 }
                 //load recommations to the list
@@ -134,8 +130,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra(KEY_MESSAGE);
-            Log.d("receiver", "Got message:" + message);
-            Toast.makeText(MainActivity.this, message + "price is downloaded", Toast.LENGTH_SHORT).show();
+            Log.d("MainActivity", "Receive Message: " + message);
             //load recommations to the list
             loadDataToGridList();
             if (message.equals("OSTELIN")) {
@@ -148,9 +143,16 @@ public class MainActivity extends AppCompatActivity {
     };
 
     @Override
-    protected void onDestroy() {
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver,
+                new IntentFilter(BROADCAST_ACTION));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
-        super.onDestroy();
     }
 
     //menu

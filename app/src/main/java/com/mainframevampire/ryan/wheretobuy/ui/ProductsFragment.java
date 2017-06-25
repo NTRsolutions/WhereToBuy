@@ -22,11 +22,11 @@ import java.util.ArrayList;
 
 public class ProductsFragment extends Fragment {
 
-    private String mItemName = "";
     public interface onProductListSelectedInterface {
         void onProductSelected(String id, String listName);
-        void onAddSelected(String id, String listName);
     }
+
+    private String mItemName = "";
 
     @Nullable
     @Override

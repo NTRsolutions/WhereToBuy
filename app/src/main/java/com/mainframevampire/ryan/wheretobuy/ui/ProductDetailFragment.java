@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,11 +28,14 @@ import com.mainframevampire.ryan.wheretobuy.model.Swisse;
 public class ProductDetailFragment extends Fragment {
     private TextView mDetailLongName;
     private  ImageView mDetailImageView;
+    private CheckBox mFavouriteCheckBox;
     private TextView mDetailCMWPrice;
     private TextView mDetailPLPrice;
     private TextView mDetailFLPrice;
     private TextView mDetailTWPrice;
     private TextView mDetailHWPrice;
+
+    private String mId;
 
 
     @Override
@@ -42,13 +47,14 @@ public class ProductDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        String id = getArguments().getString(ProductsActivity.PRODUCT_ID);
-        String itemName = getArguments().getString(MainActivity.LIST_NAME);
+        mId = getArguments().getString(ProductsActivity.PRODUCT_ID);
+        final String itemName = getArguments().getString(MainActivity.LIST_NAME);
         View view = inflater.inflate(R.layout.fragment_product_detail, container, false);
 
 
         mDetailLongName = (TextView) view.findViewById(R.id.detailLongName);
         mDetailImageView = (ImageView) view.findViewById(R.id.detailImageView);
+        mFavouriteCheckBox = (CheckBox) view.findViewById(R.id.favouriteCheckBox);
         mDetailCMWPrice = (TextView) view.findViewById(R.id.detailCMWPrice);
         mDetailPLPrice = (TextView) view.findViewById(R.id.detailPLPrice);
         mDetailFLPrice = (TextView) view.findViewById(R.id.detailFLPrice);
@@ -56,10 +62,11 @@ public class ProductDetailFragment extends Fragment {
         mDetailHWPrice = (TextView) view.findViewById(R.id.detailHWPrice);
 
         ProductsDataSource dataSource = new ProductsDataSource(getActivity());
-        ProductPrice productPrice = dataSource.readProductsTableWithId(id);
+        ProductPrice productPrice = dataSource.readProductsTableWithId(mId);
 
         String shortName = productPrice.getShortName();
         String longName = productPrice.getLongName();
+        final String customiseFlag = productPrice.getCustomiseFlag();
         float lowestPrice = productPrice.getLowestPrice();
         float cmwPrice = productPrice.getCMWPrice();
         float plPrice = productPrice.getPLPrice();
@@ -68,21 +75,39 @@ public class ProductDetailFragment extends Fragment {
         float hwPrice = productPrice.getHWPrice();
 
 
-        if (id.substring(0,3).equals("SWS")) {
-            Glide.with(getActivity()).load(Swisse.getSwisseImageId(id)).into(mDetailImageView);
+        if (mId.substring(0,3).equals("SWS")) {
+            Glide.with(getActivity()).load(Swisse.getSwisseImageId(mId)).into(mDetailImageView);
         }
-        if (id.substring(0,3).equals("BKM")){
-        Glide.with(getActivity()).load(Blackmores.getBlackmoresImageId(id)).into(mDetailImageView);
+        if (mId.substring(0,3).equals("BKM")){
+        Glide.with(getActivity()).load(Blackmores.getBlackmoresImageId(mId)).into(mDetailImageView);
         }
-        if (id.substring(0,3).equals("BOI")){
-            Glide.with(getActivity()).load(BioIsland.getBioIslandImageId(id)).into(mDetailImageView);
+        if (mId.substring(0,3).equals("BOI")){
+            Glide.with(getActivity()).load(BioIsland.getBioIslandImageId(mId)).into(mDetailImageView);
         }
-        if (id.substring(0,3).equals("OST")){
-            Glide.with(getActivity()).load(Ostelin.getOstelinImageId(id)).into(mDetailImageView);
+        if (mId.substring(0,3).equals("OST")){
+            Glide.with(getActivity()).load(Ostelin.getOstelinImageId(mId)).into(mDetailImageView);
         }
 
         getActivity().setTitle(shortName);
         mDetailLongName.setText(longName);
+
+        if (customiseFlag.equals("Y")) {
+            mFavouriteCheckBox.setChecked(true);
+        } else {
+            mFavouriteCheckBox.setChecked(false);
+        }
+
+        mFavouriteCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ProductsDataSource dataSource = new ProductsDataSource(getActivity());
+                if (customiseFlag.equals("Y")) {
+                    dataSource.updateCustomiseFlagInTable(mId, "N");
+                } else {
+                    dataSource.updateCustomiseFlagInTable(mId, "Y");
+                }
+            }
+        });
 
         if (cmwPrice == 0) {
             mDetailCMWPrice.setText(R.string.NA);

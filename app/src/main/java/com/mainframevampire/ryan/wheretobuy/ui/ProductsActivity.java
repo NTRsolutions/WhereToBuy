@@ -143,62 +143,6 @@ public class ProductsActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public void onAddSelected(String id, String listName) {
-        final String itemId = id;
-        if (listName.equals("MYLIST")) {
-            //delete alerdialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Delete item to my list")
-                    .setMessage("please confirm you want to delete this product from my list")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
-                            dataSource.updateCustomiseFlagInTable(itemId, "N");
-                            //reload fragment again
-                            loadProductFragment("MYLIST", "replace");
-                        }
-
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-            builder.create().show();
-        } else {
-            //add alerdialog
-            ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
-            ProductPrice productPrice = dataSource.readProductsTableWithId(itemId);
-            if (productPrice.getCustomiseFlag().equals("Y")) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ProductsActivity.this);
-                builder.setTitle("Product already exists")
-                        .setMessage("This product already exists in MyList, no need to add again");
-                builder.create().show();
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("add item to my list")
-                        .setMessage("please confirm you want to add this product to my list")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
-                                dataSource.updateCustomiseFlagInTable(itemId, "Y");
-                            }
-
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-                builder.create().show();
-            }
-        }
-    }
-
     private String getTitleFromItemName(String itemName) {
         String title = "";
         if (itemName.equals("SWISSE")) title = "Swisse";

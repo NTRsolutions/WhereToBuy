@@ -2,14 +2,17 @@ package com.mainframevampire.ryan.wheretobuy.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
+import com.mainframevampire.ryan.wheretobuy.ui.DownloadService;
 import com.mainframevampire.ryan.wheretobuy.ui.ProductsFragment;
 
 import java.util.ArrayList;
@@ -55,7 +58,7 @@ public class ProductsAdapter extends RecyclerView.Adapter{
         private TextView mFLPrice;
         private TextView mTWPrice;
         private TextView mHWPrice;
-        private TextView mAddText;
+        private ImageView mFavouriteImage;
         private int mIndex;
         private String mId;
 
@@ -68,9 +71,9 @@ public class ProductsAdapter extends RecyclerView.Adapter{
             mFLPrice = (TextView) itemView.findViewById(R.id.fl_price);
             mTWPrice = (TextView) itemView.findViewById(R.id.tw_price);
             mHWPrice = (TextView) itemView.findViewById(R.id.hw_price);
-            mAddText = (TextView) itemView.findViewById(R.id.addText);
+            mFavouriteImage = (ImageView) itemView.findViewById(R.id.favoriteImage);
 
-            mAddText.setOnClickListener(this);
+            mFavouriteImage.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
 
@@ -84,6 +87,7 @@ public class ProductsAdapter extends RecyclerView.Adapter{
             float flPrice = mProductPrices.get(position).getFLPrice();
             float twPrice = mProductPrices.get(position).getTWPrice();
             float hwPrice = mProductPrices.get(position).getHWPrice();
+            String isFavourite = mProductPrices.get(position).getCustomiseFlag();
 
             mShortName.setText(shortName);
             //if price == 0, display NA;if not, display int with rounded value
@@ -133,20 +137,21 @@ public class ProductsAdapter extends RecyclerView.Adapter{
             }
 
             if (mItemName.equals("MYLIST")) {
-                mAddText.setText("-");
+                mFavouriteImage.setVisibility(View.VISIBLE);
             } else {
-                mAddText.setText("+");
+                if (isFavourite.equals("Y")){
+                    mFavouriteImage.setVisibility(View.VISIBLE);
+                } else {
+                    mFavouriteImage.setVisibility(View.INVISIBLE);
+                }
+
             }
 
         }
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == mAddText.getId()) {
-                mListener.onAddSelected(mId, mItemName);
-            } else {
-                mListener.onProductSelected(mId, mItemName);
-            }
+            mListener.onProductSelected(mId, mItemName);
         }
     }
 

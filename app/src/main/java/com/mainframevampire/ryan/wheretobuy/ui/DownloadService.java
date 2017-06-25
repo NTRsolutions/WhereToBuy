@@ -1,7 +1,6 @@
 package com.mainframevampire.ryan.wheretobuy.ui;
 
 import android.app.IntentService;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -28,6 +27,8 @@ public class DownloadService extends IntentService{
 
     private static final String TAG = DownloadService.class.getSimpleName();
     private static final int REQEUST_OPEN = 93;
+    private static final int REQEUST_CLOSE = 193;
+    private static final String ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE" ;
 
     private NotificationManager mNotificationManager;
     private static final int NOTIFICATION_ID = 76;
@@ -42,25 +43,30 @@ public class DownloadService extends IntentService{
         boolean isFirstRun = intent.getBooleanExtra(MainActivity.IS_FIRST_RUN, false);
         String brand = intent.getStringExtra(MainActivity.LIST_NAME);
 
+        Log.d("DownloadService", "Send Message: " + brand);
+
+        //create pending intent for user to click notification to go to MainActivity
         Intent mainIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+        PendingIntent pStartMain = PendingIntent.getActivity(this,
                 REQEUST_OPEN, mainIntent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.icon24)
                 .setContentTitle("Downloading")
                 .setContentText(brand)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pStartMain)
+                .setProgress(0, 0, true);
 
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
 
         downloadPrice(brand, isFirstRun);
+
+        //send download result to activity
         Intent messageIntent = new Intent(MainActivity.BROADCAST_ACTION);
         messageIntent.putExtra(MainActivity.KEY_MESSAGE, brand);
         LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
-        Log.d("sender", "Sending message:" + brand);
 
     }
 
@@ -98,7 +104,6 @@ public class DownloadService extends IntentService{
                 mNotificationManager.cancel(NOTIFICATION_ID);
             }
         }
-        Log.d(TAG, brand + " price downloaded");
     }
 
     private void createBlackmoresValueInTable() {
