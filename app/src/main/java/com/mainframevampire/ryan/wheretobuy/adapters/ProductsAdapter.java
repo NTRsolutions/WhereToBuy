@@ -136,6 +136,12 @@ public class ProductsAdapter extends RecyclerView.Adapter{
                 if (hwPrice == lowestPrice) mHWPrice.setTextColor(Color.RED);
             }
 
+//            mCMWPrice.setText(String.valueOf(Math.round(cmwPrice)));
+//            mPLPrice.setText(String.valueOf(Math.round(plPrice)));
+//            mFLPrice.setText(String.valueOf(Math.round(flPrice)));
+//            mTWPrice.setText(String.valueOf(Math.round(twPrice)));
+//            mHWPrice.setText(String.valueOf(Math.round(hwPrice)));
+
             if (mItemName.equals("MYLIST")) {
                 mFavouriteImage.setVisibility(View.VISIBLE);
             } else {

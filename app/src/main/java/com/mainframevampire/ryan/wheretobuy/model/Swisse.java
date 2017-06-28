@@ -47,47 +47,47 @@ public class Swisse {
                 "SWS041"};
 
     public static final String[] shortName = new String[]{
-            "SWS Chanberry 25000mg 30Caps",
-            "SWS High Chanberry 90Caps   ",
-            "SWS Celery 5000mg 50Caps    ",
-            "SWS Liver Detox 120Tabs     ",
-            "SWS Liver Detox 200Tabs     ",
-            "SWS Liver Detox 60Tabs      ",
-            "SWS Cal+Vitamin D 90Tabs    ",
-            "SWS Cal+Vitamin D 150Tabs   ",
-            "SWS Evening Oil 200Caps     ",
-            "SWS Memory + Focus 50Tabs   ",
-            "SWS Women's Ultivite 60Tabs ",
-            "SWS Women's Ultivite 120Tabs",
-            "SWS Women's Ultivite 50+ 90T",
-            "SWS Men Ultivite 60Tabs     ",
-            "SWS Men Ultivite 120Tabs    ",
-            "SWS Men Ultivite 50+ 90Tabs ",
-            "SWS Lecithin 1200mg 150Caps ",
-            "SWS Lecithin 1200mg 300Caps ",
-            "SWS Lung Support 90Tabs     ",
-            "SWS Mega B + 60 Tablets     ",
-            "SWS Organic Spirulina 100T  ",
-            "SWS High Spirulina 1kmg 200T",
-            "SWS Chlorophyll 100Tabs     ",
-            "SWS Chlorophyll 1000mg 200T ",
-            "SWS Chlorophyll Berry 500ml ",
-            "SWS Chlorophyll Spearmint500",
-            "SWS High Vitamin C 60Tabs   ",
-            "SWS Relax&Sleep 60Tabs      ",
-            "SWS Krill Oil 500mg 60Caps  ",
-            "SWS Gluco Sulfate 1500mg 180",
-            "SWS Menopause Balance 60Tabs",
-            "SWS Propolis 2000mg 210Tabs ",
-            "SWS Hunger Control 50Tabs   ",
-            "SWS Mood 100Tabs            ",
-            "SWS Child  FishOil 90Caps   ",
-            "SWS Grape Seed 180Tabs      ",
-            "SWS Children's Ulti 120tabs ",
-            "SWS Prostate 50 Tablets     ",
-            "SWS Ultiboost Sleep 100Tabs ",
-            "SWS Hair Skin Nails 500ml   ",
-            "SWS Hair Skin Nails+ 100Tabs"};
+            "Chanberry 25000mg 30Caps",
+            "High Chanberry 90Caps   ",
+            "Celery 5000mg 50Caps    ",
+            "Liver Detox 120Tabs     ",
+            "Liver Detox 200Tabs     ",
+            "Liver Detox 60Tabs      ",
+            "Cal+Vitamin D 90Tabs    ",
+            "Cal+Vitamin D 150Tabs   ",
+            "Evening Oil 200Caps     ",
+            "Memory + Focus 50Tabs   ",
+            "Women's Ultivite 60Tabs ",
+            "Women's Ultivite 120Tabs",
+            "Women's Ultivite 50+ 90T",
+            "Men Ultivite 60Tabs     ",
+            "Men Ultivite 120Tabs    ",
+            "Men Ultivite 50+ 90Tabs ",
+            "Lecithin 1200mg 150Caps ",
+            "Lecithin 1200mg 300Caps ",
+            "Lung Support 90Tabs     ",
+            "Mega B + 60 Tablets     ",
+            "Organic Spirulina 100T  ",
+            "High Spirulina 1kmg 200T",
+            "Chlorophyll 100Tabs     ",
+            "Chlorophyll 1000mg 200T ",
+            "Chlorophyll Berry 500ml ",
+            "Chlorophyll Spearmint500",
+            "High Vitamin C 60Tabs   ",
+            "Relax&Sleep 60Tabs      ",
+            "Krill Oil 500mg 60Caps  ",
+            "Gluco Sulfate 1500mg 180",
+            "Menopause Balance 60Tabs",
+            "Propolis 2000mg 210Tabs ",
+            "Hunger Control 50Tabs   ",
+            "Mood 100Tabs            ",
+            "Child  FishOil 90Caps   ",
+            "Grape Seed 180Tabs      ",
+            "Children's Ulti 120tabs ",
+            "Prostate 50 Tablets     ",
+            "Ultiboost Sleep 100Tabs ",
+            "Hair Skin Nails 500ml   ",
+            "Hair Skin Nails+ 100Tabs"};
 
     public static final String[] longName = new String[] {
             "Swisse High Strength Cranberry 25,000mg 30 Caps",
@@ -360,9 +360,18 @@ public class Swisse {
             "335770",
             "301531"};
 
-        public static float[] hwPrice = new float[id.length];
+    public static float[] hwPrice = new float[id.length];
 
-        public static int getSwisseImageId(String id){
+    public static String[] cmwURL = new String[id.length];
+    public static String[] plURL = new String[id.length];
+    public static String[] flURL = new String[id.length];
+    public static String[] twURL = new String[id.length];
+    public static String[] hwURL = new String[id.length];
+
+
+
+
+    public static int getSwisseImageId(String id){
             int swisseImageId = R.drawable.sws001;
 
             switch (id) {

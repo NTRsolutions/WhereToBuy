@@ -6,8 +6,12 @@
     <dimen name="textsize_medium">14sp</dimen>
     <dimen name="textsize_big">16sp</dimen>
     <dimen name="textsize_large">20sp</dimen>
-    <dimen name="grid_width">120dp</dimen>
+    <dimen name="grid_width">150dp</dimen>
     <dimen name="item_width">20dp</dimen>
-    <dimen name="grid_height">100dp</dimen>
+    <dimen name="grid_margin">10dp</dimen>
+    <dimen name="grid_height">120dp</dimen>
     <dimen name="item_height">20dp</dimen>
+    <dimen name="text_height">30dp</dimen>
+    <dimen name="button_margin">10dp</dimen>
+    <dimen name="button_height">40dp</dimen>
 </resources>

@@ -62,11 +62,18 @@ public class ProductsActivity extends AppCompatActivity
         }
     }
 
+    //hide share menu item
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem shareItem = menu.findItem(R.id.share);
+        shareItem.setVisible(false);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     //menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-
         return true;
     }
 

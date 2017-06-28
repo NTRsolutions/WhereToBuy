@@ -15,4 +15,6 @@
     <string name="NA">NA</string>
     <string name="last_update_date_is">Latest update: on </string>
     <string name="text_for_first_run">Sorry! Products\' information needs to be downloaded</string>
+    <string name="is_your_favourite">is your favourite?</string>
+    <string name="product_image">product_image</string>
 </resources>

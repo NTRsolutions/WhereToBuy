@@ -12,10 +12,10 @@ public class Ostelin {
     };
 
     public static final String[] shortName = new String[]{
-            "OST VD&Calcium Kids 90c",
-            "OST VD&Calcium Kids 50c",
-            "OST Vitamin D Kids 20ml",
-            "OST Vit D & Cal 300 Tabs"
+            "VD&Calcium Kids 90c",
+            "VD&Calcium Kids 50c",
+            "Vitamin D Kids 20ml",
+            "Vit D & Cal 300 Tabs"
     };
 
     public static final String[] longName = new String[] {
@@ -66,6 +66,12 @@ public class Ostelin {
     public static float[] twPrice = new float[id.length];
 
     public static float[] hwPrice = new float[id.length];
+
+    public static String[] cmwURL = new String[id.length];
+    public static String[] plURL = new String[id.length];
+    public static String[] flURL = new String[id.length];
+    public static String[] twURL = new String[id.length];
+    public static String[] hwURL = new String[id.length];
 
     public static int getOstelinImageId(String id){
         int ostelinImageId = R.drawable.sws001;

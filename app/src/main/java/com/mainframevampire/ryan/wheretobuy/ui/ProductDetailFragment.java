@@ -1,15 +1,19 @@
 package com.mainframevampire.ryan.wheretobuy.ui;
 
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -34,8 +38,29 @@ public class ProductDetailFragment extends Fragment {
     private TextView mDetailFLPrice;
     private TextView mDetailTWPrice;
     private TextView mDetailHWPrice;
+    private Button mCMWButton;
+    private Button mPLButton;
+    private Button mFLButton;
+    private Button mTWButton;
+    private Button mHWButton;
 
     private String mId;
+
+    private String shortName = "";
+    private String longName = "";
+    private String customiseFlag = "";
+    private float lowestPrice = 0;
+    private float cmwPrice = 0;
+    private float plPrice = 0;
+    private float flPrice = 0;
+    private float twPrice = 0;
+    private float hwPrice = 0;
+    private String cmwUrl = "";
+    private String plUrl = "";
+    private String flUrl = "";
+    private String twUrl = "";
+    private String hwUrl = "";
+    private String mWhichIsLowest = "";
 
 
     @Override
@@ -60,19 +85,31 @@ public class ProductDetailFragment extends Fragment {
         mDetailFLPrice = (TextView) view.findViewById(R.id.detailFLPrice);
         mDetailTWPrice = (TextView) view.findViewById(R.id.detailTWPrice);
         mDetailHWPrice = (TextView) view.findViewById(R.id.detailHWPrice);
+        mCMWButton = (Button) view.findViewById(R.id.cwh_button);
+        mPLButton = (Button) view.findViewById(R.id.pl_button);
+        mFLButton = (Button) view.findViewById(R.id.fl_button);
+        mTWButton = (Button) view.findViewById(R.id.tw_button);
+        mHWButton = (Button) view.findViewById(R.id.hw_button);
+
 
         ProductsDataSource dataSource = new ProductsDataSource(getActivity());
         ProductPrice productPrice = dataSource.readProductsTableWithId(mId);
 
-        String shortName = productPrice.getShortName();
-        String longName = productPrice.getLongName();
-        final String customiseFlag = productPrice.getCustomiseFlag();
-        float lowestPrice = productPrice.getLowestPrice();
-        float cmwPrice = productPrice.getCMWPrice();
-        float plPrice = productPrice.getPLPrice();
-        float flPrice = productPrice.getFLPrice();
-        float twPrice = productPrice.getTWPrice();
-        float hwPrice = productPrice.getHWPrice();
+        shortName = productPrice.getShortName();
+        longName = productPrice.getLongName();
+        customiseFlag = productPrice.getCustomiseFlag();
+        mWhichIsLowest = productPrice.getWhichIsLowest();
+        lowestPrice = productPrice.getLowestPrice();
+        cmwPrice = productPrice.getCMWPrice();
+        plPrice = productPrice.getPLPrice();
+        flPrice = productPrice.getFLPrice();
+        twPrice = productPrice.getTWPrice();
+        hwPrice = productPrice.getHWPrice();
+        cmwUrl = productPrice.getCMWUrl();
+        plUrl = productPrice.getPLUrl();
+        flUrl = productPrice.getFLUrl();
+        twUrl = productPrice.getTWUrl();
+        hwUrl = productPrice.getHWUrl();
 
 
         if (mId.substring(0,3).equals("SWS")) {
@@ -111,6 +148,7 @@ public class ProductDetailFragment extends Fragment {
 
         if (cmwPrice == 0) {
             mDetailCMWPrice.setText(R.string.NA);
+            mCMWButton.setVisibility(View.INVISIBLE);
         } else {
             String detailCMWPriceString = getString(R.string.dollar_sign) + String.valueOf(cmwPrice);
             mDetailCMWPrice.setText(detailCMWPriceString);
@@ -119,6 +157,7 @@ public class ProductDetailFragment extends Fragment {
 
         if (plPrice == 0){
             mDetailPLPrice.setText(R.string.NA);
+            mPLButton.setVisibility(View.INVISIBLE);
         } else {
             String detailPLPriceString = getString(R.string.dollar_sign) + String.valueOf(plPrice);
             mDetailPLPrice.setText(detailPLPriceString);
@@ -127,6 +166,7 @@ public class ProductDetailFragment extends Fragment {
 
         if (flPrice == 0 ) {
             mDetailFLPrice.setText(R.string.NA);
+            mFLButton.setVisibility(View.INVISIBLE);
         } else {
             String detailFLPriceString = getString(R.string.dollar_sign) + String.valueOf(flPrice);
             mDetailFLPrice.setText(detailFLPriceString);
@@ -135,6 +175,7 @@ public class ProductDetailFragment extends Fragment {
 
         if (twPrice == 0) {
             mDetailTWPrice.setText(R.string.NA);
+            mTWButton.setVisibility(View.INVISIBLE);
         } else {
             String detailTWPriceString = getString(R.string.dollar_sign) + String.valueOf(twPrice);
             mDetailTWPrice.setText(detailTWPriceString);
@@ -143,6 +184,7 @@ public class ProductDetailFragment extends Fragment {
 
         if (hwPrice == 0){
             mDetailHWPrice.setText(R.string.NA);
+            mHWButton.setVisibility(View.INVISIBLE);
         } else {
             String detailHWPriceString = getString(R.string.dollar_sign) + String.valueOf(hwPrice);
             mDetailHWPrice.setText(detailHWPriceString);
@@ -150,13 +192,94 @@ public class ProductDetailFragment extends Fragment {
                 mDetailHWPrice.setTextColor(Color.RED);
         }
 
+        mCMWButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openWebsite = new Intent(Intent.ACTION_VIEW);
+                openWebsite.setData(Uri.parse(cmwUrl));
+                startActivity(openWebsite);
+            }
+        });
+
+        mPLButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openWebsite = new Intent(Intent.ACTION_VIEW);
+                openWebsite.setData(Uri.parse(plUrl));
+                startActivity(openWebsite);
+            }
+        });
+
+        mFLButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openWebsite = new Intent(Intent.ACTION_VIEW);
+                openWebsite.setData(Uri.parse(flUrl));
+                startActivity(openWebsite);
+            }
+        });
+
+        mTWButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openWebsite = new Intent(Intent.ACTION_VIEW);
+                openWebsite.setData(Uri.parse(twUrl));
+                startActivity(openWebsite);
+            }
+        });
+
+        mHWButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openWebsite = new Intent(Intent.ACTION_VIEW);
+                openWebsite.setData(Uri.parse(hwUrl));
+                startActivity(openWebsite);
+            }
+        });
+
         return view;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem swisseItem = menu.findItem(R.id.swisse);
+        swisseItem.setVisible(false);
+        MenuItem blackmoresItem = menu.findItem(R.id.blackmores);
+        blackmoresItem.setVisible(false);
+        MenuItem bioIslandItem = menu.findItem(R.id.bioIsland);
+        bioIslandItem.setVisible(false);
+        MenuItem ostelinItem = menu.findItem(R.id.ostelin);
+        ostelinItem.setVisible(false);
+        MenuItem customiseItem = menu.findItem(R.id.customise);
+        customiseItem.setVisible(false);
+        MenuItem shareItem = menu.findItem(R.id.share);
+        shareItem.setVisible(true);
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.share) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            String websiteUrl = "";
+            if (mWhichIsLowest.equals("Chemist Warehouse")) websiteUrl = cmwUrl;
+            if (mWhichIsLowest.equals("Priceline Pharmacy")) websiteUrl = plUrl;
+            if (mWhichIsLowest.equals("Pharmacy 4Less")) websiteUrl = flUrl;
+            if (mWhichIsLowest.equals("TerryWhite Chemmart")) websiteUrl = twUrl;
+            if (mWhichIsLowest.equals("HealthyWorld Pharmacy")) websiteUrl = hwUrl;
+            String summary = ("Check the lowest price for " + longName + ": $" + lowestPrice + " in "
+                    + mWhichIsLowest + " " + websiteUrl);
+            intent.putExtra(Intent.EXTRA_TEXT, summary);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

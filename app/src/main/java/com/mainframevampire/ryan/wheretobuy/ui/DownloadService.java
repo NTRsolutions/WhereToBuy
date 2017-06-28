@@ -124,6 +124,11 @@ public class DownloadService extends IntentService{
                     Blackmores.flPrice[i],
                     Blackmores.twPrice[i],
                     Blackmores.hwPrice[i],
+                    Blackmores.cmwURL[i],
+                    Blackmores.plURL[i],
+                    Blackmores.flURL[i],
+                    Blackmores.twURL[i],
+                    Blackmores.hwURL[i],
                     "N",
                     recommendationFlag,
                     currentDateString);
@@ -148,6 +153,11 @@ public class DownloadService extends IntentService{
                     BioIsland.flPrice[i],
                     BioIsland.twPrice[i],
                     BioIsland.hwPrice[i],
+                    BioIsland.cmwURL[i],
+                    BioIsland.plURL[i],
+                    BioIsland.flURL[i],
+                    BioIsland.twURL[i],
+                    BioIsland.hwURL[i],
                     "N",
                     recommendationFlag,
                     currentDateString);
@@ -172,6 +182,11 @@ public class DownloadService extends IntentService{
                     Ostelin.flPrice[i],
                     Ostelin.twPrice[i],
                     Ostelin.hwPrice[i],
+                    Ostelin.cmwURL[i],
+                    Ostelin.plURL[i],
+                    Ostelin.flURL[i],
+                    Ostelin.twURL[i],
+                    Ostelin.hwURL[i],
                     "N",
                     recommendationFlag,
                     currentDateString);
@@ -204,6 +219,11 @@ public class DownloadService extends IntentService{
                     Swisse.flPrice[i],
                     Swisse.twPrice[i],
                     Swisse.hwPrice[i],
+                    Swisse.cmwURL[i],
+                    Swisse.plURL[i],
+                    Swisse.flURL[i],
+                    Swisse.twURL[i],
+                    Swisse.hwURL[i],
                     recommendationFlag,
                     currentDateString
             );
@@ -226,6 +246,11 @@ public class DownloadService extends IntentService{
                     Blackmores.flPrice[i],
                     Blackmores.twPrice[i],
                     Blackmores.hwPrice[i],
+                    Blackmores.cmwURL[i],
+                    Blackmores.plURL[i],
+                    Blackmores.flURL[i],
+                    Blackmores.twURL[i],
+                    Blackmores.hwURL[i],
                     recommendationFlag,
                     currentDateString
             );
@@ -249,6 +274,11 @@ public class DownloadService extends IntentService{
                     BioIsland.flPrice[i],
                     BioIsland.twPrice[i],
                     BioIsland.hwPrice[i],
+                    BioIsland.cmwURL[i],
+                    BioIsland.plURL[i],
+                    BioIsland.flURL[i],
+                    BioIsland.twURL[i],
+                    BioIsland.hwURL[i],
                     recommendationFlag,
                     currentDateString
             );
@@ -272,6 +302,11 @@ public class DownloadService extends IntentService{
                     Ostelin.flPrice[i],
                     Ostelin.twPrice[i],
                     Ostelin.hwPrice[i],
+                    Ostelin.cmwURL[i],
+                    Ostelin.plURL[i],
+                    Ostelin.flURL[i],
+                    Ostelin.twURL[i],
+                    Ostelin.hwURL[i],
                     recommendationFlag,
                     currentDateString
             );

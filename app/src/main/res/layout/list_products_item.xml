@@ -3,7 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="@dimen/item_height"
               android:layout_marginTop="@dimen/overall_margin"
               android:layout_marginBottom="@dimen/overall_margin">
 
@@ -14,13 +14,13 @@
         android:layout_weight="8"
         android:textColor="@android:color/black"
         android:textSize="@dimen/textsize_medium"
-        tools:text="SWS Children's Ultivite 120 tabs"/>
+        tools:text="Children's Ultivite 120 tabs"/>
 
     <TextView
         android:id="@+id/cmw_price"
         android:layout_width="0dp"
         android:layout_height="@dimen/item_height"
-        android:textAlignment="center"
+        android:gravity="center"
         android:layout_weight="1"
         android:textSize="@dimen/textsize_medium"
         tools:text="100"
@@ -31,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/item_height"
         android:layout_weight="1"
-        android:textAlignment="center"
+        android:gravity="center"
         android:textColor="@android:color/black"
         android:textSize="@dimen/textsize_medium"
         tools:text="100"/>
@@ -40,7 +40,7 @@
         android:id="@+id/fl_price"
         android:layout_width="0dp"
         android:layout_height="@dimen/item_height"
-        android:textAlignment="center"
+        android:gravity="center"
         android:layout_weight="1"
         android:textSize="@dimen/textsize_medium"
         tools:text="100"
@@ -50,7 +50,7 @@
         android:id="@+id/tw_price"
         android:layout_width="0dp"
         android:layout_height="@dimen/item_height"
-        android:textAlignment="center"
+        android:gravity="center"
         android:layout_weight="1"
         android:textSize="@dimen/textsize_medium"
         tools:text="100"
@@ -60,7 +60,7 @@
         android:id="@+id/hw_price"
         android:layout_width="0dp"
         android:layout_height="@dimen/item_height"
-        android:textAlignment="center"
+        android:gravity="center"
         android:layout_weight="1"
         android:textSize="@dimen/textsize_medium"
         tools:text="100"

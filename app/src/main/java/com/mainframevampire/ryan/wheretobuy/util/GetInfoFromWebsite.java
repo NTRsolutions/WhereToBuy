@@ -32,12 +32,12 @@ public class GetInfoFromWebsite {
                     if (!ifFound) {
                         if (element.className().equals("product-container")) {
                             String id = element.attr("href").split("/")[2];
-
                             for (int i = 0; i < Swisse.id.length; i++) {
                                 if (id.equals(Swisse.cmwID[i].trim())) {
                                     ifFound = true;
                                     index = i;
                                     i = Swisse.id.length;
+                                    Swisse.cmwURL[index] = ("http://www.chemistwarehouse.com.au" + element.attr("href"));
                                 }
                             }
                         }
@@ -61,11 +61,15 @@ public class GetInfoFromWebsite {
         for (String url: plURls) {
             try {
                 Document doc = Jsoup.connect(url).get();
-                Elements elements = doc.select("span.price,span.regular-price");
+                Elements elements = doc.select("a.product-image,span.price,span.regular-price");
                 int index = 0;
                 boolean ifFound = false;
+                String prev_URL = "";
                 for (Element element: elements) {
                     if (!ifFound) {
+                        if(element.className().equals("product-image")) {
+                            prev_URL = element.attr("href");
+                        }
                         if (element.className().equals("prev-price price") ||
                         element.className().equals("regular-price")) {
                             String id = element.attr("id").split("-")[2];
@@ -74,12 +78,14 @@ public class GetInfoFromWebsite {
                                     ifFound = true;
                                     index = i;
                                     i = Swisse.id.length;
+                                    Swisse.plURL[index] = prev_URL;
                                 }
                             }
                         }
                     } else {
                         if (element.className().equals("price")) {
                             Swisse.plPrice[index] = Float.parseFloat(element.text().substring(1));
+                            Swisse.plURL[index] = prev_URL;
                             ifFound = false;
                         }
                     }
@@ -117,6 +123,7 @@ public class GetInfoFromWebsite {
                                     ifFound = true;
                                     index = i;
                                     i = Swisse.id.length;
+                                    Swisse.flURL[index] = element.attr("href");
                                 }
                             }
                         }
@@ -154,6 +161,7 @@ public class GetInfoFromWebsite {
                                         ifFound = true;
                                         index = i;
                                         i = Swisse.id.length;
+                                        Swisse.twURL[index] = element.attr("href");
                                     }
                                 }
                             }
@@ -161,8 +169,9 @@ public class GetInfoFromWebsite {
                     } else {
                         if (element.className().equals("prod-price")) {
                             Swisse.twPrice[index] = Float.parseFloat(element.text().substring(1));
-                            ifFound = false;
+                            //ifFound = false;
                         }
+                        ifFound = false;
                     }
                 }
             } catch (IOException e) {
@@ -190,6 +199,7 @@ public class GetInfoFromWebsite {
                                     ifFound = true;
                                     index = i;
                                     i = Swisse.id.length;
+                                    Swisse.hwURL[index] = element.attr("href");
                                 }
                             }
                         }
@@ -227,6 +237,7 @@ public class GetInfoFromWebsite {
                                     ifFound = true;
                                     index = i;
                                     i = Swisse.id.length;
+                                    Swisse.hwURL[index] = element.attr("href");
                                 }
                             }
                         }
@@ -308,6 +319,7 @@ public class GetInfoFromWebsite {
                                     ifFound = true;
                                     index = i;
                                     i = Blackmores.id.length;
+                                    Blackmores.cmwURL[index] = ("http://www.chemistwarehouse.com.au" + element.attr("href"));
                                 }
                             }
                         }
@@ -331,11 +343,15 @@ public class GetInfoFromWebsite {
         for (String url: plURls) {
             try {
                 Document doc = Jsoup.connect(url).get();
-                Elements elements = doc.select("span.price,span.regular-price");
+                Elements elements = doc.select("a.product-image,span.price,span.regular-price");
                 int index = 0;
                 boolean ifFound = false;
+                String prev_URL = "";
                 for (Element element: elements) {
                     if (!ifFound) {
+                        if(element.className().equals("product-image")) {
+                            prev_URL = element.attr("href");
+                        }
                         if (element.className().equals("prev-price price") ||
                                 element.className().equals("regular-price")) {
                             String id = element.attr("id").split("-")[2];
@@ -350,6 +366,7 @@ public class GetInfoFromWebsite {
                     } else {
                         if (element.className().equals("price")) {
                             Blackmores.plPrice[index] = Float.parseFloat(element.text().substring(1));
+                            Blackmores.plURL[index] = prev_URL;
                             ifFound = false;
                         }
                     }
@@ -379,7 +396,6 @@ public class GetInfoFromWebsite {
                 "http://www.pharmacy4less.com.au/blackmores-evening-primrose-oil-1000mg-capx190-3.html",
                 "http://www.pharmacy4less.com.au/blackmores-celery-3000-x-50-tabs-3.html"
         };
-
         for (String url: flURls) {
             try {
                 Document doc = Jsoup.connect(url).get();
@@ -390,6 +406,7 @@ public class GetInfoFromWebsite {
                         for (int i = 0; i < Blackmores.id.length; i++) {
                             if (id.equals(Blackmores.flID[i].trim())) {
                                 Blackmores.flPrice[i] = Float.parseFloat(element.text().substring(1));
+                                Blackmores.flURL[i] = url;
                                 i = Blackmores.id.length;
                             }
                         }
@@ -422,6 +439,7 @@ public class GetInfoFromWebsite {
                                         ifFound = true;
                                         index = i;
                                         i = Blackmores.id.length;
+                                        Blackmores.twURL[index] = element.attr("href");
                                     }
                                 }
                             }
@@ -458,6 +476,7 @@ public class GetInfoFromWebsite {
                                     ifFound = true;
                                     index = i;
                                     i = Blackmores.id.length;
+                                    Blackmores.hwURL[index] = element.attr("href");
                                 }
                             }
                         }
@@ -536,6 +555,7 @@ public class GetInfoFromWebsite {
                                     ifFound = true;
                                     index = i;
                                     i = BioIsland.id.length;
+                                    BioIsland.cmwURL[index] = ("http://www.chemistwarehouse.com.au" + element.attr("href"));
                                 }
                             }
                         }
@@ -575,6 +595,7 @@ public class GetInfoFromWebsite {
                                     ifFound = true;
                                     index = i;
                                     i = BioIsland.id.length;
+                                    BioIsland.flURL[index] = element.attr("href");
                                 }
                             }
                         }
@@ -635,6 +656,7 @@ public class GetInfoFromWebsite {
                                     ifFound = true;
                                     index = i;
                                     i = Ostelin.id.length;
+                                    Ostelin.cmwURL[index] = ("http://www.chemistwarehouse.com.au" + element.attr("href"));
                                 }
                             }
                         }
@@ -657,11 +679,15 @@ public class GetInfoFromWebsite {
         for (String url: plURls) {
             try {
                 Document doc = Jsoup.connect(url).get();
-                Elements elements = doc.select("span.price,span.regular-price");
+                Elements elements = doc.select("a.product-image,span.price,span.regular-price");
                 int index = 0;
                 boolean ifFound = false;
+                String prev_URL = "";
                 for (Element element: elements) {
                     if (!ifFound) {
+                        if(element.className().equals("product-image")) {
+                            prev_URL = element.attr("href");
+                        }
                         if (element.className().equals("prev-price price") ||
                                 element.className().equals("regular-price")) {
                             String id = element.attr("id").split("-")[2];
@@ -676,6 +702,7 @@ public class GetInfoFromWebsite {
                     } else {
                         if (element.className().equals("price")) {
                             Ostelin.plPrice[index] = Float.parseFloat(element.text().substring(1));
+                            Ostelin.plURL[index] = prev_URL;
                             ifFound = false;
                         }
                     }
@@ -706,6 +733,7 @@ public class GetInfoFromWebsite {
                                     ifFound = true;
                                     index = i;
                                     i = Ostelin.id.length;
+                                    Ostelin.flURL[index] = element.attr("href");
                                 }
                             }
                         }
@@ -743,6 +771,7 @@ public class GetInfoFromWebsite {
                                         ifFound = true;
                                         index = i;
                                         i = Ostelin.id.length;
+                                        Ostelin.twURL[index] = element.attr("href");
                                     }
                                 }
                             }

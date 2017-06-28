@@ -43,6 +43,11 @@ public class ProductsDataSource {
         productValues.put(ProductsSQLiteHelper.COLUMN_FL_PRICE, productPrice.getFLPrice());
         productValues.put(ProductsSQLiteHelper.COLUMN_TW_PRICE, productPrice.getTWPrice());
         productValues.put(ProductsSQLiteHelper.COLUMN_HW_PRICE, productPrice.getHWPrice());
+        productValues.put(ProductsSQLiteHelper.COLUMN_CMW_URL, productPrice.getCMWUrl());
+        productValues.put(ProductsSQLiteHelper.COLUMN_PL_URL, productPrice.getPLUrl());
+        productValues.put(ProductsSQLiteHelper.COLUMN_FL_URL, productPrice.getFLUrl());
+        productValues.put(ProductsSQLiteHelper.COLUMN_TW_URL, productPrice.getTWUrl());
+        productValues.put(ProductsSQLiteHelper.COLUMN_HW_URL, productPrice.getHWUrl());
         productValues.put(ProductsSQLiteHelper.COLUMN_CUSTOMISE_FLAG, productPrice.getCustomiseFlag());
         productValues.put(ProductsSQLiteHelper.COLUMN_RECOMMENDATION_FLAG, productPrice.getRecommendationFlag());
         productValues.put(ProductsSQLiteHelper.COLUMN_LAST_UPDATE_DATE, productPrice.getLastUpdateDateString());
@@ -70,6 +75,11 @@ public class ProductsDataSource {
         float flPrice = 0;
         float twPrice = 0;
         float hwPrice = 0;
+        String cmwUrl = "";
+        String plUrl = "";
+        String flUrl = "";
+        String twUrl = "";
+        String hwUrl = "";
         String customiseFlag = "";
         String recommendationFlag = "";
         String lastUpdateDateString = "";
@@ -85,6 +95,11 @@ public class ProductsDataSource {
                 flPrice = getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_PRICE);
                 twPrice = getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_TW_PRICE);
                 hwPrice = getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HW_PRICE);
+                cmwUrl = getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_URL);
+                plUrl = getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_URL);
+                flUrl = getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_URL);
+                twUrl = getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_TW_URL);
+                hwUrl = getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HW_URL);
                 customiseFlag = getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_CUSTOMISE_FLAG);
                 recommendationFlag = getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_RECOMMENDATION_FLAG);
                 lastUpdateDateString = getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LAST_UPDATE_DATE);
@@ -94,7 +109,9 @@ public class ProductsDataSource {
         close(database);
 
         ProductPrice productPrice = new ProductPrice(id, shortName, longName, lowestPrice, highestPrice, whichIsLowest,
-                cmwPrice, plPrice, flPrice, twPrice, hwPrice, customiseFlag, recommendationFlag, lastUpdateDateString);
+                cmwPrice, plPrice, flPrice, twPrice, hwPrice,
+                cmwUrl, plUrl, flUrl, twUrl, hwUrl,
+                customiseFlag, recommendationFlag, lastUpdateDateString);
 
         return productPrice;
     }
@@ -122,6 +139,11 @@ public class ProductsDataSource {
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_TW_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HW_PRICE),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_TW_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_URL),
                         getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CUSTOMISE_FLAG),
                         getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_RECOMMENDATION_FLAG),
                         getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LAST_UPDATE_DATE));
@@ -218,6 +240,11 @@ public class ProductsDataSource {
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_FL_PRICE, productPrice.getFLPrice());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_TW_PRICE, productPrice.getTWPrice());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_HW_PRICE, productPrice.getHWPrice());
+        updateProductValue.put(ProductsSQLiteHelper.COLUMN_CMW_URL, productPrice.getCMWUrl());
+        updateProductValue.put(ProductsSQLiteHelper.COLUMN_PL_URL, productPrice.getPLUrl());
+        updateProductValue.put(ProductsSQLiteHelper.COLUMN_FL_URL, productPrice.getFLUrl());
+        updateProductValue.put(ProductsSQLiteHelper.COLUMN_TW_URL, productPrice.getTWUrl());
+        updateProductValue.put(ProductsSQLiteHelper.COLUMN_HW_URL, productPrice.getHWUrl());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_RECOMMENDATION_FLAG, productPrice.getRecommendationFlag());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_LAST_UPDATE_DATE, productPrice.getLastUpdateDateString());
 

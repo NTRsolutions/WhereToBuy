@@ -5,7 +5,7 @@
               android:orientation="vertical"
               android:layout_width="@dimen/grid_width"
               android:layout_height="@dimen/grid_height"
-              android:layout_margin="@dimen/overall_margin">
+              android:layout_margin="@dimen/grid_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             tools:text="Swisse High Strength Cranberry 25,000mg 30 Caps"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/textsize_small"/>
+            android:textSize="@dimen/textsize_middlle"/>
 
     </LinearLayout>
 
@@ -63,7 +63,7 @@
                     tools:text="HealthyWorld"
                     android:gravity="center"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/textsize_small"/>
+                    android:textSize="@dimen/textsize_middlle"/>
 
                 <TextView
                     android:id="@+id/gridName2"
@@ -73,7 +73,7 @@
                     tools:text="Warehouse"
                     android:gravity="center"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/textsize_small"/>
+                    android:textSize="@dimen/textsize_middlle"/>
 
                 <TextView
                     android:id="@+id/gridLowestPrice"
@@ -83,7 +83,7 @@
                     tools:text="$29.99"
                     android:gravity="center"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/textsize_middlle"/>
+                    android:textSize="@dimen/textsize_medium"/>
 
                 <TextView
                     android:id="@+id/gridSavePrice"
@@ -93,7 +93,7 @@
                     tools:text="Save $20.00"
                     android:gravity="center"
                     android:textColor="@android:color/holo_red_light"
-                    android:textSize="@dimen/textsize_small"/>
+                    android:textSize="@dimen/textsize_middlle"/>
 
                 <TextView
                     android:id="@+id/gridRrpPrice"
@@ -103,7 +103,7 @@
                     tools:text="RRP $49.99"
                     android:gravity="center"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/textsize_small"/>
+                    android:textSize="@dimen/textsize_middlle"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

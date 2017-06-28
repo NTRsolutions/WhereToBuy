@@ -13,12 +13,12 @@ public class BioIsland {
     };
 
     public static final String[] shortName = new String[]{
-            "BOI Milk Cal BoneCare 300c",
-            "BOI Milk Cal Kids 90 Caps",
-            "BOI Zinc 120 Chewable Tabs",
-            "BOI Liver+Oil Kids 90 Caps",
-            "BOI DHA Kids 60 Caps",
-            "BOI Kangaroo Essence 90c"
+            "Milk Cal BoneCare 300c",
+            "Milk Cal Kids 90 Caps",
+            "Zinc 120 Chewable Tabs",
+            "Liver+Oil Kids 90 Caps",
+            "DHA Kids 60 Caps",
+            "Kangaroo Essence 90c"
     };
 
     public static final String[] longName = new String[] {
@@ -60,6 +60,12 @@ public class BioIsland {
     public static float[] flPrice = new float[id.length];
     public static float[] twPrice = new float[id.length];
     public static float[] hwPrice = new float[id.length];
+
+    public static String[] cmwURL = new String[id.length];
+    public static String[] plURL = new String[id.length];
+    public static String[] flURL = new String[id.length];
+    public static String[] twURL = new String[id.length];
+    public static String[] hwURL = new String[id.length];
 
     public static int getBioIslandImageId(String id){
         int bioIslandImageId = R.drawable.sws001;

@@ -15,6 +15,11 @@ public class ProductPrice implements Serializable {
     private float mFLPrice;
     private float mTWPrice;
     private float mHWPrice;
+    private String mCMWUrl;
+    private String mPLUrl;
+    private String mFLUrl;
+    private String mTWUrl;
+    private String mHWUrl;
     private String mCustomiseFlag;
     private String mRecommendationFlag;
     private String mLastUpdateDateString;
@@ -32,6 +37,11 @@ public class ProductPrice implements Serializable {
                         float FLPrice,
                         float TWPrice,
                         float HWPrice,
+                        String CMWUrl,
+                        String PLUrl,
+                        String FLUrl,
+                        String TWUrl,
+                        String HWUrl,
                         String customiseFlag,
                         String recommendationFlag,
                         String lastUpdateDateString) {
@@ -46,6 +56,11 @@ public class ProductPrice implements Serializable {
         mFLPrice = FLPrice;
         mTWPrice = TWPrice;
         mHWPrice = HWPrice;
+        mCMWUrl = CMWUrl;
+        mPLUrl = PLUrl;
+        mFLUrl = FLUrl;
+        mTWUrl = TWUrl;
+        mHWUrl = HWUrl;
         mCustomiseFlag = customiseFlag;
         mRecommendationFlag = recommendationFlag;
         mLastUpdateDateString = lastUpdateDateString;
@@ -61,6 +76,11 @@ public class ProductPrice implements Serializable {
                         float FLPrice,
                         float TWPrice,
                         float HWPrice,
+                        String CMWUrl,
+                        String PLUrl,
+                        String FLUrl,
+                        String TWUrl,
+                        String HWUrl,
                         String recommendationFlag,
                         String lastUpdateDateString) {
         mID = id;
@@ -72,6 +92,11 @@ public class ProductPrice implements Serializable {
         mFLPrice = FLPrice;
         mTWPrice = TWPrice;
         mHWPrice = HWPrice;
+        mCMWUrl = CMWUrl;
+        mPLUrl = PLUrl;
+        mFLUrl = FLUrl;
+        mTWUrl = TWUrl;
+        mHWUrl = HWUrl;
         mRecommendationFlag = recommendationFlag;
         mLastUpdateDateString = lastUpdateDateString;
     }
@@ -186,5 +211,45 @@ public class ProductPrice implements Serializable {
 
     public void setRecommendationFlag(String recommendationFlag) {
         mRecommendationFlag = recommendationFlag;
+    }
+
+    public String getCMWUrl() {
+        return mCMWUrl;
+    }
+
+    public void setCMWUrl(String CMWUrl) {
+        mCMWUrl = CMWUrl;
+    }
+
+    public String getPLUrl() {
+        return mPLUrl;
+    }
+
+    public void setPLUrl(String PLUrl) {
+        mPLUrl = PLUrl;
+    }
+
+    public String getFLUrl() {
+        return mFLUrl;
+    }
+
+    public void setFLUrl(String FLUrl) {
+        mFLUrl = FLUrl;
+    }
+
+    public String getTWUrl() {
+        return mTWUrl;
+    }
+
+    public void setTWUrl(String TWUrl) {
+        mTWUrl = TWUrl;
+    }
+
+    public String getHWUrl() {
+        return mHWUrl;
+    }
+
+    public void setHWUrl(String HWUrl) {
+        mHWUrl = HWUrl;
     }
 }

@@ -25,24 +25,24 @@ public class Blackmores {
     };
 
     public static final String[] shortName = new String[]{
-            "BKM Preg&Breastfeeding 180c",
-            "BKM Fish Oil 1000mg 400 Caps",
-            "BKM 3* Fish Oil 150 Caps",
-            "BKM Odourless Fishoil 400c",
-            "BKM CoQ10 150mg 30 Caps",
-            "BKM CoQ10 150mg 125 Caps",
-            "BKM CoQ10 75mg 90 Caps",
-            "BKM Glucosamine Sulfate 180t",
-            "BKM Joint Formula 120 Tabs",
-            "BKM Cranberry 60 Caps",
-            "BKM Kids Immunities 60 Caps",
-            "BKM Propolis 1000mg 220 Caps",
-            "BKM Milk Thistle 42 Tabs",
-            "BKM Vitex Angus Castus 40t",
-            "BKM Sugar Balance 90 Tabs",
-            "BKM Vitamin E cream 50g",
-            "BKM evening primrose 190c",
-            "BKM Celery 50 tabs"
+            "Preg&Breastfeeding 180c",
+            "Fish Oil 1000mg 400 Caps",
+            "3* Fish Oil 150 Caps",
+            "Odourless Fishoil 400c",
+            "CoQ10 150mg 30 Caps",
+            "CoQ10 150mg 125 Caps",
+            "CoQ10 75mg 90 Caps",
+            "Glucosamine Sulfate 180t",
+            "Joint Formula 120 Tabs",
+            "Cranberry 60 Caps",
+            "Kids Immunities 60 Caps",
+            "Propolis 1000mg 220 Caps",
+            "Milk Thistle 42 Tabs",
+            "Vitex Angus Castus 40t",
+            "Sugar Balance 90 Tabs",
+            "Vitamin E cream 50g",
+            "Evening primrose 190c",
+            "Celery 50 tabs"
     };
 
     public static final String[] longName = new String[] {
@@ -184,6 +184,12 @@ public class Blackmores {
     };
 
     public static float[] hwPrice = new float[id.length];
+
+    public static String[] cmwURL = new String[id.length];
+    public static String[] plURL = new String[id.length];
+    public static String[] flURL = new String[id.length];
+    public static String[] twURL = new String[id.length];
+    public static String[] hwURL = new String[id.length];
 
     public static int getBlackmoresImageId(String id){
         int blackmoresImageId = R.drawable.sws001;

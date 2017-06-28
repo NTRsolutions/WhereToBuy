@@ -80,8 +80,7 @@ public class MainActivity extends AppCompatActivity {
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
         mLastUpdateDate = dataSource.readProductsTableWithId("OST004").getLastUpdateDateString();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        //mCurrentDate = dateFormat.format(new Date());
-        mCurrentDate = "2017-06-18";
+        mCurrentDate = dateFormat.format(new Date());
 
         String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mLastUpdateDate;
         mLastUpdateDateTextView.setText(lastUpdateSummary);
@@ -153,6 +152,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    //hide share menu item
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem shareItem = menu.findItem(R.id.share);
+        shareItem.setVisible(false);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     //menu
@@ -313,6 +320,11 @@ public class MainActivity extends AppCompatActivity {
                     Swisse.flPrice[i],
                     Swisse.twPrice[i],
                     Swisse.hwPrice[i],
+                    Swisse.cmwURL[i],
+                    Swisse.plURL[i],
+                    Swisse.flURL[i],
+                    Swisse.twURL[i],
+                    Swisse.hwURL[i],
                     "N",
                     recommendationFlag,
                     currentDateString);
@@ -366,13 +378,14 @@ public class MainActivity extends AppCompatActivity {
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int numColumns = 0;
         if (!mIsTablet) {
-            numColumns = (int) (dpWidth / 120);
+            numColumns = (int) (dpWidth / 170);
         } else {
-            numColumns = (int) (dpWidth / 240);
+            numColumns = (int) (dpWidth / 320);
         }
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numColumns);
         mBestChoiceRecyclerView.setLayoutManager(layoutManager);
+        RecommendedProductsAdapter.notifyDataSetChanged();
     }
 
 }
