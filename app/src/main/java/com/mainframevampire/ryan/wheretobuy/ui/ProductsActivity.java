@@ -67,6 +67,8 @@ public class ProductsActivity extends AppCompatActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem shareItem = menu.findItem(R.id.share);
         shareItem.setVisible(false);
+        MenuItem postFacebookItem = menu.findItem(R.id.post_facebook);
+        postFacebookItem.setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }
 

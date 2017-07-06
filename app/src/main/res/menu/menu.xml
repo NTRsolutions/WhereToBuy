@@ -23,4 +23,8 @@
           android:title="Share"
           app:showAsAction="never"/>
 
+    <item android:id="@+id/post_facebook"
+          android:title="Post on Facebook"
+          app:showAsAction="never"
+          android:visible="false"/>
 </menu>

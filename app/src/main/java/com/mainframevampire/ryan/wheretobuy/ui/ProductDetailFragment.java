@@ -2,6 +2,10 @@ package com.mainframevampire.ryan.wheretobuy.ui;
 
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +24,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.share.ShareApi;
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareMediaContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
@@ -30,6 +41,7 @@ import com.mainframevampire.ryan.wheretobuy.model.Swisse;
 
 
 public class ProductDetailFragment extends Fragment {
+    public static final String PRODUCT_URL = "PRODUCT_URL";
     private TextView mDetailLongName;
     private  ImageView mDetailImageView;
     private CheckBox mFavouriteCheckBox;
@@ -61,6 +73,7 @@ public class ProductDetailFragment extends Fragment {
     private String twUrl = "";
     private String hwUrl = "";
     private String mWhichIsLowest = "";
+    private Bitmap mBitmap;
 
 
     @Override
@@ -114,15 +127,19 @@ public class ProductDetailFragment extends Fragment {
 
         if (mId.substring(0,3).equals("SWS")) {
             Glide.with(getActivity()).load(Swisse.getSwisseImageId(mId)).into(mDetailImageView);
+            mBitmap = BitmapFactory.decodeResource(getResources(),Swisse.getSwisseImageId(mId));
         }
         if (mId.substring(0,3).equals("BKM")){
-        Glide.with(getActivity()).load(Blackmores.getBlackmoresImageId(mId)).into(mDetailImageView);
+            Glide.with(getActivity()).load(Blackmores.getBlackmoresImageId(mId)).into(mDetailImageView);
+            mBitmap = BitmapFactory.decodeResource(getResources(),Blackmores.getBlackmoresImageId(mId));
         }
         if (mId.substring(0,3).equals("BOI")){
             Glide.with(getActivity()).load(BioIsland.getBioIslandImageId(mId)).into(mDetailImageView);
+            mBitmap = BitmapFactory.decodeResource(getResources(),BioIsland.getBioIslandImageId(mId));
         }
         if (mId.substring(0,3).equals("OST")){
             Glide.with(getActivity()).load(Ostelin.getOstelinImageId(mId)).into(mDetailImageView);
+            mBitmap = BitmapFactory.decodeResource(getResources(),Ostelin.getOstelinImageId(mId));
         }
 
         getActivity().setTitle(shortName);
@@ -195,49 +212,45 @@ public class ProductDetailFragment extends Fragment {
         mCMWButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openWebsite = new Intent(Intent.ACTION_VIEW);
-                openWebsite.setData(Uri.parse(cmwUrl));
-                startActivity(openWebsite);
+                openWebsite(cmwUrl);
             }
         });
 
         mPLButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openWebsite = new Intent(Intent.ACTION_VIEW);
-                openWebsite.setData(Uri.parse(plUrl));
-                startActivity(openWebsite);
+                openWebsite(plUrl);
             }
         });
 
         mFLButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openWebsite = new Intent(Intent.ACTION_VIEW);
-                openWebsite.setData(Uri.parse(flUrl));
-                startActivity(openWebsite);
+                openWebsite(flUrl);
             }
         });
 
         mTWButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openWebsite = new Intent(Intent.ACTION_VIEW);
-                openWebsite.setData(Uri.parse(twUrl));
-                startActivity(openWebsite);
+                openWebsite(twUrl);
             }
         });
 
         mHWButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openWebsite = new Intent(Intent.ACTION_VIEW);
-                openWebsite.setData(Uri.parse(hwUrl));
-                startActivity(openWebsite);
+                openWebsite(hwUrl);
             }
         });
 
         return view;
+    }
+
+    private void openWebsite(String Url) {
+        Intent intent = new Intent(getActivity(),WebActivity.class);
+        intent.putExtra(PRODUCT_URL, Url);
+        startActivity(intent);
     }
 
     @Override
@@ -254,6 +267,10 @@ public class ProductDetailFragment extends Fragment {
         customiseItem.setVisible(false);
         MenuItem shareItem = menu.findItem(R.id.share);
         shareItem.setVisible(true);
+        if (isFacebookInstalled()) {
+            MenuItem postFacebookItem = menu.findItem(R.id.post_facebook);
+            postFacebookItem.setVisible(true);
+        }
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -279,6 +296,16 @@ public class ProductDetailFragment extends Fragment {
             startActivity(intent);
         }
 
+        if(item.getItemId() == R.id.post_facebook) {
+            SharePhoto photo = new SharePhoto.Builder()
+                    .setBitmap(mBitmap)
+                    .build();
+            SharePhotoContent content = new SharePhotoContent.Builder()
+                    .addPhoto(photo)
+                    .build();
+
+            ShareDialog.show(ProductDetailFragment.this, content);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -286,6 +313,16 @@ public class ProductDetailFragment extends Fragment {
     public void onStop() {
         super.onStop();
         getActivity().setTitle(getResources().getString(R.string.app_name));
+    }
+
+    private boolean isFacebookInstalled() {
+        try {
+            ApplicationInfo info = getActivity().getPackageManager()
+                    .getApplicationInfo("com.facebook.katana", 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
 
