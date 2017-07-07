@@ -1,22 +1,24 @@
 package com.mainframevampire.ryan.wheretobuy.ui;
 
-import android.content.DialogInterface;
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
 import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
 import com.mainframevampire.ryan.wheretobuy.model.Ostelin;
-import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 
 public class ProductsActivity extends AppCompatActivity
         implements ProductsFragment.onProductListSelectedInterface {
@@ -76,19 +78,24 @@ public class ProductsActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchResultsActivity.class)));
+        searchView.setQueryHint(getResources().getString(R.string.search_hint));
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         ProductsDataSource dataSource = new ProductsDataSource(ProductsActivity.this);
-        int countCustomisedProducts = dataSource.readProductsTableToGetCustomisedProduct();
-        int countBlackmoresProducts = dataSource.readProductsTableToGetBrandProduct("BKM");
-        int countBioislandProducts = dataSource.readProductsTableToGetBrandProduct("BOI");
-        int countOsterlinProducts = dataSource.readProductsTableToGetBrandProduct("OST");
+        int countCustomisedProducts = dataSource.readTableGetCustomisedCount();
+        int countBlackmoresProducts = dataSource.readTableGetBrandCount("Blackmores");
+        int countBioislandProducts = dataSource.readTableGetBrandCount("BioIsland");
+        int countOsterlinProducts = dataSource.readTableGetBrandCount("Ostelin");
         switch (item.getItemId()) {
             case R.id.swisse:
-                loadProductFragment("SWISSE", "replace");
+                loadProductFragment("Swisse", "replace");
                 return true;
             case R.id.blackmores:
                 if (countBlackmoresProducts != Blackmores.id.length) {
@@ -97,7 +104,7 @@ public class ProductsActivity extends AppCompatActivity
                             .setMessage("Please wait for Blackmores products' price to be downloaded");
                     builder.create().show();
                 } else {
-                    loadProductFragment("BLACKMORES", "replace");
+                    loadProductFragment("Blackmores", "replace");
                 }
                 return true;
             case R.id.bioIsland:
@@ -107,7 +114,7 @@ public class ProductsActivity extends AppCompatActivity
                             .setMessage("Please wait for BioIsland products' price to be downloaded");
                     builder.create().show();
                 } else {
-                    loadProductFragment("BIOISLAND", "replace");
+                    loadProductFragment("BioIsland", "replace");
                 }
                 return true;
             case R.id.ostelin:
@@ -117,7 +124,7 @@ public class ProductsActivity extends AppCompatActivity
                             .setMessage("Please wait for Ostelin products' price to be downloaded");
                     builder.create().show();
                 } else {
-                    loadProductFragment("OSTELIN", "replace");
+                    loadProductFragment("Ostelin", "replace");
                 }
                 return true;
             case R.id.customise:
@@ -128,7 +135,7 @@ public class ProductsActivity extends AppCompatActivity
                             .setMessage("Please add your favourite products in each branch list");
                     builder.create().show();
                 } else {
-                    loadProductFragment("MYLIST", "replace");
+                    loadProductFragment("MyList", "replace");
                 }
                 return true;
         }
@@ -154,11 +161,11 @@ public class ProductsActivity extends AppCompatActivity
 
     private String getTitleFromItemName(String itemName) {
         String title = "";
-        if (itemName.equals("SWISSE")) title = "Swisse";
-        if (itemName.equals("BLACKMORES")) title = "Blackmores";
-        if (itemName.equals("BIOISLAND")) title = "Bio Island";
-        if (itemName.equals("OSTELIN")) title = "Ostelin";
-        if (itemName.equals("MYLIST")) title = "My List";
+        if (itemName.equals("Swisse")) title = "Swisse";
+        if (itemName.equals("Blackmores")) title = "Blackmores";
+        if (itemName.equals("BioIsland")) title = "Bio Island";
+        if (itemName.equals("Ostelin")) title = "Ostelin";
+        if (itemName.equals("MyList")) title = "My List";
 
         return title;
     }

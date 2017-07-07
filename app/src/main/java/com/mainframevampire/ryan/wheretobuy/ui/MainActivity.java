@@ -1,20 +1,25 @@
 package com.mainframevampire.ryan.wheretobuy.ui;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -23,10 +28,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mainframevampire.ryan.wheretobuy.R;
+import com.mainframevampire.ryan.wheretobuy.adapters.EndLessRecyclerViewScrollListener;
 import com.mainframevampire.ryan.wheretobuy.adapters.GridAdapter;
+import com.mainframevampire.ryan.wheretobuy.adapters.ProductsAdapter;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
 import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
@@ -42,6 +48,7 @@ import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getSimpleName() ;
     public static final String LIST_NAME = "LIST_NAME";
     public static final String FRAGMENT_NAME = "FRAGMENT_NAME";
     public static final String INDEX = "INDEX";
@@ -56,7 +63,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mRefreshImageView;
     private TextView mRate;
     private TextView mLastUpdateDateTextView;
-    private RecyclerView mBestChoiceRecyclerView;
+
+    private EndLessRecyclerViewScrollListener mScrollListener;
+    private ArrayList<ProductPrice> mProductPrices = new ArrayList<>();
+    private GridAdapter mGridAdapter;
+    private RecyclerView mGridRecyclerView;
+    private int mNumberOfOnePage = 0;
+    private int mTotalPages = 0;
 
     //define a custom intent action
     public static final String BROADCAST_ACTION = "com.mainframevampire.ryan.wheretobuy.BROADCAST";
@@ -72,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mRefreshImageView = (ImageView) findViewById(R.id.refreshImageView);
         mLastUpdateDateTextView = (TextView) findViewById(R.id.lastUpdateDate);
-        mBestChoiceRecyclerView = (RecyclerView) findViewById(R.id.bestChoiceRecyclerView);
+        mGridRecyclerView = (RecyclerView) findViewById(R.id.bestChoiceRecyclerView);
         mRate = (TextView) findViewById(R.id.rate);
 
         mProgressBar.setVisibility(View.INVISIBLE);
@@ -132,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MainActivity", "Receive Message: " + message);
             //load recommations to the list
             loadDataToGridList();
-            if (message.equals("OSTELIN")) {
+            if (message.equals("Ostelin")) {
                 toggleRefresh();
                 String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mCurrentDate;
                 mLastUpdateDateTextView.setText(lastUpdateSummary);
@@ -168,6 +181,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchResultsActivity.class)));
+        searchView.setQueryHint(getResources().getString(R.string.search_hint));
         return true;
     }
 
@@ -175,14 +193,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent(this, ProductsActivity.class);
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-        int countCustomisedProducts = dataSource.readProductsTableToGetCustomisedProduct();
-        int countBlackmoresProducts = dataSource.readProductsTableToGetBrandProduct("BKM");
-        int countBioislandProducts = dataSource.readProductsTableToGetBrandProduct("BOI");
-        int countOsterlinProducts = dataSource.readProductsTableToGetBrandProduct("OST");
+        int countCustomisedProducts = dataSource.readTableGetCustomisedCount();
+        int countBlackmoresProducts = dataSource.readTableGetBrandCount("Blackmores");
+        int countBioislandProducts = dataSource.readTableGetBrandCount("BioIsland");
+        int countOsterlinProducts = dataSource.readTableGetBrandCount("Ostelin");
         switch (item.getItemId()) {
             case R.id.swisse:
                 intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
-                intent.putExtra(LIST_NAME, "SWISSE");
+                intent.putExtra(LIST_NAME, "Swisse");
                 startActivity(intent);
                 return true;
             case R.id.blackmores:
@@ -193,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                     builder.create().show();
                 } else {
                     intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
-                    intent.putExtra(LIST_NAME, "BLACKMORES");
+                    intent.putExtra(LIST_NAME, "Blackmores");
                     startActivity(intent);
                 }
                 return true;
@@ -205,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                     builder.create().show();
                 } else {
                     intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
-                    intent.putExtra(LIST_NAME, "BIOISLAND");
+                    intent.putExtra(LIST_NAME, "BioIsland");
                     startActivity(intent);
                 }
                 return true;
@@ -217,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                     builder.create().show();
                 } else {
                     intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
-                    intent.putExtra(LIST_NAME, "OSTELIN");
+                    intent.putExtra(LIST_NAME, "Ostelin");
                     startActivity(intent);
                 }
                 return true;
@@ -229,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     builder.create().show();
                 } else {
                     intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
-                    intent.putExtra(LIST_NAME, "MYLIST");
+                    intent.putExtra(LIST_NAME, "MyList");
                     startActivity(intent);
                 }
                 return true;
@@ -272,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
             //load recommations to the list
             loadDataToGridList();
             for (String brand : ListName.Brands) {
-                if (!brand.equals("SWISSE")) {
+                if (!brand.equals("Swisse")) {
                     Intent intent = new Intent(MainActivity.this, DownloadService.class);
                     intent.putExtra(IS_FIRST_RUN, true);
                     intent.putExtra(LIST_NAME, brand);
@@ -314,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
                     Swisse.id[i],
                     Swisse.shortName[i],
                     Swisse.longName[i],
+                    "Swisse",
                     Swisse.lowestPrice[i],
                     Swisse.highestPrice[i],
                     Swisse.whichIsLowest[i],
@@ -372,10 +391,10 @@ public class MainActivity extends AppCompatActivity {
     private void loadDataToGridList() {
         //get best choices
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-        ArrayList<ProductPrice> recommendedProcutPrices = dataSource.readProductsTableWithCondition("RECOMMENDATION_FLAG", "Y");
+        ArrayList<ProductPrice> recommendedProcutPrices = dataSource.readTableByRecommendationFlag("Y");
         GridAdapter RecommendedProductsAdapter = new GridAdapter(this, recommendedProcutPrices);
 
-        mBestChoiceRecyclerView.setAdapter(RecommendedProductsAdapter);
+        mGridRecyclerView.setAdapter(RecommendedProductsAdapter);
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int numColumns = 0;
@@ -386,8 +405,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numColumns);
-        mBestChoiceRecyclerView.setLayoutManager(layoutManager);
+        mGridRecyclerView.setLayoutManager(layoutManager);
         RecommendedProductsAdapter.notifyDataSetChanged();
     }
+
+
 
 }

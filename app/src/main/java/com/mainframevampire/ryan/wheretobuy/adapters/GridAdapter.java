@@ -88,21 +88,21 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder
 
             if (mId.substring(0,3).equals("SWS")){
                 Glide.with(mContext).load(Swisse.getSwisseImageId(mId)).into(mGridImageView);
-                mListName = "SWISSE";
+                mListName = "Swisse";
             }
             if (mId.substring(0,3).equals("BKM")){
                 Glide.with(mContext).load(Blackmores.getBlackmoresImageId(mId)).into(mGridImageView);
-                mListName = "BLACKMORES";
+                mListName = "Blackmores";
             }
             if (mId.substring(0,3).equals("BOI")){
                 Glide.with(mContext).load(BioIsland.getBioIslandImageId(mId)).into(mGridImageView);
-                mListName = "BIOISLAND";
+                mListName = "BioIsland";
             }
             if (mId.substring(0,3).equals("OST")){
                 //Drawable drawable = mContext.getResources().getDrawable(Ostelin.getOstelinImageId(mId));
                 //mGridImageView.setImageDrawable(drawable);
                 Glide.with(mContext).load(Ostelin.getOstelinImageId(mId)).into(mGridImageView);
-                mListName = "OSTELIN";
+                mListName = "Ostelin";
             }
 
             String[] names = recommendedProductPrice.getWhichIsLowest().split(" ");

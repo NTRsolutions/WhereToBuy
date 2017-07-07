@@ -72,33 +72,33 @@ public class DownloadService extends IntentService{
 
     private void downloadPrice(String brand, boolean isFirstRun) {
         if (isFirstRun) {
-            if (brand.equals("BLACKMORES")) {
+            if (brand.equals("Blackmores")) {
                 GetInfoFromWebsite.getBlackmoresPrice();
                 createBlackmoresValueInTable();
             }
-            if (brand.equals("BIOISLAND")) {
+            if (brand.equals("BioIsland")) {
                 GetInfoFromWebsite.getBioIslandPrice();
                 createBioIslandValueInTable();
             }
-            if (brand.equals("OSTELIN")) {
+            if (brand.equals("Ostelin")) {
                 GetInfoFromWebsite.getOstelinPrice();
                 createOstelinValueInTable();
                 mNotificationManager.cancel(NOTIFICATION_ID);
             }
         } else {
-            if (brand.equals("SWISSE")) {
+            if (brand.equals("Swisse")) {
                 GetInfoFromWebsite.getSwissePrice();
                 updateSwisseValueInTable();
             }
-            if (brand.equals("BLACKMORES")) {
+            if (brand.equals("Blackmores")) {
                 GetInfoFromWebsite.getBlackmoresPrice();
                 updateBlackmoresValueInTable();
             }
-            if (brand.equals("BIOISLAND")) {
+            if (brand.equals("BioIsland")) {
                 GetInfoFromWebsite.getBioIslandPrice();
                 updateBioIslandValueInTable();
             }
-            if (brand.equals("OSTELIN")) {
+            if (brand.equals("Ostelin")) {
                 GetInfoFromWebsite.getOstelinPrice();
                 updateOstelinValueInTable();
                 mNotificationManager.cancel(NOTIFICATION_ID);
@@ -116,6 +116,7 @@ public class DownloadService extends IntentService{
                     Blackmores.id[i],
                     Blackmores.shortName[i],
                     Blackmores.longName[i],
+                    "Blackmores",
                     Blackmores.lowestPrice[i],
                     Blackmores.highestPrice[i],
                     Blackmores.whichIsLowest[i],
@@ -145,6 +146,7 @@ public class DownloadService extends IntentService{
                     BioIsland.id[i],
                     BioIsland.shortName[i],
                     BioIsland.longName[i],
+                    "BioIsland",
                     BioIsland.lowestPrice[i],
                     BioIsland.highestPrice[i],
                     BioIsland.whichIsLowest[i],
@@ -174,6 +176,7 @@ public class DownloadService extends IntentService{
                     Ostelin.id[i],
                     Ostelin.shortName[i],
                     Ostelin.longName[i],
+                    "Ostelin",
                     Ostelin.lowestPrice[i],
                     Ostelin.highestPrice[i],
                     Ostelin.whichIsLowest[i],

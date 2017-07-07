@@ -13,6 +13,7 @@ public class ProductsSQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_ID ="ID";
     public static final String COLUMN_SHORT_NAME ="SHORT_NAME";
     public static final String COLUMN_LONG_NAME ="LONG_NAME";
+    public static final String COLUMN_BRAND ="BRAND";
     public static final String COLUMN_LOWEST_PRICE = "LOWEST_PRICE";
     public static final String COLUMN_HIGHEST_PRICE = "HIGHEST_PRICE";
     public static final String COLUMN_WHICH_IS_LOWEST ="WHICH_IS_LOWEST";
@@ -34,6 +35,7 @@ public class ProductsSQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_ID + " TEXT PRIMARY KEY," +
                     COLUMN_SHORT_NAME + " TEXT," +
                     COLUMN_LONG_NAME + " TEXT," +
+                    COLUMN_BRAND + " TEXT," +
                     COLUMN_LOWEST_PRICE + " REAL," +
                     COLUMN_HIGHEST_PRICE + " REAL," +
                     COLUMN_WHICH_IS_LOWEST + " TEXT," +

@@ -89,7 +89,6 @@ public class ProductDetailFragment extends Fragment {
         final String itemName = getArguments().getString(MainActivity.LIST_NAME);
         View view = inflater.inflate(R.layout.fragment_product_detail, container, false);
 
-
         mDetailLongName = (TextView) view.findViewById(R.id.detailLongName);
         mDetailImageView = (ImageView) view.findViewById(R.id.detailImageView);
         mFavouriteCheckBox = (CheckBox) view.findViewById(R.id.favouriteCheckBox);

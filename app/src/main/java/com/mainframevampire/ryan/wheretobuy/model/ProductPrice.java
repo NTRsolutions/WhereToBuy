@@ -7,6 +7,7 @@ public class ProductPrice implements Serializable {
     private String mID;
     private String mShortName;
     private String mLongName;
+    private String mBrand;
     private float mLowestPrice;
     private float mHighestPrice;
     private String mWhichIsLowest;
@@ -29,6 +30,7 @@ public class ProductPrice implements Serializable {
     public ProductPrice(String id,
                         String shortName,
                         String longName,
+                        String brand,
                         float lowestPrice,
                         float highestPrice,
                         String whichIsLowest,
@@ -48,6 +50,7 @@ public class ProductPrice implements Serializable {
         mID = id;
         mShortName = shortName;
         mLongName = longName;
+        mBrand = brand;
         mLowestPrice = lowestPrice;
         mHighestPrice = highestPrice;
         mWhichIsLowest = whichIsLowest;
@@ -251,5 +254,13 @@ public class ProductPrice implements Serializable {
 
     public void setHWUrl(String HWUrl) {
         mHWUrl = HWUrl;
+    }
+
+    public String getBrand() {
+        return mBrand;
+    }
+
+    public void setBrand(String brand) {
+        mBrand = brand;
     }
 }

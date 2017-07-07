@@ -35,6 +35,7 @@ public class ProductsDataSource {
         productValues.put(ProductsSQLiteHelper.COLUMN_ID, productPrice.getID());
         productValues.put(ProductsSQLiteHelper.COLUMN_SHORT_NAME, productPrice.getShortName());
         productValues.put(ProductsSQLiteHelper.COLUMN_LONG_NAME, productPrice.getLongName());
+        productValues.put(ProductsSQLiteHelper.COLUMN_BRAND, productPrice.getBrand());
         productValues.put(ProductsSQLiteHelper.COLUMN_LOWEST_PRICE, productPrice.getLowestPrice());
         productValues.put(ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE, productPrice.getHighestPrice());
         productValues.put(ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST, productPrice.getWhichIsLowest());
@@ -67,6 +68,7 @@ public class ProductsDataSource {
                         " WHERE ID = " + "'" + id + "'", null);
         String shortName = "";
         String longName = "";
+        String brand = "";
         float lowestPrice = 0;
         float highestPrice = 0;
         String whichIsLowest = "";
@@ -87,6 +89,7 @@ public class ProductsDataSource {
             do {
                 shortName = getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_SHORT_NAME);
                 longName = getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_LONG_NAME);
+                brand = getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_BRAND);
                 lowestPrice = getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LOWEST_PRICE);
                 highestPrice = getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE);
                 whichIsLowest = getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST);
@@ -108,7 +111,7 @@ public class ProductsDataSource {
         cursor.close();
         close(database);
 
-        ProductPrice productPrice = new ProductPrice(id, shortName, longName, lowestPrice, highestPrice, whichIsLowest,
+        ProductPrice productPrice = new ProductPrice(id, shortName, longName, brand, lowestPrice, highestPrice, whichIsLowest,
                 cmwPrice, plPrice, flPrice, twPrice, hwPrice,
                 cmwUrl, plUrl, flUrl, twUrl, hwUrl,
                 customiseFlag, recommendationFlag, lastUpdateDateString);
@@ -116,13 +119,16 @@ public class ProductsDataSource {
         return productPrice;
     }
 
-    public ArrayList<ProductPrice> readProductsTableWithCondition(String ColumnName, String condition) {
-        String queryString = getQueryWithCondition(ColumnName, condition);
-
+    public ArrayList<ProductPrice> readTableByCustomiseFlag(
+            String customiseFlag, int numberOfOnePage, String lastIdInPreviousPage) {
         SQLiteDatabase database = open();
 
-        Cursor cursor = database.rawQuery(queryString, null);
-
+        Cursor cursor = database.rawQuery(
+                "SELECT * FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
+                        " WHERE CUSTOMISE_FLAG = " + "'" + customiseFlag + "'" +
+                        " AND ID > " + "'" + lastIdInPreviousPage + "'" +
+                        " ORDER BY ID" +
+                        " LIMIT " + "'" + numberOfOnePage + "'" , null);
 
         ArrayList<ProductPrice> productPrices = new ArrayList<>();
         if (cursor.moveToFirst()){
@@ -131,6 +137,7 @@ public class ProductsDataSource {
                         getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_ID),
                         getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_SHORT_NAME),
                         getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_LONG_NAME),
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_BRAND),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LOWEST_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE),
                         getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST),
@@ -156,30 +163,95 @@ public class ProductsDataSource {
         return productPrices;
     }
 
-    private String getQueryWithCondition(String columnName, String condition) {
-        String queryString = "";
-        if (columnName.equals("ID")) {
-            String listName = condition.substring(0,3);
-            queryString = "SELECT * FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
-                    " WHERE SUBSTR(ID,1,3) = " + "'" + listName + "'";
-        }
-        if (columnName.equals("CUSTOMISE_FLAG")) {
-            queryString = "SELECT * FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
-                    " WHERE CUSTOMISE_FLAG = " + "'" + condition + "'";
-        }
-        if (columnName.equals("RECOMMENDATION_FLAG")) {
-            queryString = "SELECT * FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
-                    " WHERE RECOMMENDATION_FLAG = " + "'" + condition + "'";
-        }
+    public ArrayList<ProductPrice> readTableByRecommendationFlag(String recommendationFlag) {
+        SQLiteDatabase database = open();
 
-        return queryString;
+        Cursor cursor = database.rawQuery(
+                "SELECT * FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
+                        " WHERE RECOMMENDATION_FLAG = " + "'" + recommendationFlag + "'" , null);
+
+        ArrayList<ProductPrice> productPrices = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            do {
+                ProductPrice productPrice = new ProductPrice(
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_ID),
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_SHORT_NAME),
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_LONG_NAME),
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_BRAND),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LOWEST_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_TW_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HW_PRICE),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_TW_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CUSTOMISE_FLAG),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_RECOMMENDATION_FLAG),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LAST_UPDATE_DATE));
+                productPrices.add(productPrice);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        close(database);
+
+        return productPrices;
     }
 
-    public int readProductsTableToGetBrandProduct(String listName) {
+    public ArrayList<ProductPrice> readTableByBrand(
+            String brand, int numberOfOnePage, String lastIdInPreviousPage) {
+        SQLiteDatabase database = open();
+
+        Cursor cursor = database.rawQuery(
+                "SELECT * FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
+                        " WHERE BRAND = " + "'" + brand + "'" +
+                        " AND ID > " + "'" + lastIdInPreviousPage + "'" +
+                        " ORDER BY ID " +
+                        " LIMIT " + "'" + numberOfOnePage + "'" , null);
+
+        ArrayList<ProductPrice> productPrices = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            do {
+                ProductPrice productPrice = new ProductPrice(
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_ID),
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_SHORT_NAME),
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_LONG_NAME),
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_BRAND),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LOWEST_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_TW_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HW_PRICE),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_TW_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CUSTOMISE_FLAG),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_RECOMMENDATION_FLAG),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LAST_UPDATE_DATE));
+                productPrices.add(productPrice);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        close(database);
+
+        return productPrices;
+    }
+
+    public int readTableGetBrandCount(String brand) {
         SQLiteDatabase database = open();
 
         Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
-                " WHERE SUBSTR(ID,1,3) = " + "'" + listName + "'", null);
+                " WHERE BRAND = " + "'" + brand + "'", null);
 
         cursor.moveToFirst();
         int count = cursor.getInt(0);
@@ -189,11 +261,25 @@ public class ProductsDataSource {
         return count;
     }
 
-    public int readProductsTableToGetCustomisedProduct() {
+    public int readTableGetCustomisedCount() {
         SQLiteDatabase database = open();
 
         Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
                 " WHERE CUSTOMISE_FLAG = " + "'Y'", null);
+
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        close(database);
+
+        return count;
+    }
+
+    public int readTableGetRecommendedCount() {
+        SQLiteDatabase database = open();
+
+        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
+                " WHERE RECOMMENDATION_FLAG = " + "'Y'", null);
 
         cursor.moveToFirst();
         int count = cursor.getInt(0);

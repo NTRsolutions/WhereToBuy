@@ -142,7 +142,7 @@ public class ProductsAdapter extends RecyclerView.Adapter{
 //            mTWPrice.setText(String.valueOf(Math.round(twPrice)));
 //            mHWPrice.setText(String.valueOf(Math.round(hwPrice)));
 
-            if (mItemName.equals("MYLIST")) {
+            if (mItemName.equals("MyList")) {
                 mFavouriteImage.setVisibility(View.VISIBLE);
             } else {
                 if (isFavourite.equals("Y")){
