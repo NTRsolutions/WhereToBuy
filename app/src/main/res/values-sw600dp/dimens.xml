@@ -8,6 +8,7 @@
     <dimen name="textsize_large">40sp</dimen>
     <dimen name="grid_width">300dp</dimen>
     <dimen name="item_width">40dp</dimen>
+    <dimen name="grid_margin">20dp</dimen>
     <dimen name="grid_height">240dp</dimen>
     <dimen name="item_height">40dp</dimen>
     <dimen name="text_height">40dp</dimen>

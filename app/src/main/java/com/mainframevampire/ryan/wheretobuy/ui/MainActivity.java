@@ -64,12 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mRate;
     private TextView mLastUpdateDateTextView;
 
-    private EndLessRecyclerViewScrollListener mScrollListener;
-    private ArrayList<ProductPrice> mProductPrices = new ArrayList<>();
-    private GridAdapter mGridAdapter;
     private RecyclerView mGridRecyclerView;
-    private int mNumberOfOnePage = 0;
-    private int mTotalPages = 0;
 
     //define a custom intent action
     public static final String BROADCAST_ACTION = "com.mainframevampire.ryan.wheretobuy.BROADCAST";

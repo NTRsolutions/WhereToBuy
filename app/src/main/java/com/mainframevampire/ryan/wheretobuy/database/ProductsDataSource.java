@@ -247,6 +247,50 @@ public class ProductsDataSource {
         return productPrices;
     }
 
+    public ArrayList<ProductPrice> readTableBySearchQuery(
+            String queryString, int numberOfOnePage, String lastIdInPreviousPage) {
+        SQLiteDatabase database = open();
+
+        Cursor cursor = database.rawQuery(
+                "SELECT * FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
+                        " WHERE LONG_NAME LIKE "  + "'" + "%" + queryString + "%" + "'" + "COLLATE NOCASE" +
+                        " AND ID > " + "'" + lastIdInPreviousPage + "'" +
+                        " ORDER BY ID " +
+                        " LIMIT " + "'" + numberOfOnePage + "'" , null);
+
+        ArrayList<ProductPrice> productPrices = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            do {
+                ProductPrice productPrice = new ProductPrice(
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_ID),
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_SHORT_NAME),
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_LONG_NAME),
+                        getStringFromColumnName(cursor,ProductsSQLiteHelper.COLUMN_BRAND),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LOWEST_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_TW_PRICE),
+                        getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HW_PRICE),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_TW_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_URL),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CUSTOMISE_FLAG),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_RECOMMENDATION_FLAG),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LAST_UPDATE_DATE));
+                productPrices.add(productPrice);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        close(database);
+
+        return productPrices;
+    }
+
     public int readTableGetBrandCount(String brand) {
         SQLiteDatabase database = open();
 
@@ -280,6 +324,20 @@ public class ProductsDataSource {
 
         Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
                 " WHERE RECOMMENDATION_FLAG = " + "'Y'", null);
+
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        close(database);
+
+        return count;
+    }
+
+    public int readTableGetSearchCount(String queryString) {
+        SQLiteDatabase database = open();
+
+        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
+                " WHERE LONG_NAME LIKE "  + "'" + "%" + queryString + "%" + "'" + "COLLATE NOCASE", null);
 
         cursor.moveToFirst();
         int count = cursor.getInt(0);
