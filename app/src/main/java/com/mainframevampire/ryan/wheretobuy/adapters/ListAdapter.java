@@ -1,57 +1,156 @@
 package com.mainframevampire.ryan.wheretobuy.adapters;
 
+
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
-import com.mainframevampire.ryan.wheretobuy.ui.DownloadService;
 import com.mainframevampire.ryan.wheretobuy.ui.ProductsFragment;
 
 import java.util.ArrayList;
 
-public class ProductsAdapter extends RecyclerView.Adapter{
+public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    public interface OnLoadListener {
+        void onLoadData();
+        void onLoadHeader();
+    }
+
     private final ProductsFragment.onProductListSelectedInterface mListener;
     private String mItemName;
     private Context mContext;
     private ArrayList<ProductPrice> mProductPrices = new ArrayList<>();
 
+    private final int VIEW_ITEM = 1;
+    private final int VIEW_PROG = 0;
 
-    public ProductsAdapter(ProductsFragment.onProductListSelectedInterface listener,
-                           ArrayList<ProductPrice> productPrices,
-                           String ItemName,
-                           Context context) {
+    //minimum amount of items to have below user current scroll position
+    private int mVisibleThreshold = 2;
+    private int mLastVisibleItem, mTotalItemCount;
+    private boolean mLoading;
+    private OnLoadListener mOnloadListener;
+
+
+    public ListAdapter(ProductsFragment.onProductListSelectedInterface listener,
+                       ArrayList<ProductPrice> productPrices,
+                       String ItemName,
+                       RecyclerView recyclerView) {
         mListener = listener;
         mProductPrices = productPrices;
         mItemName = ItemName;
-        mContext = context;
+
+        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                private boolean isUserScrolling = false;
+                private boolean isListGoingUp = true;
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    //check if the top most is visible and user is scrolling
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        isUserScrolling = true;
+                        if (isListGoingUp) {
+                            if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (isListGoingUp) {
+                                            if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                                                if (mOnloadListener != null) {
+                                                    mOnloadListener.onLoadHeader();
+                                                }
+                                            }
+                                        }
+                                    }
+                                },50);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    mTotalItemCount = linearLayoutManager.getItemCount();
+                    mLastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                    if (isUserScrolling) {
+                        if (dy > 0) {
+                            isListGoingUp = false;
+                        }
+                        else {
+                            isListGoingUp = true;
+                        }
+                    }
+
+                    if (!mLoading && mTotalItemCount <= (mLastVisibleItem + mVisibleThreshold)) {
+                        //reached the end
+                        //do something
+                        if (mOnloadListener != null) {
+                            mOnloadListener.onLoadData();
+                        }
+                        mLoading = true;
+                    }
+                }
+            });
+        }
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mProductPrices.get(position) != null ? VIEW_ITEM : VIEW_PROG;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_products_item, parent, false);
+        RecyclerView.ViewHolder viewHolder;
+        if (viewType == VIEW_ITEM) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_products_item, parent, false);
+            viewHolder = new TextViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_progress_item, parent, false);
+            viewHolder = new ProgressViewHolder(view);
+        }
 
-        return new ListViewHolder(view);
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ListViewHolder) holder).bindView(position);
+        if (holder instanceof TextViewHolder) {
+            ((TextViewHolder) holder).bindView(position);
+        } else {
+            ((ProgressViewHolder) holder).mProgressBar.setIndeterminate(true);
+        }
+
+    }
+
+    public void setLoaded() {
+        mLoading = false;
     }
 
     @Override
     public int getItemCount() {
-
         return mProductPrices.size();
     }
 
-    private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public void setOnLoadListener(OnLoadListener onloadListener) {
+        mOnloadListener = onloadListener;
+    }
+
+    private class TextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mShortName;
         private TextView mCMWPrice;
         private TextView mPLPrice;
@@ -62,7 +161,7 @@ public class ProductsAdapter extends RecyclerView.Adapter{
         private int mIndex;
         private String mId;
 
-        public ListViewHolder(View itemView) {
+        public TextViewHolder(View itemView) {
             super(itemView);
 
             mShortName = (TextView) itemView.findViewById(R.id.shortName);
@@ -73,11 +172,10 @@ public class ProductsAdapter extends RecyclerView.Adapter{
             mHWPrice = (TextView) itemView.findViewById(R.id.hw_price);
             mFavouriteImage = (ImageView) itemView.findViewById(R.id.favoriteImage);
 
-            mFavouriteImage.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
 
-        public void bindView(int position){
+        public void bindView(int position) {
             mIndex = position;
             mId = mProductPrices.get(position).getID();
             String shortName = mProductPrices.get(position).getShortName();
@@ -145,7 +243,7 @@ public class ProductsAdapter extends RecyclerView.Adapter{
             if (mItemName.equals("MyList")) {
                 mFavouriteImage.setVisibility(View.VISIBLE);
             } else {
-                if (isFavourite.equals("Y")){
+                if (isFavourite.equals("Y")) {
                     mFavouriteImage.setVisibility(View.VISIBLE);
                 } else {
                     mFavouriteImage.setVisibility(View.INVISIBLE);
@@ -161,6 +259,13 @@ public class ProductsAdapter extends RecyclerView.Adapter{
         }
     }
 
+    private class ProgressViewHolder extends  RecyclerView.ViewHolder {
+        public ProgressBar mProgressBar;
 
+        public ProgressViewHolder(View itemView) {
+            super(itemView);
+            mProgressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
+        }
+    }
 
 }

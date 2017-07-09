@@ -79,6 +79,17 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/products_header"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textSize="@dimen/textsize_medium"
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:background="#40ffffff"
+        android:text="You've reached the top"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"

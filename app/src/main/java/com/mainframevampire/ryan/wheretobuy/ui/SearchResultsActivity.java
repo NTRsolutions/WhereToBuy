@@ -7,17 +7,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.adapters.EndLessRecyclerViewScrollListener;
 import com.mainframevampire.ryan.wheretobuy.adapters.GridAdapter;
-import com.mainframevampire.ryan.wheretobuy.adapters.ProductsAdapter;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 
@@ -30,6 +29,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     private ArrayList<ProductPrice> mProductPrices = new ArrayList<>();
     private GridAdapter mGridAdapter;
     private RecyclerView mSearchRecyclerView;
+    private ProgressBar mLoadingProgressBar;
     private int mNumberOfOnePage = 0;
     private int mTotalPages = 0;
     private String mFormattedQueryString;
@@ -150,22 +150,23 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     //append the next page of data into the adapter
-    private void loadNextSearchDataFromDatabase(String formattedQueryString) {
-        ProductsDataSource dataSource = new ProductsDataSource(this);
-        ArrayList<ProductPrice> productPrices;
+    private void loadNextSearchDataFromDatabase(final String formattedQueryString) {
+        final ProductsDataSource dataSource = new ProductsDataSource(this);
+        final ArrayList<ProductPrice> productPrices;
 
-        String lastIdInPreviousPage = mProductPrices.get(mProductPrices.size() - 1).getID();
+        final String lastIdInPreviousPage = mProductPrices.get(mProductPrices.size() - 1).getID();
 
         productPrices = dataSource.readTableBySearchQuery(formattedQueryString, mNumberOfOnePage, lastIdInPreviousPage);
 
-        for (ProductPrice productPrice: productPrices) {
-            mProductPrices.add(productPrice);
-        }
-        mSearchRecyclerView.post(new Runnable() {
+        mSearchRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
+                for (ProductPrice productPrice: productPrices) {
+                    mProductPrices.add(productPrice);
+                }
                 mGridAdapter.notifyDataSetChanged();
+                Log.d(TAG, "ListAdapter changed ");
             }
-        });
+        },2000);
     }
 }

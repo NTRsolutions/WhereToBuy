@@ -2,6 +2,7 @@ package com.mainframevampire.ryan.wheretobuy.ui;
 
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,10 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.mainframevampire.ryan.wheretobuy.R;
+import com.mainframevampire.ryan.wheretobuy.adapters.ListAdapter;
 import com.mainframevampire.ryan.wheretobuy.adapters.EndLessRecyclerViewScrollListener;
-import com.mainframevampire.ryan.wheretobuy.adapters.ProductsAdapter;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 
@@ -31,10 +33,13 @@ public class ProductsFragment extends Fragment {
     private String mItemName = "";
     private EndLessRecyclerViewScrollListener mScrollListener;
     private ArrayList<ProductPrice> mProductPrices = new ArrayList<>();
-    private ProductsAdapter mProductsAdapter;
+    private ListAdapter mListAdapter;
     private RecyclerView mRecyclerView;
+    private TextView mHeader;
     private int mNumberOfOnePage = 0;
     private int mTotalPages = 0;
+    private int mTotalCounts = 0;
+    private Handler mHandler;
 
     @Nullable
     @Override
@@ -43,20 +48,21 @@ public class ProductsFragment extends Fragment {
         mItemName = getArguments().getString(MainActivity.LIST_NAME);
         View view = inflater.inflate(R.layout.fragment_products, container, false);
 
+        mHandler = new Handler();
         ProductsDataSource dataSource = new ProductsDataSource(getActivity());
-        int totalCounts = 0;
+        mTotalCounts = 0;
         if (mItemName.equals("MyList")) {
-            totalCounts = dataSource.readTableGetCustomisedCount();
+            mTotalCounts = dataSource.readTableGetCustomisedCount();
         } else {
-            totalCounts = dataSource.readTableGetBrandCount(mItemName);
+            mTotalCounts = dataSource.readTableGetBrandCount(mItemName);
         }
-        Log.d(TAG, mItemName + " totalCounts: " + totalCounts);
+        Log.d(TAG, mItemName + " totalCounts: " + mTotalCounts);
 
         //get the item number of one page for different screen size and oritention.
         mNumberOfOnePage = getItemNumbersOfOnePageForProductsList();
         Log.d(TAG, mItemName + " number of one page: " + mNumberOfOnePage);
         //get the total pages
-        mTotalPages = getTotalPagesForProductsList(totalCounts);
+        mTotalPages = getTotalPagesForProductsList(mTotalCounts);
         Log.d(TAG, mItemName + " total pages: " + mTotalPages);
 
         //load first page data
@@ -66,25 +72,86 @@ public class ProductsFragment extends Fragment {
             mProductPrices = dataSource.readTableByBrand(mItemName, mNumberOfOnePage, " ");
         }
 
+        mHeader = (TextView) view.findViewById(R.id.products_header);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.productsRecyclerView);
-        mProductsAdapter = new ProductsAdapter(listener, mProductPrices, mItemName, getActivity());
-        mRecyclerView.setAdapter(mProductsAdapter);
+        mRecyclerView.setHasFixedSize(true);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mScrollListener = new EndLessRecyclerViewScrollListener(linearLayoutManager) {
+
+        //mProductsAdapter = new ProductsAdapter(listener, mProductPrices, mItemName, getActivity());
+        mListAdapter = new ListAdapter(listener, mProductPrices, mItemName, mRecyclerView);
+        //mRecyclerView.setAdapter(mProductsAdapter);
+        mRecyclerView.setAdapter(mListAdapter);
+
+        mListAdapter.setOnLoadListener(new ListAdapter.OnLoadListener() {
+
             @Override
-            public void onLoadMore(int currentPage, int totalItemCount, RecyclerView recyclerView) {
-                //triggered only when new data needs to be loaded
-                if (currentPage == mTotalPages) {
-                    //end of the pages
-                    Log.d(TAG, mItemName + " Pages: end of the pages");
-                } else {
-                    Log.d(TAG, mItemName + " Pages: " + currentPage);
-                    loadNextDataFromDatabase();
+            public void onLoadHeader() {
+                if (mTotalCounts >= mNumberOfOnePage) {
+                    Log.d(TAG, "you've reached the top");
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mHeader.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mHeader.setVisibility(View.GONE);
+                        }
+                    }, 1000);
                 }
             }
-        };
-        mRecyclerView.addOnScrollListener(mScrollListener);
+
+            @Override
+            public void onLoadData() {
+                if (mTotalCounts >= mNumberOfOnePage) {
+                    //add progress item
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProductPrices.add(null);
+                            mListAdapter.notifyItemInserted(mProductPrices.size() - 1);
+                            Log.d(TAG, " mAdapter progress bar ");
+                        }
+                    });
+
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //remove progress item
+                            mProductPrices.remove(mProductPrices.size() - 1);
+                            mListAdapter.notifyItemRemoved(mProductPrices.size());
+                            Log.d(TAG, "mProductPrices.size(): " + mProductPrices.size());
+
+                            if (mProductPrices.size() == mTotalCounts) {
+                                Log.d(TAG, " reached the end");
+                                mListAdapter.setLoaded();
+                            } else {
+                                ProductsDataSource dataSource = new ProductsDataSource(getActivity());
+                                ArrayList<ProductPrice> productPrices;
+                                String lastIdInPreviousPage = mProductPrices.get(mProductPrices.size() - 1).getID();
+                                if (mItemName.equals("MyList")) {
+                                    productPrices = dataSource.readTableByCustomiseFlag("Y", mNumberOfOnePage, lastIdInPreviousPage);
+                                    Log.d(TAG, mItemName + " Last ID in previous page " + lastIdInPreviousPage);
+                                } else {
+                                    productPrices = dataSource.readTableByBrand(mItemName, mNumberOfOnePage, lastIdInPreviousPage);
+                                    Log.d(TAG, mItemName + " Last ID in previous page " + lastIdInPreviousPage);
+                                }
+                                for (ProductPrice productPrice : productPrices) {
+                                    mProductPrices.add(productPrice);
+                                }
+                                mListAdapter.notifyItemInserted(mProductPrices.size());
+                                mListAdapter.setLoaded();
+                            }
+                        }
+                    }, 2000);
+                }
+            }
+        });
 
         return view;
 
@@ -123,7 +190,7 @@ public class ProductsFragment extends Fragment {
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-                mProductsAdapter.notifyDataSetChanged();
+                mListAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -147,7 +214,7 @@ public class ProductsFragment extends Fragment {
         } else {
             numColumns = (int) ((dpHeight - dpActionBarSize - 60) / 60);
         }
-        numberOfOnePage = numColumns + 5;
+        numberOfOnePage = numColumns;
 
         return numberOfOnePage;
     }

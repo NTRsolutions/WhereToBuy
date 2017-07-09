@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -30,9 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mainframevampire.ryan.wheretobuy.R;
-import com.mainframevampire.ryan.wheretobuy.adapters.EndLessRecyclerViewScrollListener;
 import com.mainframevampire.ryan.wheretobuy.adapters.GridAdapter;
-import com.mainframevampire.ryan.wheretobuy.adapters.ProductsAdapter;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
 import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
