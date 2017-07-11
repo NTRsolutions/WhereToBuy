@@ -49,7 +49,7 @@ public class ProductsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_products, container, false);
 
         mHandler = new Handler();
-        ProductsDataSource dataSource = new ProductsDataSource(getActivity());
+        final ProductsDataSource dataSource = new ProductsDataSource(getActivity());
         mTotalCounts = 0;
         if (mItemName.equals("MyList")) {
             mTotalCounts = dataSource.readTableGetCustomisedCount();
@@ -119,6 +119,8 @@ public class ProductsFragment extends Fragment {
                         }
                     });
 
+                    final ProductsDataSource dataSource = new ProductsDataSource(getActivity());
+
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -131,7 +133,6 @@ public class ProductsFragment extends Fragment {
                                 Log.d(TAG, " reached the end");
                                 mListAdapter.setLoaded();
                             } else {
-                                ProductsDataSource dataSource = new ProductsDataSource(getActivity());
                                 ArrayList<ProductPrice> productPrices;
                                 String lastIdInPreviousPage = mProductPrices.get(mProductPrices.size() - 1).getID();
                                 if (mItemName.equals("MyList")) {
@@ -144,7 +145,7 @@ public class ProductsFragment extends Fragment {
                                 for (ProductPrice productPrice : productPrices) {
                                     mProductPrices.add(productPrice);
                                 }
-                                mListAdapter.notifyItemInserted(mProductPrices.size());
+                                mListAdapter.notifyItemInserted(mProductPrices.size() - 1);
                                 mListAdapter.setLoaded();
                             }
                         }

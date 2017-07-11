@@ -163,12 +163,16 @@ public class ProductsDataSource {
         return productPrices;
     }
 
-    public ArrayList<ProductPrice> readTableByRecommendationFlag(String recommendationFlag) {
+    public ArrayList<ProductPrice> readTableByRecommendationFlag(
+            String recommendationFlag, int numberOfOnePage, String lastIdInPreviousPage) {
         SQLiteDatabase database = open();
 
         Cursor cursor = database.rawQuery(
                 "SELECT * FROM " + ProductsSQLiteHelper.PRODUCTS_TABLE +
-                        " WHERE RECOMMENDATION_FLAG = " + "'" + recommendationFlag + "'" , null);
+                        " WHERE RECOMMENDATION_FLAG = " + "'" + recommendationFlag + "'" +
+                        " AND ID > " + "'" + lastIdInPreviousPage + "'" +
+                        " ORDER BY ID " +
+                        " LIMIT " + "'" + numberOfOnePage + "'" , null);
 
         ArrayList<ProductPrice> productPrices = new ArrayList<>();
         if (cursor.moveToFirst()){

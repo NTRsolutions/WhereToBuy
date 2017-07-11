@@ -7,10 +7,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -39,6 +41,8 @@ import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 import com.mainframevampire.ryan.wheretobuy.model.Swisse;
 import com.mainframevampire.ryan.wheretobuy.util.GetInfoFromWebsite;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLastUpdateDateTextView;
 
     private RecyclerView mGridRecyclerView;
+    private TextView mHeader;
+    private Handler mHandler;
+    private ArrayList<ProductPrice> mProductPrices;
+    private GridAdapter mGridAdapter;
+    private GridLayoutManager mGridLayoutManager;
+
+    private int mNumColumns = 0;
+    private int mNumRows = 0;
+    private int mNumberOfOnePage = 0;
+    private int mTotalCounts = 0;
 
     //define a custom intent action
     public static final String BROADCAST_ACTION = "com.mainframevampire.ryan.wheretobuy.BROADCAST";
@@ -78,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
         mRefreshImageView = (ImageView) findViewById(R.id.refreshImageView);
         mLastUpdateDateTextView = (TextView) findViewById(R.id.lastUpdateDate);
         mGridRecyclerView = (RecyclerView) findViewById(R.id.bestChoiceRecyclerView);
+        mHeader = (TextView) findViewById(R.id.recommended_header);
         mRate = (TextView) findViewById(R.id.rate);
+        mHandler = new Handler();
 
         mProgressBar.setVisibility(View.INVISIBLE);
 
@@ -135,8 +151,8 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra(KEY_MESSAGE);
             Log.d("MainActivity", "Receive Message: " + message);
-            //load recommations to the list
-            loadDataToGridList();
+            //update recommations to the list
+            updateDataInGridList();
             if (message.equals("Ostelin")) {
                 toggleRefresh();
                 String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mCurrentDate;
@@ -381,24 +397,189 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadDataToGridList() {
-        //get best choices
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-        ArrayList<ProductPrice> recommendedProcutPrices = dataSource.readTableByRecommendationFlag("Y");
-        GridAdapter RecommendedProductsAdapter = new GridAdapter(this, recommendedProcutPrices);
-
-        mGridRecyclerView.setAdapter(RecommendedProductsAdapter);
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        int numColumns = 0;
         if (!mIsTablet) {
-            numColumns = (int) (dpWidth / 170);
+            mNumColumns = (int) (dpWidth / 170);
         } else {
-            numColumns = (int) (dpWidth / 320);
+            mNumColumns = (int) (dpWidth / 320);
+        }
+        //get best choices
+        mGridRecyclerView = (RecyclerView) findViewById(R.id.bestChoiceRecyclerView);
+        mGridRecyclerView.setHasFixedSize(true);
+
+        mTotalCounts = dataSource.readTableGetRecommendedCount();
+
+        mNumRows = getNumberRows();
+        mNumberOfOnePage = (mNumRows + 1) * mNumColumns;
+        Log.d(TAG, "mTotalCounts:" + mTotalCounts);
+        Log.d(TAG, "mNumberOfOnePage:" + mNumberOfOnePage);
+        Log.d(TAG, "mNumRows:" + mNumRows);
+        Log.d(TAG, "mNumColumns:" + mNumColumns);
+
+        //clear data if it's not null
+        if (mProductPrices != null) {
+//            mProductPrices.clear();
+//            mGridAdapter.notifyItemRemoved(mProductPrices.size());
+//            Log.d(TAG, "mProductPrices after clear:" + mProductPrices.size());
+//
+            ArrayList<ProductPrice> productPrices = dataSource.readTableByRecommendationFlag("Y", mNumberOfOnePage, " ");
+//            for (ProductPrice productPrice: productPrices) {
+//                mProductPrices.add(productPrice);
+//            }
+//            mGridAdapter.notifyItemInserted(mProductPrices.size() - 1);
+//            Log.d(TAG, "mProductPrices after add:" + mProductPrices.size());
+//            mGridAdapter.setLoaded();
+//            mGridAdapter.updateData(productPrices);
+//            mGridAdapter.notifyDataSetChanged();
+//            mGridAdapter.setLoaded();
+        } else {
+            //load first page data
+            mProductPrices = dataSource.readTableByRecommendationFlag("Y", mNumberOfOnePage, " ");
+            mGridLayoutManager = new GridLayoutManager(this, mNumColumns);
+            mGridRecyclerView.setLayoutManager(mGridLayoutManager);
+
+            mGridAdapter = new GridAdapter(this, mProductPrices, mGridRecyclerView, mNumRows);
+            Log.d(TAG, "mProductPrices first load:" + mProductPrices.size());
+            Log.d(TAG, "lastIdInPreviousPage first load: " + mProductPrices.get(mProductPrices.size() - 1).getID());
+            mGridRecyclerView.setAdapter(mGridAdapter);
         }
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numColumns);
-        mGridRecyclerView.setLayoutManager(layoutManager);
-        RecommendedProductsAdapter.notifyDataSetChanged();
+        mGridAdapter.setOnLoadListener(new GridAdapter.OnLoadListener() {
+            @Override
+            public void onLoadHeader() {
+                if (mTotalCounts >= mNumberOfOnePage) {
+                    Log.d(TAG, "you've reached the top");
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mHeader.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mHeader.setVisibility(View.GONE);
+                        }
+                    }, 1000);
+                }
+            }
+
+            @Override
+            public void onLoadData() {
+                if (mTotalCounts >= mNumberOfOnePage) {
+                    //add progress item
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "mProductPrices.size() before add: " + mProductPrices.size());
+                            mProductPrices.add(null);
+                            mGridAdapter.notifyItemInserted(mProductPrices.size() - 1);
+                            Log.d(TAG, " mAdapter progress bar ");
+                            Log.d(TAG, "mProductPrices.size() after add: " + mProductPrices.size());
+                        }
+                    });
+
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //remove progress item
+                            Log.d(TAG, "mProductPrices.size() before remove: " + mProductPrices.size());
+                            mProductPrices.remove(mProductPrices.size() - 1);
+                            mGridAdapter.notifyItemRemoved(mProductPrices.size());
+                            Log.d(TAG, "mProductPrices.size() after remove: " + mProductPrices.size());
+
+                            if (mProductPrices.size() == mTotalCounts) {
+                                Log.d(TAG, " reached the end");
+                                mGridAdapter.setLoaded();
+                            } else {
+                                loadNextRecommendedProductsFromDatabase();
+                            }
+                        }
+                    }, 2000);
+                }
+            }
+        });
+
+        mGridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (mGridAdapter.getItemViewType(position)) {
+                    case 1: //item view
+                        return 1;
+                    case 0: //progress bar
+                        return mNumColumns; //number of columns of the grid
+                    default:
+                        return -1;
+                }
+            }
+        });
+//        ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
+//        ArrayList<ProductPrice> recommendedProcutPrices = dataSource.readTableByRecommendationFlag("Y");
+//        GridAdapter RecommendedProductsAdapter = new GridAdapter(this, recommendedProcutPrices, mGridRecyclerView, 4);
+//
+//        mGridRecyclerView.setAdapter(RecommendedProductsAdapter);
+//
+//
+//        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numColumns);
+//        mGridRecyclerView.setLayoutManager(layoutManager);
+//        RecommendedProductsAdapter.notifyDataSetChanged();
+    }
+
+    private void updateDataInGridList() {
+        if (mProductPrices != null) {
+            ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
+            mTotalCounts = dataSource.readTableGetRecommendedCount();
+            Log.d(TAG, "mTotalCounts after update: " + mTotalCounts);
+            Log.d(TAG, "mNumberOfOnePage after update: " + mNumberOfOnePage);
+            ArrayList<ProductPrice> productPrices = dataSource.readTableByRecommendationFlag("Y", mNumberOfOnePage, " ");
+            mGridAdapter.updateData(productPrices);
+            mProductPrices = productPrices;
+            mGridAdapter.notifyDataSetChanged();
+            mGridAdapter.setLoaded();
+            Log.d(TAG, "lastIdInPreviousPage after update: " + mProductPrices.get(mProductPrices.size() - 1).getID());
+        }
+    }
+
+    public int getNumberRows() {
+        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        //get the height of device
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+        //get the height of action bar
+        final TypedArray styledAttributes = getTheme().obtainStyledAttributes(
+                new int[] { android.R.attr.actionBarSize});
+        int actionBarSize = (int) styledAttributes.getDimension(0, 0);
+        float dpActionBarSize = actionBarSize / displayMetrics.density;
+
+        int numRows = 0;
+        if (!isTablet) {
+            numRows = (int) ((dpHeight - dpActionBarSize) / 140);
+        } else {
+            numRows = (int) ((dpHeight - dpActionBarSize) / 280);
+        }
+
+        return numRows;
+    }
+
+    //append the next page of data into the adapter
+    private void loadNextRecommendedProductsFromDatabase() {
+        final ProductsDataSource dataSource = new ProductsDataSource(this);
+        final ArrayList<ProductPrice> productPrices;
+
+        final String lastIdInPreviousPage = mProductPrices.get(mProductPrices.size() - 1).getID();
+
+        Log.d(TAG, "lastIdInPreviousPage: " + lastIdInPreviousPage);
+        productPrices = dataSource.readTableByRecommendationFlag("Y", mNumberOfOnePage, lastIdInPreviousPage);
+
+
+        for (ProductPrice productPrice: productPrices) {
+            mProductPrices.add(productPrice);
+        }
+        mGridAdapter.notifyItemInserted(mProductPrices.size() - 1);
+        mGridAdapter.setLoaded();
     }
 
 

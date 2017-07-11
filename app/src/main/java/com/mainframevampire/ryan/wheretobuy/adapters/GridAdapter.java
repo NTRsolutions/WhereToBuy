@@ -2,11 +2,15 @@ package com.mainframevampire.ryan.wheretobuy.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -23,35 +27,132 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
-public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder> {
+public class GridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<ProductPrice> mRecommendedProductPrices;
+    public interface OnLoadListener {
+        void onLoadData();
+        void onLoadHeader();
+    }
+
+    private ArrayList<ProductPrice> mProductPrices;
     private Context mContext;
 
-    public GridAdapter(Context context, ArrayList<ProductPrice> recommendedProductPrices) {
-        mRecommendedProductPrices = recommendedProductPrices;
+    private final int VIEW_ITEM = 1;
+    private final int VIEW_PROG = 0;
+
+    //minimum amount of items to have below user current scroll position, get it from constructor
+    private int mVisibleThreshold = 0;
+    private int mLastVisibleItem, mTotalItemCount;
+    private boolean mLoading;
+    private OnLoadListener mOnloadListener;
+
+    public GridAdapter(Context context, ArrayList<ProductPrice> productPrices, RecyclerView recyclerView, int numRows) {
+        mProductPrices = productPrices;
         mContext = context;
+        mVisibleThreshold = 2 * numRows;
+
+        if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+            final GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                private boolean isUserScrolling = false;
+                private boolean isListGoingUp = true;
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    //check if the top most is visible and user is scrolling
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        isUserScrolling = true;
+                        if (isListGoingUp) {
+                            if (gridLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (isListGoingUp) {
+                                            if (gridLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                                                if (mOnloadListener != null) {
+                                                    mOnloadListener.onLoadHeader();
+                                                }
+                                            }
+                                        }
+                                    }
+                                },50);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    mTotalItemCount = gridLayoutManager.getItemCount();
+                    mLastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
+                    if (isUserScrolling) {
+                        if (dy > 0) {
+                            isListGoingUp = false;
+                        }
+                        else {
+                            isListGoingUp = true;
+                        }
+                    }
+
+                    if (!mLoading && mTotalItemCount <= (mLastVisibleItem + mVisibleThreshold)) {
+                        //reached the end
+                        //do something
+                        Log.d("GridAdapter", "mLoading before load:" + mLoading);
+                        if (mOnloadListener != null) {
+                            mOnloadListener.onLoadData();
+                        }
+                        mLoading = true;
+                        Log.d("GridAdapter", "mLoading before after:" + mLoading);
+                    }
+                }
+            });
+        }
     }
 
-
     @Override
-    public GridViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.best_choices_item, parent, false);
-
-        return new GridViewHolder(view);
+    public int getItemViewType(int position) {
+        return mProductPrices.get(position) != null ? VIEW_ITEM : VIEW_PROG;
     }
 
     @Override
-    public void onBindViewHolder(GridViewHolder holder, int position) {
-        holder.bindRecommendedProduct(mRecommendedProductPrices.get(position));
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder;
+        if (viewType == VIEW_ITEM) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.best_choices_item, parent, false);
+            viewHolder = new GridViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_progress_item, parent, false);
+            viewHolder = new ProgressViewHolder(view);
+        }
+
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof GridViewHolder) {
+            ((GridViewHolder) holder).bindView(position);
+        } else {
+            ((ProgressViewHolder) holder).mProgressBar.setIndeterminate(true);
+        }
     }
 
 
 
     @Override
     public int getItemCount() {
-        return mRecommendedProductPrices.size();
+        return mProductPrices.size();
+    }
+
+    public void setLoaded() {
+        mLoading = false;
+    }
+
+    public void setOnLoadListener(OnLoadListener onloadListener) {
+        mOnloadListener = onloadListener;
     }
 
     public class GridViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -80,11 +181,11 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder
             itemView.setOnClickListener(this);
         }
 
-        public void bindRecommendedProduct(ProductPrice recommendedProductPrice) {
+        public void bindView(int position) {
 
-            mId = recommendedProductPrice.getID();
+            mId = mProductPrices.get(position).getID();
 
-            mGridLongName.setText(recommendedProductPrice.getLongName());
+            mGridLongName.setText(mProductPrices.get(position).getLongName());
 
             if (mId.substring(0,3).equals("SWS")){
                 Glide.with(mContext).load(Swisse.getSwisseImageId(mId)).into(mGridImageView);
@@ -105,16 +206,16 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder
                 mListName = "Ostelin";
             }
 
-            String[] names = recommendedProductPrice.getWhichIsLowest().split(" ");
+            String[] names = mProductPrices.get(position).getWhichIsLowest().split(" ");
             mGridName1.setText(names[0]);
             mGridName2.setText(names[1]);
 
-            String lowestPriceString = mContext.getString(R.string.dollar_sign) + String.valueOf(recommendedProductPrice.getLowestPrice());
+            String lowestPriceString = mContext.getString(R.string.dollar_sign) + String.valueOf(mProductPrices.get(position).getLowestPrice());
             mGridLowestPrice.setText(lowestPriceString);
 
             DecimalFormat df = new DecimalFormat();
             df.setMaximumFractionDigits(2);
-            float savePrice = recommendedProductPrice.getHighestPrice() - recommendedProductPrice.getLowestPrice();
+            float savePrice = mProductPrices.get(position).getHighestPrice() - mProductPrices.get(position).getLowestPrice();
             String savePriceString = mContext.getString(R.string.save) +
                     " " +
                     mContext.getString(R.string.dollar_sign) +
@@ -123,7 +224,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder
 
             String rrpPriceString = mContext.getString(R.string.rrp) + " " +
                     mContext.getString(R.string.dollar_sign) +
-                    String.valueOf(recommendedProductPrice.getHighestPrice());
+                    String.valueOf(mProductPrices.get(position).getHighestPrice());
             mGridRrpPrice.setText(rrpPriceString);
 
         }
@@ -136,6 +237,19 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder
             intent.putExtra(MainActivity.LIST_NAME, mListName);
             mContext.startActivity(intent);
         }
+    }
+
+    private class ProgressViewHolder extends  RecyclerView.ViewHolder {
+        public ProgressBar mProgressBar;
+
+        public ProgressViewHolder(View itemView) {
+            super(itemView);
+            mProgressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
+        }
+    }
+
+    public void updateData(ArrayList<ProductPrice> productPrices) {
+        mProductPrices = productPrices;
     }
 
 }
