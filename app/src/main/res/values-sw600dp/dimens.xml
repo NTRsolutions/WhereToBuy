@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="overall_margin">10dp</dimen>
-    <dimen name="textsize_small">20sp</dimen>
-    <dimen name="textsize_middlle">24sp</dimen>
-    <dimen name="textsize_medium">28sp</dimen>
-    <dimen name="textsize_big">32sp</dimen>
-    <dimen name="textsize_large">40sp</dimen>
-    <dimen name="grid_width">300dp</dimen>
+    <dimen name="textsize_small">16sp</dimen>
+    <dimen name="textsize_middlle">20sp</dimen>
+    <dimen name="textsize_medium">24sp</dimen>
+    <dimen name="textsize_big">28sp</dimen>
+    <dimen name="textsize_large">36sp</dimen>
+    <dimen name="grid_width">240dp</dimen>
     <dimen name="item_width">40dp</dimen>
     <dimen name="grid_margin">20dp</dimen>
     <dimen name="grid_height">240dp</dimen>

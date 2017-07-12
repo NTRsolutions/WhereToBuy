@@ -39,6 +39,7 @@ import com.mainframevampire.ryan.wheretobuy.model.ListName;
 import com.mainframevampire.ryan.wheretobuy.model.Ostelin;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 import com.mainframevampire.ryan.wheretobuy.model.Swisse;
+import com.mainframevampire.ryan.wheretobuy.util.ConfigHelper;
 import com.mainframevampire.ryan.wheretobuy.util.GetInfoFromWebsite;
 
 import org.w3c.dom.Text;
@@ -398,20 +399,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadDataToGridList() {
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        if (!mIsTablet) {
-            mNumColumns = (int) (dpWidth / 170);
-        } else {
-            mNumColumns = (int) (dpWidth / 320);
-        }
+        mNumColumns = ConfigHelper.getNumberColumn(this);
         //get best choices
         mGridRecyclerView = (RecyclerView) findViewById(R.id.bestChoiceRecyclerView);
         mGridRecyclerView.setHasFixedSize(true);
 
         mTotalCounts = dataSource.readTableGetRecommendedCount();
 
-        mNumRows = getNumberRows();
+        mNumRows = ConfigHelper.getNumberRows(this);
         mNumberOfOnePage = (mNumRows + 1) * mNumColumns;
         Log.d(TAG, "mTotalCounts:" + mTotalCounts);
         Log.d(TAG, "mNumberOfOnePage:" + mNumberOfOnePage);
@@ -541,27 +536,6 @@ public class MainActivity extends AppCompatActivity {
             mGridAdapter.setLoaded();
             Log.d(TAG, "lastIdInPreviousPage after update: " + mProductPrices.get(mProductPrices.size() - 1).getID());
         }
-    }
-
-    public int getNumberRows() {
-        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
-        //get the height of device
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        //get the height of action bar
-        final TypedArray styledAttributes = getTheme().obtainStyledAttributes(
-                new int[] { android.R.attr.actionBarSize});
-        int actionBarSize = (int) styledAttributes.getDimension(0, 0);
-        float dpActionBarSize = actionBarSize / displayMetrics.density;
-
-        int numRows = 0;
-        if (!isTablet) {
-            numRows = (int) ((dpHeight - dpActionBarSize) / 140);
-        } else {
-            numRows = (int) ((dpHeight - dpActionBarSize) / 280);
-        }
-
-        return numRows;
     }
 
     //append the next page of data into the adapter

@@ -46,7 +46,7 @@ public class Blackmores {
     };
 
     public static final String[] longName = new String[] {
-            "Blackmores Pregnancy&Breastfeeding Gold 180 Caps",
+            "Blackmores Pregnancy Breastfeeding Gold 180 Caps",
             "Blackmores Fish Oil 1000mg 400 Capsules",
             "Blackmores Omega 3* Fish Oil 150 Capsules",
             "Blackmores Odourless Fish Oil 1000mg 400 Capsules",

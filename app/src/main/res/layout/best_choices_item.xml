@@ -16,12 +16,12 @@
         <TextView
             android:id="@+id/gridLongName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textAlignment="center"
             tools:text="Swisse High Strength Cranberry 25,000mg 30 Caps"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/textsize_middlle"/>
+            android:textSize="@dimen/textsize_small"/>
 
     </LinearLayout>
 

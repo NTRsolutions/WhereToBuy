@@ -129,7 +129,7 @@ public class GetInfoFromWebsite {
                         }
                     } else {
                         if (element.className().equals("price-box-hover")) {
-                            Swisse.flPrice[index] = Float.parseFloat(element.text().substring(1));
+                            Swisse.flPrice[index] = Float.parseFloat(element.text().split(" ")[0].substring(1));
                             ifFound = false;
                         }
                     }
@@ -377,38 +377,68 @@ public class GetInfoFromWebsite {
         }
 
         //for4Less：Blackmores
-        String[] flURls = new String[] {
-                "http://www.pharmacy4less.com.au/blackmores-pregnancy-breast-feeding-gold-formula-180-caps-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-odourless-fish-oil-1000-capx400-new-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-omega-triple-concentrated-fish-oil-150-cap-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-odourless-fish-oil-1000-capx400-new-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-coq10-high-potency-150-mg-30-caps-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-coq10-75mg-capx90-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-glucosamine-sulfate-1500-x-180-tablets-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-joint-formula-x120-tablets-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-cranberry-15000-capx60-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-kids-immunities-60-tablets.html",
-                "http://www.pharmacy4less.com.au/blackmores-propolis-1000-x220-cap.html",
-                "http://www.pharmacy4less.com.au/blackmores-milk-thistle-tabx42-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-vitex-agnus-castus-tabx40-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-sugar-balance-tabx90-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-vitamin-e-cream-50g-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-evening-primrose-oil-1000mg-capx190-3.html",
-                "http://www.pharmacy4less.com.au/blackmores-celery-3000-x-50-tabs-3.html"
+//        String[] flURls = new String[] {
+//                "http://www.pharmacy4less.com.au/blackmores-pregnancy-breast-feeding-gold-formula-180-caps-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-odourless-fish-oil-1000-capx400-new-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-omega-triple-concentrated-fish-oil-150-cap-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-odourless-fish-oil-1000-capx400-new-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-coq10-high-potency-150-mg-30-caps-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-coq10-75mg-capx90-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-glucosamine-sulfate-1500-x-180-tablets-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-joint-formula-x120-tablets-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-cranberry-15000-capx60-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-kids-immunities-60-tablets.html",
+//                "http://www.pharmacy4less.com.au/blackmores-propolis-1000-x220-cap.html",
+//                "http://www.pharmacy4less.com.au/blackmores-milk-thistle-tabx42-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-vitex-agnus-castus-tabx40-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-sugar-balance-tabx90-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-vitamin-e-cream-50g-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-evening-primrose-oil-1000mg-capx190-3.html",
+//                "http://www.pharmacy4less.com.au/blackmores-celery-3000-x-50-tabs-3.html"
+//        };
+        String[] flURls = new String[]{
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=2",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=3",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=4",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=5",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=6",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=7",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=8",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=9",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=10",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=11",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=12",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=13",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=14",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=15",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=16",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=17",
+                "http://www.pharmacy4less.com.au/vitamins/by-brands/blackmores.html?p=18",
         };
         for (String url: flURls) {
             try {
                 Document doc = Jsoup.connect(url).get();
-                Elements elements = doc.select("div.discount");
+                Elements elements = doc.select("a.product-image,div.price-box-hover");
+                int index = 0;
+                boolean ifFound = false;
                 for (Element element: elements) {
-                    if (element.className().equals("discount tvdiscount")) {
-                        String id = element.attr("id").split("-")[2];
-                        for (int i = 0; i < Blackmores.id.length; i++) {
-                            if (id.equals(Blackmores.flID[i].trim())) {
-                                Blackmores.flPrice[i] = Float.parseFloat(element.text().substring(1));
-                                Blackmores.flURL[i] = url;
-                                i = Blackmores.id.length;
+                    if (!ifFound) {
+                        if (element.className().equals("product-image")) {
+                            String id = element.attr("id").split("-")[1];
+                            for (int i = 0; i < Blackmores.id.length; i++) {
+                                if (id.equals(Blackmores.flID[i].trim())) {
+                                    ifFound = true;
+                                    index = i;
+                                    i = Blackmores.id.length;
+                                    Blackmores.flURL[index] = element.attr("href");
+                                }
                             }
+                        }
+                    } else {
+                        if (element.className().equals("price-box-hover")) {
+                            Blackmores.flPrice[index] = Float.parseFloat(element.text().split(" ")[0].substring(1));
+                            ifFound = false;
                         }
                     }
                 }
@@ -601,7 +631,7 @@ public class GetInfoFromWebsite {
                         }
                     } else {
                         if (element.className().equals("price-box-hover")) {
-                            BioIsland.flPrice[index] = Float.parseFloat(element.text().substring(1));
+                            BioIsland.flPrice[index] = Float.parseFloat(element.text().split(" ")[0].substring(1));
                             ifFound = false;
                         }
                     }
@@ -739,7 +769,7 @@ public class GetInfoFromWebsite {
                         }
                     } else {
                         if (element.className().equals("price-box-hover")) {
-                            Ostelin.flPrice[index] = Float.parseFloat(element.text().substring(1));
+                            Ostelin.flPrice[index] = Float.parseFloat(element.text().split(" ")[0].substring(1));
                             ifFound = false;
                         }
                     }

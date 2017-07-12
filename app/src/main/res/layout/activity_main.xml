@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:gravity="start"
-            android:textSize="@dimen/textsize_big"
+            android:textSize="@dimen/textsize_medium"
             android:text="@string/recommendations"/>
 
         <ImageView
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:gravity="end"
-            android:textSize="@dimen/textsize_big"
+            android:textSize="@dimen/textsize_medium"
             tools:text="AUD/CNY:5.05"
             android:paddingRight="20dp"/>
 
@@ -54,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Last update date is 2017-06-01"
-        android:textSize="@dimen/textsize_medium"
+        android:textSize="@dimen/textsize_middlle"
         android:gravity="center"
         android:textColor="@android:color/black"/>
 

@@ -20,6 +20,7 @@ import com.mainframevampire.ryan.wheretobuy.adapters.EndLessRecyclerViewScrollLi
 import com.mainframevampire.ryan.wheretobuy.adapters.GridAdapter;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
+import com.mainframevampire.ryan.wheretobuy.util.ConfigHelper;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     private int mTotalCounts = 0;
     //number of columns for grid view
     private int mNumCulomns = 0;
+    private int mNumRows = 0;
     private String mFormattedQueryString;
     private Handler mHandler;
 
@@ -72,7 +74,9 @@ public class SearchResultsActivity extends AppCompatActivity {
             mSearchRecyclerView.setVisibility(View.VISIBLE);
 
             //get the item number of one page for different screen size and oritention.
-            mNumberOfOnePage = getNumberColumn() * (getNumberRows() + 1);
+            mNumCulomns = ConfigHelper.getNumberColumn(this);
+            mNumRows = ConfigHelper.getNumberRows(this);
+            mNumberOfOnePage = mNumCulomns * (mNumRows + 1);
             Log.d(TAG, "number of one page: " + mNumberOfOnePage);
             //get the total pages
             mTotalPages = getTotalPagesForSearchList(mTotalCounts);
@@ -84,11 +88,11 @@ public class SearchResultsActivity extends AppCompatActivity {
             mHeader = (TextView) findViewById(R.id.search_header);
             mSearchRecyclerView.setHasFixedSize(true);
 
-            mNumCulomns = getNumberColumn();
+
             GridLayoutManager gridLayoutManager = new GridLayoutManager(this, mNumCulomns);
             mSearchRecyclerView.setLayoutManager(gridLayoutManager);
 
-            mGridAdapter = new GridAdapter(this, mProductPrices, mSearchRecyclerView, getNumberRows());
+            mGridAdapter = new GridAdapter(this, mProductPrices, mSearchRecyclerView, mNumRows);
             mSearchRecyclerView.setAdapter(mGridAdapter);
 
             mGridAdapter.setOnLoadListener(new GridAdapter.OnLoadListener() {
@@ -177,28 +181,6 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     }
 
-
-    public int getNumberRows() {
-        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
-        //get the height of device
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        //get the height of action bar
-        final TypedArray styledAttributes = getTheme().obtainStyledAttributes(
-                new int[] { android.R.attr.actionBarSize});
-        int actionBarSize = (int) styledAttributes.getDimension(0, 0);
-        float dpActionBarSize = actionBarSize / displayMetrics.density;
-
-        int numRows = 0;
-        if (!isTablet) {
-            numRows = (int) ((dpHeight - dpActionBarSize) / 140);
-        } else {
-            numRows = (int) ((dpHeight - dpActionBarSize) / 280);
-        }
-
-        return numRows;
-    }
-
     private int getTotalPagesForSearchList(int totalCounts) {
         int totalPages = 0;
         if (totalCounts <= mNumberOfOnePage) {
@@ -218,7 +200,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         if (!isTablet) {
             numColumns = (int) (dpWidth / 170);
         } else {
-            numColumns = (int) (dpWidth / 320);
+            numColumns = (int) (dpWidth / 270);
         }
 
         return numColumns;
