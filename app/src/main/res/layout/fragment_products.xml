@@ -98,6 +98,8 @@
 
         <android.support.v7.widget.RecyclerView
           android:id="@+id/productsRecyclerView"
+          android:scrollbars="vertical"
+          android:fadeScrollbars="true"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"/>
     </LinearLayout>

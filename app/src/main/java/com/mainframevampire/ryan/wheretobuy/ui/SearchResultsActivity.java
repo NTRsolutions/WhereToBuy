@@ -2,7 +2,6 @@ package com.mainframevampire.ryan.wheretobuy.ui;
 
 import android.app.SearchManager;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -12,11 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mainframevampire.ryan.wheretobuy.R;
-import com.mainframevampire.ryan.wheretobuy.adapters.EndLessRecyclerViewScrollListener;
 import com.mainframevampire.ryan.wheretobuy.adapters.GridAdapter;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
@@ -27,7 +24,6 @@ import java.util.ArrayList;
 public class SearchResultsActivity extends AppCompatActivity {
 
     private static final String TAG = SearchResultsActivity.class.getSimpleName();
-    private EndLessRecyclerViewScrollListener mScrollListener;
     private ArrayList<ProductPrice> mProductPrices = new ArrayList<>();
     private GridAdapter mGridAdapter;
     private RecyclerView mSearchRecyclerView;
@@ -84,13 +80,11 @@ public class SearchResultsActivity extends AppCompatActivity {
 
             //load first page data
             mProductPrices = dataSource.readTableBySearchQuery(mFormattedQueryString, mNumberOfOnePage, " ");
-
             mHeader = (TextView) findViewById(R.id.search_header);
-            mSearchRecyclerView.setHasFixedSize(true);
 
-
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, mNumCulomns);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, mNumCulomns, GridLayoutManager.VERTICAL, false);
             mSearchRecyclerView.setLayoutManager(gridLayoutManager);
+            mSearchRecyclerView.setHasFixedSize(true);
 
             mGridAdapter = new GridAdapter(this, mProductPrices, mSearchRecyclerView, mNumRows);
             mSearchRecyclerView.setAdapter(mGridAdapter);

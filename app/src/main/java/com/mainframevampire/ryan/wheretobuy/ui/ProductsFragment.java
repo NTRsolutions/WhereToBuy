@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.adapters.ListAdapter;
-import com.mainframevampire.ryan.wheretobuy.adapters.EndLessRecyclerViewScrollListener;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 
@@ -31,7 +30,6 @@ public class ProductsFragment extends Fragment {
     }
 
     private String mItemName = "";
-    private EndLessRecyclerViewScrollListener mScrollListener;
     private ArrayList<ProductPrice> mProductPrices = new ArrayList<>();
     private ListAdapter mListAdapter;
     private RecyclerView mRecyclerView;
@@ -76,7 +74,7 @@ public class ProductsFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.productsRecyclerView);
         mRecyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
         //mProductsAdapter = new ProductsAdapter(listener, mProductPrices, mItemName, getActivity());

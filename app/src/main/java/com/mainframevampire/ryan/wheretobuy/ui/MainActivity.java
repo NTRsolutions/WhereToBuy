@@ -432,8 +432,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //load first page data
             mProductPrices = dataSource.readTableByRecommendationFlag("Y", mNumberOfOnePage, " ");
-            mGridLayoutManager = new GridLayoutManager(this, mNumColumns);
+            mGridLayoutManager = new GridLayoutManager(this, mNumColumns, GridLayoutManager.VERTICAL, false);
             mGridRecyclerView.setLayoutManager(mGridLayoutManager);
+            mGridRecyclerView.setHasFixedSize(true);
 
             mGridAdapter = new GridAdapter(this, mProductPrices, mGridRecyclerView, mNumRows);
             Log.d(TAG, "mProductPrices first load:" + mProductPrices.size());
