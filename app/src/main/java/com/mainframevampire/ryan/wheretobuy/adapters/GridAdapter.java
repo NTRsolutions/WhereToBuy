@@ -21,7 +21,8 @@ import com.mainframevampire.ryan.wheretobuy.model.Ostelin;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 import com.mainframevampire.ryan.wheretobuy.model.Swisse;
 import com.mainframevampire.ryan.wheretobuy.ui.MainActivity;
-import com.mainframevampire.ryan.wheretobuy.ui.ProductsActivity;
+import com.mainframevampire.ryan.wheretobuy.ui.ProductDetailActivity;
+import com.mainframevampire.ryan.wheretobuy.ui.ProductListActivity;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -207,6 +208,7 @@ public class GridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
 
             String[] names = mProductPrices.get(position).getWhichIsLowest().split(" ");
+            Log.d("name", mProductPrices.get(position).getWhichIsLowest());
             mGridName1.setText(names[0]);
             mGridName2.setText(names[1]);
 
@@ -231,10 +233,8 @@ public class GridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(mContext, ProductsActivity.class);
-            intent.putExtra(MainActivity.FRAGMENT_NAME, "FRAGMENT_DETAIL");
-            intent.putExtra(ProductsActivity.PRODUCT_ID, mId);
-            intent.putExtra(MainActivity.LIST_NAME, mListName);
+            Intent intent = new Intent(mContext, ProductDetailActivity.class);
+            intent.putExtra(ProductDetailActivity.PRODUCT_ID, mId);
             mContext.startActivity(intent);
         }
     }

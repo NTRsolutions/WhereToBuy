@@ -17,6 +17,7 @@ public class ProductsSQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_LOWEST_PRICE = "LOWEST_PRICE";
     public static final String COLUMN_HIGHEST_PRICE = "HIGHEST_PRICE";
     public static final String COLUMN_WHICH_IS_LOWEST ="WHICH_IS_LOWEST";
+    public static final String COLUMN_INFORMATION ="WHICH_INFORMATION";
     public static final String COLUMN_CMW_PRICE = "CMW_PRICE";
     public static final String COLUMN_PL_PRICE = "PL_PRICE";
     public static final String COLUMN_FL_PRICE = "FL_PRICE";
@@ -39,6 +40,7 @@ public class ProductsSQLiteHelper extends SQLiteOpenHelper{
                     COLUMN_LOWEST_PRICE + " REAL," +
                     COLUMN_HIGHEST_PRICE + " REAL," +
                     COLUMN_WHICH_IS_LOWEST + " TEXT," +
+                    COLUMN_INFORMATION + " TEXT," +
                     COLUMN_CMW_PRICE + " REAL," +
                     COLUMN_PL_PRICE + " REAL," +
                     COLUMN_FL_PRICE + " REAL," +

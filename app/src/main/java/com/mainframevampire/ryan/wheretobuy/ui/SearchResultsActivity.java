@@ -8,8 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -54,13 +52,11 @@ public class SearchResultsActivity extends AppCompatActivity {
             queryString = intent.getStringExtra(SearchManager.QUERY);
             setTitle("Search Results for " + queryString);
         }
-        Log.d(TAG, "Search input: " + queryString);
 
         mFormattedQueryString = queryString.trim().toLowerCase();
 
         ProductsDataSource dataSource = new ProductsDataSource(this);
         mTotalCounts = dataSource.readTableGetSearchCount(mFormattedQueryString);
-        Log.d(TAG, "total Counts: " + mTotalCounts);
 
         if (mTotalCounts == 0) {
             resultLabel.setVisibility(View.VISIBLE);
@@ -71,12 +67,10 @@ public class SearchResultsActivity extends AppCompatActivity {
 
             //get the item number of one page for different screen size and oritention.
             mNumCulomns = ConfigHelper.getNumberColumn(this);
-            mNumRows = ConfigHelper.getNumberRows(this);
+            mNumRows = ConfigHelper.getNumberRowsForGrid(this);
             mNumberOfOnePage = mNumCulomns * (mNumRows + 1);
-            Log.d(TAG, "number of one page: " + mNumberOfOnePage);
             //get the total pages
             mTotalPages = getTotalPagesForSearchList(mTotalCounts);
-            Log.d(TAG, "total pages: " + mTotalPages);
 
             //load first page data
             mProductPrices = dataSource.readTableBySearchQuery(mFormattedQueryString, mNumberOfOnePage, " ");
@@ -93,7 +87,6 @@ public class SearchResultsActivity extends AppCompatActivity {
                 @Override
                 public void onLoadHeader() {
                     if (mTotalCounts >= mNumberOfOnePage) {
-                        Log.d(TAG, "you've reached the top");
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -119,7 +112,6 @@ public class SearchResultsActivity extends AppCompatActivity {
                             public void run() {
                                 mProductPrices.add(null);
                                 mGridAdapter.notifyItemInserted(mProductPrices.size() - 1);
-                                Log.d(TAG, " mAdapter progress bar ");
                             }
                         });
 
@@ -129,10 +121,8 @@ public class SearchResultsActivity extends AppCompatActivity {
                                 //remove progress item
                                 mProductPrices.remove(mProductPrices.size() - 1);
                                 mGridAdapter.notifyItemRemoved(mProductPrices.size());
-                                Log.d(TAG, "mProductPrices.size(): " + mProductPrices.size());
 
                                 if (mProductPrices.size() == mTotalCounts) {
-                                    Log.d(TAG, " reached the end");
                                     mGridAdapter.setLoaded();
                                 } else {
                                     loadNextSearchDataFromDatabase(mFormattedQueryString);
@@ -157,26 +147,12 @@ public class SearchResultsActivity extends AppCompatActivity {
                 }
             });
 
-//            mScrollListener = new EndLessRecyclerViewScrollListener(gridLayoutManager) {
-//                @Override
-//                public void onLoadMore(int currentPage, int totalItemCount, RecyclerView recyclerView) {
-//                    //triggered only when new data needs to be loaded
-//                    if (currentPage == mTotalPages) {
-//                        //end of the pages
-//                        Log.d(TAG, "Pages: end of the pages");
-//                    } else {
-//                        Log.d(TAG, "Pages: " + currentPage);
-//                        loadNextSearchDataFromDatabase(mFormattedQueryString);
-//                    }
-//                }
-//            };
-//            mSearchRecyclerView.addOnScrollListener(mScrollListener);
         }
 
     }
 
     private int getTotalPagesForSearchList(int totalCounts) {
-        int totalPages = 0;
+        int totalPages;
         if (totalCounts <= mNumberOfOnePage) {
             totalPages = 1;
         } else {
@@ -186,19 +162,6 @@ public class SearchResultsActivity extends AppCompatActivity {
         return totalPages;
     }
 
-    private int getNumberColumn() {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        int numColumns = 0;
-        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
-        if (!isTablet) {
-            numColumns = (int) (dpWidth / 170);
-        } else {
-            numColumns = (int) (dpWidth / 270);
-        }
-
-        return numColumns;
-    }
 
     //append the next page of data into the adapter
     private void loadNextSearchDataFromDatabase(final String formattedQueryString) {

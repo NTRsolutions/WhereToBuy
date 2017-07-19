@@ -69,6 +69,7 @@ public class Blackmores {
     public static float[] lowestPrice = new float[id.length];
     public static float[] highestPrice = new float[id.length];
     public static String[] whichIsLowest = new String[id.length];
+    public static String[] information = new String[id.length];
 
     public static final String[] cmwID = new String[]{
             "50953",

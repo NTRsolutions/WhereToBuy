@@ -39,6 +39,7 @@ public class ProductsDataSource {
         productValues.put(ProductsSQLiteHelper.COLUMN_LOWEST_PRICE, productPrice.getLowestPrice());
         productValues.put(ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE, productPrice.getHighestPrice());
         productValues.put(ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST, productPrice.getWhichIsLowest());
+        productValues.put(ProductsSQLiteHelper.COLUMN_INFORMATION, productPrice.getInformation());
         productValues.put(ProductsSQLiteHelper.COLUMN_CMW_PRICE, productPrice.getCMWPrice());
         productValues.put(ProductsSQLiteHelper.COLUMN_PL_PRICE, productPrice.getPLPrice());
         productValues.put(ProductsSQLiteHelper.COLUMN_FL_PRICE, productPrice.getFLPrice());
@@ -72,6 +73,7 @@ public class ProductsDataSource {
         float lowestPrice = 0;
         float highestPrice = 0;
         String whichIsLowest = "";
+        String information = "";
         float cmwPrice = 0;
         float plPrice = 0;
         float flPrice = 0;
@@ -93,6 +95,7 @@ public class ProductsDataSource {
                 lowestPrice = getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LOWEST_PRICE);
                 highestPrice = getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE);
                 whichIsLowest = getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST);
+                information = getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_INFORMATION);
                 cmwPrice = getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_PRICE);
                 plPrice = getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_PRICE);
                 flPrice = getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_PRICE);
@@ -111,12 +114,28 @@ public class ProductsDataSource {
         cursor.close();
         close(database);
 
-        ProductPrice productPrice = new ProductPrice(id, shortName, longName, brand, lowestPrice, highestPrice, whichIsLowest,
-                cmwPrice, plPrice, flPrice, twPrice, hwPrice,
-                cmwUrl, plUrl, flUrl, twUrl, hwUrl,
-                customiseFlag, recommendationFlag, lastUpdateDateString);
-
-        return productPrice;
+        return new ProductPrice(
+                id,
+                shortName,
+                longName,
+                brand,
+                lowestPrice,
+                highestPrice,
+                whichIsLowest,
+                information,
+                cmwPrice,
+                plPrice,
+                flPrice,
+                twPrice,
+                hwPrice,
+                cmwUrl,
+                plUrl,
+                flUrl,
+                twUrl,
+                hwUrl,
+                customiseFlag,
+                recommendationFlag,
+                lastUpdateDateString);
     }
 
     public ArrayList<ProductPrice> readTableByCustomiseFlag(
@@ -141,6 +160,7 @@ public class ProductsDataSource {
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LOWEST_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE),
                         getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_INFORMATION),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_PRICE),
@@ -185,6 +205,7 @@ public class ProductsDataSource {
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LOWEST_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE),
                         getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_INFORMATION),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_PRICE),
@@ -229,6 +250,7 @@ public class ProductsDataSource {
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LOWEST_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE),
                         getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_INFORMATION),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_PRICE),
@@ -273,6 +295,7 @@ public class ProductsDataSource {
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_LOWEST_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE),
                         getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST),
+                        getStringFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_INFORMATION),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_CMW_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_PL_PRICE),
                         getFloatFromColumnName(cursor, ProductsSQLiteHelper.COLUMN_FL_PRICE),
@@ -383,6 +406,7 @@ public class ProductsDataSource {
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_LOWEST_PRICE, productPrice.getLowestPrice());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_HIGHEST_PRICE, productPrice.getHighestPrice());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_WHICH_IS_LOWEST, productPrice.getWhichIsLowest());
+        updateProductValue.put(ProductsSQLiteHelper.COLUMN_INFORMATION, productPrice.getInformation());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_CMW_PRICE, productPrice.getCMWPrice());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_PL_PRICE, productPrice.getPLPrice());
         updateProductValue.put(ProductsSQLiteHelper.COLUMN_FL_PRICE, productPrice.getFLPrice());

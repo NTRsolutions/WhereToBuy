@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,7 +20,6 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,8 +40,6 @@ import com.mainframevampire.ryan.wheretobuy.model.Swisse;
 import com.mainframevampire.ryan.wheretobuy.util.ConfigHelper;
 import com.mainframevampire.ryan.wheretobuy.util.GetInfoFromWebsite;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,14 +48,11 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName() ;
     public static final String LIST_NAME = "LIST_NAME";
-    public static final String FRAGMENT_NAME = "FRAGMENT_NAME";
-    public static final String INDEX = "INDEX";
     public static final String IS_FIRST_RUN = "IS_FIRST_RUN";
     private ProgressDialog mProgressDialogFirstTime;
     private float mFloat = 0;
     private String mLastUpdateDate;
     private String mCurrentDate;
-    private boolean mIsTablet;
 
     private ProgressBar mProgressBar;
     private ImageView mRefreshImageView;
@@ -87,8 +80,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mIsTablet = getResources().getBoolean(R.bool.is_tablet);
-
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mRefreshImageView = (ImageView) findViewById(R.id.refreshImageView);
         mLastUpdateDateTextView = (TextView) findViewById(R.id.lastUpdateDate);
@@ -101,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
         mLastUpdateDate = dataSource.readProductsTableWithId("OST004").getLastUpdateDateString();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         mCurrentDate = dateFormat.format(new Date());
 
         String lastUpdateSummary = getString(R.string.last_update_date_is) + " " + mLastUpdateDate;
@@ -123,8 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     mLastUpdateDateTextView.setText(message);
                     for (String brand : ListName.Brands) {
                         Intent intent = new Intent(this, DownloadService.class);
-                        boolean isFirstRun = false;
-                        intent.putExtra(IS_FIRST_RUN, isFirstRun);
+                        intent.putExtra(IS_FIRST_RUN, false);
                         intent.putExtra(LIST_NAME, brand);
                         startService(intent);
                     }
@@ -200,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(this, ProductsActivity.class);
+        Intent intent;
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
         int countCustomisedProducts = dataSource.readTableGetCustomisedCount();
         int countBlackmoresProducts = dataSource.readTableGetBrandCount("Blackmores");
@@ -208,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         int countOsterlinProducts = dataSource.readTableGetBrandCount("Ostelin");
         switch (item.getItemId()) {
             case R.id.swisse:
-                intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
+                intent = new Intent(this, ProductListActivity.class);
                 intent.putExtra(LIST_NAME, "Swisse");
                 startActivity(intent);
                 return true;
@@ -219,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                             .setMessage("Please wait for Blackmores products' price to be downloaded");
                     builder.create().show();
                 } else {
-                    intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
+                    intent = new Intent(this, ProductListActivity.class);
                     intent.putExtra(LIST_NAME, "Blackmores");
                     startActivity(intent);
                 }
@@ -231,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                             .setMessage("Please wait for BioIsland products' price to be downloaded");
                     builder.create().show();
                 } else {
-                    intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
+                    intent = new Intent(this, ProductListActivity.class);
                     intent.putExtra(LIST_NAME, "BioIsland");
                     startActivity(intent);
                 }
@@ -243,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                             .setMessage("Please wait for Ostelin products' price to be downloaded");
                     builder.create().show();
                 } else {
-                    intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
+                    intent = new Intent(this, ProductListActivity.class);
                     intent.putExtra(LIST_NAME, "Ostelin");
                     startActivity(intent);
                 }
@@ -255,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                             .setMessage("Please add your favourite products in each branch list");
                     builder.create().show();
                 } else {
-                    intent.putExtra(FRAGMENT_NAME, "FRAGMENT_PRODUCTS");
+                    intent = new Intent(this, ProductDetailActivity.class);
                     intent.putExtra(LIST_NAME, "MyList");
                     startActivity(intent);
                 }
@@ -333,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void createSwisseValueInTable() {
         ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         String currentDateString = dateFormat.format(new Date());
         for (int i = 0; i < Swisse.id.length; i++) {
             String recommendationFlag = getRecomendationFlag(Swisse.lowestPrice[i], Swisse.highestPrice[i]);
@@ -345,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
                     Swisse.lowestPrice[i],
                     Swisse.highestPrice[i],
                     Swisse.whichIsLowest[i],
+                    Swisse.information[i],
                     Swisse.cmwPrice[i],
                     Swisse.plPrice[i],
                     Swisse.flPrice[i],
@@ -406,7 +397,7 @@ public class MainActivity extends AppCompatActivity {
 
         mTotalCounts = dataSource.readTableGetRecommendedCount();
 
-        mNumRows = ConfigHelper.getNumberRows(this);
+        mNumRows = ConfigHelper.getNumberRowsForGrid(this);
         mNumberOfOnePage = (mNumRows + 1) * mNumColumns;
         Log.d(TAG, "mTotalCounts:" + mTotalCounts);
         Log.d(TAG, "mNumberOfOnePage:" + mNumberOfOnePage);
@@ -414,22 +405,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "mNumColumns:" + mNumColumns);
 
         //clear data if it's not null
-        if (mProductPrices != null) {
-//            mProductPrices.clear();
-//            mGridAdapter.notifyItemRemoved(mProductPrices.size());
-//            Log.d(TAG, "mProductPrices after clear:" + mProductPrices.size());
-//
-            ArrayList<ProductPrice> productPrices = dataSource.readTableByRecommendationFlag("Y", mNumberOfOnePage, " ");
-//            for (ProductPrice productPrice: productPrices) {
-//                mProductPrices.add(productPrice);
-//            }
-//            mGridAdapter.notifyItemInserted(mProductPrices.size() - 1);
-//            Log.d(TAG, "mProductPrices after add:" + mProductPrices.size());
-//            mGridAdapter.setLoaded();
-//            mGridAdapter.updateData(productPrices);
-//            mGridAdapter.notifyDataSetChanged();
-//            mGridAdapter.setLoaded();
-        } else {
+        if (mProductPrices == null) {
             //load first page data
             mProductPrices = dataSource.readTableByRecommendationFlag("Y", mNumberOfOnePage, " ");
             mGridLayoutManager = new GridLayoutManager(this, mNumColumns, GridLayoutManager.VERTICAL, false);
@@ -512,16 +488,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-//        ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
-//        ArrayList<ProductPrice> recommendedProcutPrices = dataSource.readTableByRecommendationFlag("Y");
-//        GridAdapter RecommendedProductsAdapter = new GridAdapter(this, recommendedProcutPrices, mGridRecyclerView, 4);
-//
-//        mGridRecyclerView.setAdapter(RecommendedProductsAdapter);
-//
-//
-//        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numColumns);
-//        mGridRecyclerView.setLayoutManager(layoutManager);
-//        RecommendedProductsAdapter.notifyDataSetChanged();
+
     }
 
     private void updateDataInGridList() {

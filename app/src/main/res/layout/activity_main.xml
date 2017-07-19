@@ -67,7 +67,7 @@
         android:layout_gravity="center"
         android:textAlignment="center"
         android:background="#40ffffff"
-        android:text="You've reached the top"
+        android:text="@string/you_ve_reached_the_top"
         android:visibility="gone"/>
 
     <LinearLayout

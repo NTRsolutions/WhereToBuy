@@ -30,6 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/item_height"
             app:srcCompat="@drawable/kmwicon"
+            android:contentDescription="@string/chemist_warehouse_icon"
             android:scaleType="fitCenter"
             android:layout_weight="1"/>
 
@@ -38,6 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/item_height"
             app:srcCompat="@drawable/plicon"
+            android:contentDescription="@string/priceline_icon"
             android:scaleType="fitCenter"
             android:layout_weight="1"/>
 
@@ -46,6 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/item_height"
             app:srcCompat="@drawable/flicon"
+            android:contentDescription="@string/_4_less_icon"
             android:scaleType="fitCenter"
             android:layout_weight="1"/>
 
@@ -54,6 +57,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/item_height"
             app:srcCompat="@drawable/twicon"
+            android:contentDescription="@string/terry_white_icon"
             android:scaleType="fitCenter"
             android:layout_weight="1"/>
 
@@ -62,6 +66,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/item_height"
             app:srcCompat="@drawable/hwicon"
+            android:contentDescription="@string/health_world_icon"
             android:scaleType="fitCenter"
             android:layout_weight="1"/>
 
@@ -75,7 +80,7 @@
             android:layout_gravity="center"
             android:textAlignment="center"
             android:background="#40ffffff"
-            android:text=" "/>
+            android:text="@string/space"/>
 
     </LinearLayout>
 
@@ -88,7 +93,7 @@
         android:layout_gravity="center"
         android:textAlignment="center"
         android:background="#40ffffff"
-        android:text="You've reached the top"
+        android:text="@string/you_ve_reached_the_top"
         android:visibility="gone"/>
 
     <LinearLayout
@@ -97,11 +102,11 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
-          android:id="@+id/productsRecyclerView"
-          android:scrollbars="vertical"
-          android:fadeScrollbars="true"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"/>
+            android:id="@+id/productsRecyclerView"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
 </LinearLayout>

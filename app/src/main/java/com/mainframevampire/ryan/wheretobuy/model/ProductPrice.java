@@ -1,6 +1,8 @@
 package com.mainframevampire.ryan.wheretobuy.model;
 
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 public class ProductPrice implements Serializable {
@@ -11,6 +13,7 @@ public class ProductPrice implements Serializable {
     private float mLowestPrice;
     private float mHighestPrice;
     private String mWhichIsLowest;
+    private String mInformation;
     private float mCMWPrice;
     private float mPLPrice;
     private float mFLPrice;
@@ -25,6 +28,9 @@ public class ProductPrice implements Serializable {
     private String mRecommendationFlag;
     private String mLastUpdateDateString;
 
+    public final static String ARRAY_DIVIDER = "02959$3213";
+    public final static String ARRAY_DIVIDER_SPILIT = "02959\\$3213";
+
 
     //constructor for insert value in table
     public ProductPrice(String id,
@@ -34,6 +40,7 @@ public class ProductPrice implements Serializable {
                         float lowestPrice,
                         float highestPrice,
                         String whichIsLowest,
+                        String information,
                         float CMWPrice,
                         float PLPrice,
                         float FLPrice,
@@ -54,6 +61,7 @@ public class ProductPrice implements Serializable {
         mLowestPrice = lowestPrice;
         mHighestPrice = highestPrice;
         mWhichIsLowest = whichIsLowest;
+        mInformation = information;
         mCMWPrice = CMWPrice;
         mPLPrice = PLPrice;
         mFLPrice = FLPrice;
@@ -74,6 +82,7 @@ public class ProductPrice implements Serializable {
                         float lowestPrice,
                         float highestPrice,
                         String whichIsLowest,
+                        String information,
                         float CMWPrice,
                         float PLPrice,
                         float FLPrice,
@@ -90,6 +99,7 @@ public class ProductPrice implements Serializable {
         mLowestPrice = lowestPrice;
         mHighestPrice = highestPrice;
         mWhichIsLowest = whichIsLowest;
+        mInformation = information;
         mCMWPrice = CMWPrice;
         mPLPrice = PLPrice;
         mFLPrice = FLPrice;
@@ -263,4 +273,14 @@ public class ProductPrice implements Serializable {
     public void setBrand(String brand) {
         mBrand = brand;
     }
+
+    public String getInformation() {
+        return mInformation;
+    }
+
+    public void setInformation(String information) {
+        mInformation = information;
+    }
+
+
 }

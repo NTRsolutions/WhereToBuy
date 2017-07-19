@@ -19,4 +19,16 @@
     <string name="product_image">product_image</string>
     <string name="facebook_app_id">444563632567800</string>
     <string name="search_hint">Enter a product name</string>
+    <string name="price">Price</string>
+    <string name="information">Information</string>
+    <string name="website">Website</string>
+    <string name="you_ve_reached_the_top">You\'ve reached the top</string>
+    <string name="space"/>
+    <string name="chemist_warehouse_icon">Chemist Warehouse Icon</string>
+    <string name="priceline_icon">Priceline Icon</string>
+    <string name="_4_less_icon">4 less Icon</string>
+    <string name="terry_white_icon">Terry White Icon</string>
+    <string name="health_world_icon">Health World Icon</string>
+    <string name="no_results_found">no results found</string>
+    <string name="favourite_icon">Favourite Icon</string>
 </resources>

@@ -10,7 +10,6 @@ public class Swisse {
                 "SWS004",
                 "SWS005",
                 "SWS006",
-                "SWS007",
                 "SWS008",
                 "SWS009",
                 "SWS010",
@@ -53,7 +52,6 @@ public class Swisse {
             "Liver Detox 120Tabs     ",
             "Liver Detox 200Tabs     ",
             "Liver Detox 60Tabs      ",
-            "Cal+Vitamin D 90Tabs    ",
             "Cal+Vitamin D 150Tabs   ",
             "Evening Oil 200Caps     ",
             "Memory + Focus 50Tabs   ",
@@ -96,7 +94,6 @@ public class Swisse {
             "Swisse Ultiboost Liver Detox 120 Tablets",
             "Swisse Ultiboost Liver Detox 200 Tablets",
             "Swisse Ultiboost Liver Detox 60 Tablets",
-            "Swisse Ultiboost Calcium + Vitamin D 90 tabs",
             "Swisse Ultiboost Calcium + Vitamin D 150 tabs",
             "Swisse Ultiboost Evening Primrose Oil 200 Caps",
             "Swisse Ultiboost Memory + Focus 50 Tablets",
@@ -136,6 +133,7 @@ public class Swisse {
     public static float[] lowestPrice = new float[id.length];
     public static float[] highestPrice = new float[id.length];
     public static String[] whichIsLowest = new String[id.length];
+    public static String[] information = new String[id.length];
 
     public static final String[] cmwID = new String[]{
             "67497",
@@ -144,7 +142,6 @@ public class Swisse {
             "66552",
             "80460",
             "59769",
-            "     ",
             "67491",
             "70258",
             "57049",
@@ -189,7 +186,6 @@ public class Swisse {
                 "14749",
                 "     ",
                 "13756",
-                "13568",
                 "13574",
                 "14254",
                 "14079",
@@ -234,7 +230,6 @@ public class Swisse {
             "12782",
             "     ",
             "7665 ",
-            "     ",
             "10229",
             "13714",
             "14419",
@@ -279,7 +274,6 @@ public class Swisse {
             "35227",
             "     ",
             "31371",
-            "35941",
             "41529",
             "43790",
             "35919",
@@ -324,7 +318,6 @@ public class Swisse {
             "354392",
             "      ",
             "311685",
-            "      ",
             "379395",
             "397318",
             "      ",

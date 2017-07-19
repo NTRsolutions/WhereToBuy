@@ -16,7 +16,7 @@ public class WebActivity extends AppCompatActivity {
 
         WebView webView = (WebView) findViewById(R.id.webview);
         Intent intent = getIntent();
-        String webUrl = intent.getStringExtra(ProductDetailFragment.PRODUCT_URL);
+        String webUrl = intent.getStringExtra(ProductDetailActivity.PRODUCT_URL);
         webView.loadUrl(webUrl);
     }
 }

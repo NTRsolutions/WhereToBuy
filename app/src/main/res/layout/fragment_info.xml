@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="5dp">
+
+    <TextView
+        android:id="@+id/noInfoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sorry, no information for this product. Please check the product's website."
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="16sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/informationLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Information"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/informationText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/generalInfoLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="General Information"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/generalInfoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/miscellaneousLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Miscellaneous"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/miscellaneousText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/drugInteractionsLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Drug Interactions"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/drugInteractionsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/warningsLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Warnings"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/warningsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/commonUsesLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Common Uses"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/commonUsesText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/ingredientsLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ingredients"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/ingredientsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/directionsLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Directions"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/directionsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/indicationsLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Indications"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/indicationsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+
+</LinearLayout>
+</ScrollView>

@@ -12,7 +12,7 @@
         android:gravity="center"
         android:textSize="@dimen/textsize_big"
         android:visibility="gone"
-        android:text="no results found"/>
+        android:text="@string/no_results_found"/>
 
     <TextView
         android:id="@+id/search_header"
@@ -23,7 +23,7 @@
         android:layout_gravity="center"
         android:textAlignment="center"
         android:background="#40ffffff"
-        android:text="You've reached the top"
+        android:text="@string/you_ve_reached_the_top"
         android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView

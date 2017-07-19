@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.database.ProductsDataSource;
@@ -25,10 +24,7 @@ import java.util.Date;
 
 public class DownloadService extends IntentService{
 
-    private static final String TAG = DownloadService.class.getSimpleName();
     private static final int REQEUST_OPEN = 93;
-    private static final int REQEUST_CLOSE = 193;
-    private static final String ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE" ;
 
     private NotificationManager mNotificationManager;
     private static final int NOTIFICATION_ID = 76;
@@ -42,8 +38,6 @@ public class DownloadService extends IntentService{
     protected void onHandleIntent(@Nullable Intent intent) {
         boolean isFirstRun = intent.getBooleanExtra(MainActivity.IS_FIRST_RUN, false);
         String brand = intent.getStringExtra(MainActivity.LIST_NAME);
-
-        Log.d("DownloadService", "Send Message: " + brand);
 
         //create pending intent for user to click notification to go to MainActivity
         Intent mainIntent = new Intent(this, MainActivity.class);
@@ -108,7 +102,7 @@ public class DownloadService extends IntentService{
 
     private void createBlackmoresValueInTable() {
         ProductsDataSource dataSource = new ProductsDataSource(this);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         String currentDateString = dateFormat.format(new Date());
         for (int i = 0; i < Blackmores.id.length; i++) {
             String recommendationFlag = getRecomendationFlag(Blackmores.lowestPrice[i], Blackmores.highestPrice[i]);
@@ -120,6 +114,7 @@ public class DownloadService extends IntentService{
                     Blackmores.lowestPrice[i],
                     Blackmores.highestPrice[i],
                     Blackmores.whichIsLowest[i],
+                    Blackmores.information[i],
                     Blackmores.cmwPrice[i],
                     Blackmores.plPrice[i],
                     Blackmores.flPrice[i],
@@ -138,7 +133,7 @@ public class DownloadService extends IntentService{
     }
     private void createBioIslandValueInTable() {
         ProductsDataSource dataSource = new ProductsDataSource(this);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         String currentDateString = dateFormat.format(new Date());
         for (int i = 0; i < BioIsland.id.length; i++) {
             String recommendationFlag = getRecomendationFlag(BioIsland.lowestPrice[i], BioIsland.highestPrice[i]);
@@ -150,6 +145,7 @@ public class DownloadService extends IntentService{
                     BioIsland.lowestPrice[i],
                     BioIsland.highestPrice[i],
                     BioIsland.whichIsLowest[i],
+                    BioIsland.information[i],
                     BioIsland.cmwPrice[i],
                     BioIsland.plPrice[i],
                     BioIsland.flPrice[i],
@@ -168,7 +164,7 @@ public class DownloadService extends IntentService{
     }
     private void createOstelinValueInTable() {
         ProductsDataSource dataSource = new ProductsDataSource(this);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         String currentDateString = dateFormat.format(new Date());
         for (int i = 0; i < Ostelin.id.length; i++) {
             String recommendationFlag = getRecomendationFlag(Ostelin.lowestPrice[i], Ostelin.highestPrice[i]);
@@ -180,6 +176,7 @@ public class DownloadService extends IntentService{
                     Ostelin.lowestPrice[i],
                     Ostelin.highestPrice[i],
                     Ostelin.whichIsLowest[i],
+                    Ostelin.information[i],
                     Ostelin.cmwPrice[i],
                     Ostelin.plPrice[i],
                     Ostelin.flPrice[i],
@@ -208,7 +205,7 @@ public class DownloadService extends IntentService{
 
     private void updateSwisseValueInTable() {
         ProductsDataSource dataSource = new ProductsDataSource(this);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         String currentDateString = dateFormat.format(new Date());
         for (int i = 0; i < Swisse.id.length; i++) {
             String recommendationFlag = getRecomendationFlag(Swisse.lowestPrice[i], Swisse.highestPrice[i]);
@@ -217,6 +214,7 @@ public class DownloadService extends IntentService{
                     Swisse.lowestPrice[i],
                     Swisse.highestPrice[i],
                     Swisse.whichIsLowest[i],
+                    Swisse.information[i],
                     Swisse.cmwPrice[i],
                     Swisse.plPrice[i],
                     Swisse.flPrice[i],
@@ -235,7 +233,7 @@ public class DownloadService extends IntentService{
     }
     private void updateBlackmoresValueInTable() {
         ProductsDataSource dataSource = new ProductsDataSource(this);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         String currentDateString = dateFormat.format(new Date());
         for (int i = 0; i < Blackmores.id.length; i++) {
             String recommendationFlag = getRecomendationFlag(Blackmores.lowestPrice[i], Blackmores.highestPrice[i]);
@@ -244,6 +242,7 @@ public class DownloadService extends IntentService{
                     Blackmores.lowestPrice[i],
                     Blackmores.highestPrice[i],
                     Blackmores.whichIsLowest[i],
+                    Blackmores.information[i],
                     Blackmores.cmwPrice[i],
                     Blackmores.plPrice[i],
                     Blackmores.flPrice[i],
@@ -263,7 +262,7 @@ public class DownloadService extends IntentService{
 
     private void updateBioIslandValueInTable() {
         ProductsDataSource dataSource = new ProductsDataSource(this);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         String currentDateString = dateFormat.format(new Date());
         for (int i = 0; i < BioIsland.id.length; i++) {
             String recommendationFlag = getRecomendationFlag(BioIsland.lowestPrice[i], BioIsland.highestPrice[i]);
@@ -272,6 +271,7 @@ public class DownloadService extends IntentService{
                     BioIsland.lowestPrice[i],
                     BioIsland.highestPrice[i],
                     BioIsland.whichIsLowest[i],
+                    BioIsland.information[i],
                     BioIsland.cmwPrice[i],
                     BioIsland.plPrice[i],
                     BioIsland.flPrice[i],
@@ -291,7 +291,7 @@ public class DownloadService extends IntentService{
 
     private void updateOstelinValueInTable() {
         ProductsDataSource dataSource = new ProductsDataSource(this);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         String currentDateString = dateFormat.format(new Date());
         for (int i = 0; i < Ostelin.id.length; i++) {
             String recommendationFlag = getRecomendationFlag(Ostelin.lowestPrice[i], Ostelin.highestPrice[i]);
@@ -300,6 +300,7 @@ public class DownloadService extends IntentService{
                     Ostelin.lowestPrice[i],
                     Ostelin.highestPrice[i],
                     Ostelin.whichIsLowest[i],
+                    Ostelin.information[i],
                     Ostelin.cmwPrice[i],
                     Ostelin.plPrice[i],
                     Ostelin.flPrice[i],

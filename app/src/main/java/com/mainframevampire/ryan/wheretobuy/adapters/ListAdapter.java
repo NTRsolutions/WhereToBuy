@@ -1,7 +1,9 @@
 package com.mainframevampire.ryan.wheretobuy.adapters;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +17,8 @@ import android.widget.TextView;
 
 import com.mainframevampire.ryan.wheretobuy.R;
 import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
-import com.mainframevampire.ryan.wheretobuy.ui.ProductsFragment;
+import com.mainframevampire.ryan.wheretobuy.ui.ProductDetailActivity;
+import com.mainframevampire.ryan.wheretobuy.ui.ProductListActivity;
 
 import java.util.ArrayList;
 
@@ -26,10 +29,14 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         void onLoadHeader();
     }
 
-    private final ProductsFragment.onProductListSelectedInterface mListener;
+    public interface OnItemListener {
+        void onItemClick();
+    }
+
     private String mItemName;
+    private final static String TAG = ListAdapter.class.getSimpleName();
+    private ArrayList<ProductPrice> mProductPrices;
     private Context mContext;
-    private ArrayList<ProductPrice> mProductPrices = new ArrayList<>();
 
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
@@ -41,13 +48,13 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private OnLoadListener mOnloadListener;
 
 
-    public ListAdapter(ProductsFragment.onProductListSelectedInterface listener,
-                       ArrayList<ProductPrice> productPrices,
+    public ListAdapter(ArrayList<ProductPrice> productPrices,
                        String ItemName,
-                       RecyclerView recyclerView) {
-        mListener = listener;
+                       RecyclerView recyclerView,
+                       Context context) {
         mProductPrices = productPrices;
         mItemName = ItemName;
+        mContext = context;
 
         if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
             final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -95,7 +102,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         }
                     }
 
-                    if (!mLoading && mTotalItemCount <= (mLastVisibleItem + mVisibleThreshold)) {
+                    if (!mLoading && mLastVisibleItem > 0 && mTotalItemCount <= (mLastVisibleItem + mVisibleThreshold )) {
                         //reached the end
                         //do something
                         if (mOnloadListener != null) {
@@ -161,7 +168,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private int mIndex;
         private String mId;
 
-        public TextViewHolder(View itemView) {
+        private TextViewHolder(View itemView) {
             super(itemView);
 
             mShortName = (TextView) itemView.findViewById(R.id.shortName);
@@ -175,7 +182,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemView.setOnClickListener(this);
         }
 
-        public void bindView(int position) {
+        private void bindView(int position) {
             mIndex = position;
             mId = mProductPrices.get(position).getID();
             String shortName = mProductPrices.get(position).getShortName();
@@ -234,12 +241,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 if (hwPrice == lowestPrice) mHWPrice.setTextColor(Color.RED);
             }
 
-//            mCMWPrice.setText(String.valueOf(Math.round(cmwPrice)));
-//            mPLPrice.setText(String.valueOf(Math.round(plPrice)));
-//            mFLPrice.setText(String.valueOf(Math.round(flPrice)));
-//            mTWPrice.setText(String.valueOf(Math.round(twPrice)));
-//            mHWPrice.setText(String.valueOf(Math.round(hwPrice)));
-
             if (mItemName.equals("MyList")) {
                 mFavouriteImage.setVisibility(View.VISIBLE);
             } else {
@@ -255,17 +256,21 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            mListener.onProductSelected(mId, mItemName);
+            ((ProductListActivity) mContext).onItemClick(mId, mIndex);
         }
     }
 
     private class ProgressViewHolder extends  RecyclerView.ViewHolder {
-        public ProgressBar mProgressBar;
+        private ProgressBar mProgressBar;
 
-        public ProgressViewHolder(View itemView) {
+        private ProgressViewHolder(View itemView) {
             super(itemView);
             mProgressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
         }
+    }
+
+    public void updateData(ArrayList<ProductPrice> productPrices) {
+        mProductPrices = productPrices;
     }
 
 }

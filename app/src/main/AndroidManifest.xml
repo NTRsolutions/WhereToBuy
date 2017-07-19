@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.mainframevampire.ryan.wheretobuy">
-    <supports-screens android:smallScreens="false"
-                      android:normalScreens="true"
-                      android:largeScreens="true"
-                      android:xlargeScreens="true"
-                      android:requiresSmallestWidthDp="600" />
+
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:requiresSmallestWidthDp="600"
+        android:smallScreens="false"
+        android:xlargeScreens="true"/>
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -22,29 +24,31 @@
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
             <meta-data
                 android:name="android.app.default_searchable"
-                android:value=".SearchResultsActivity" />
+                android:value=".SearchResultsActivity"/>
         </activity>
-        <activity android:name=".ui.ProductsActivity">
+        <activity android:name=".ui.ProductListActivity">
             <meta-data
                 android:name="android.app.default_searchable"
-                android:value=".SearchResultsActivity" />
+                android:value=".SearchResultsActivity"/>
         </activity>
         <activity
             android:name=".ui.SearchResultsActivity"
-            android:launchMode="singleTop"
-            android:label="Search Results:">
+            android:label="Search Results:"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
+
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
-    </activity>
-
+        </activity>
 
         <service android:name=".ui.DownloadService"/>
 
@@ -64,6 +68,8 @@
             android:exported="true"/>
 
         <activity android:name=".ui.WebActivity">
+        </activity>
+        <activity android:name=".ui.ProductDetailActivity">
         </activity>
     </application>
 

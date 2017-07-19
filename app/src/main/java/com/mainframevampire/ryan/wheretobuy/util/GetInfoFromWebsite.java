@@ -1,8 +1,11 @@
 package com.mainframevampire.ryan.wheretobuy.util;
 
+import android.text.TextUtils;
+
 import com.mainframevampire.ryan.wheretobuy.model.BioIsland;
 import com.mainframevampire.ryan.wheretobuy.model.Blackmores;
 import com.mainframevampire.ryan.wheretobuy.model.Ostelin;
+import com.mainframevampire.ryan.wheretobuy.model.ProductPrice;
 import com.mainframevampire.ryan.wheretobuy.model.Swisse;
 
 import org.jsoup.Jsoup;
@@ -11,6 +14,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class GetInfoFromWebsite {
     //call this method to parse the data from the URLs and get the products' price
@@ -48,6 +52,25 @@ public class GetInfoFromWebsite {
                         }
                     }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //get information from Chemist Warehouse swisse product url
+        for(int i = 0; i < Swisse.id.length; i++) {
+            try {
+                Document doc = Jsoup.connect(Swisse.cmwURL[i]).get();
+                Elements elements = doc.select("div.details");
+                ArrayList<String> information = new ArrayList<>();
+                for(Element element: elements) {
+                    if (element.text().equals("")) {
+                        information.add("none");
+                    } else {
+                        information.add(element.text());
+                    }
+                }
+                Swisse.information[i] = TextUtils.join(ProductPrice.ARRAY_DIVIDER, information.toArray());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -335,6 +358,25 @@ public class GetInfoFromWebsite {
             }
         }
 
+        //get information from Chemist Warehouse Blackmores product url
+        for(int i = 0; i < Blackmores.id.length; i++) {
+            try {
+                Document doc = Jsoup.connect(Blackmores.cmwURL[i]).get();
+                Elements elements = doc.select("div.details");
+                ArrayList<String> information = new ArrayList<>();
+                for(Element element: elements) {
+                    if (element.text().equals("")) {
+                        information.add("none");
+                    } else {
+                        information.add(element.text());
+                    }
+                }
+                Blackmores.information[i] = TextUtils.join(ProductPrice.ARRAY_DIVIDER, information.toArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         //priceline：Blackmores
         String[] plURls = new String[] {
                 "https://www.priceline.com.au/search/?limit=100&q=blackmores",
@@ -601,6 +643,25 @@ public class GetInfoFromWebsite {
             }
         }
 
+        //get information from Chemist Warehouse swisse product url
+        for(int i = 0; i < BioIsland.id.length; i++) {
+            try {
+                Document doc = Jsoup.connect(BioIsland.cmwURL[i]).get();
+                Elements elements = doc.select("div.details");
+                ArrayList<String> information = new ArrayList<>();
+                for(Element element: elements) {
+                    if (element.text().equals("")) {
+                        information.add("none");
+                    } else {
+                        information.add(element.text());
+                    }
+                }
+                BioIsland.information[i] = TextUtils.join(ProductPrice.ARRAY_DIVIDER, information.toArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         //priceline no Bio Island products
 
 
@@ -697,6 +758,25 @@ public class GetInfoFromWebsite {
                         }
                     }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //get information from Chemist Warehouse swisse product url
+        for(int i = 0; i < Ostelin.id.length; i++) {
+            try {
+                Document doc = Jsoup.connect(Ostelin.cmwURL[i]).get();
+                Elements elements = doc.select("div.details");
+                ArrayList<String> information = new ArrayList<>();
+                for(Element element: elements) {
+                    if (element.text().equals("")) {
+                        information.add("none");
+                    } else {
+                        information.add(element.text());
+                    }
+                }
+                Ostelin.information[i] = TextUtils.join(ProductPrice.ARRAY_DIVIDER, information.toArray());
             } catch (IOException e) {
                 e.printStackTrace();
             }
