@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra(KEY_MESSAGE);
-            Log.d("MainActivity", "Receive Message: " + message);
             //update recommations to the list
             updateDataInGridList();
             if (message.equals("Ostelin")) {
@@ -245,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                             .setMessage("Please add your favourite products in each branch list");
                     builder.create().show();
                 } else {
-                    intent = new Intent(this, ProductDetailActivity.class);
+                    intent = new Intent(this, ProductListActivity.class);
                     intent.putExtra(LIST_NAME, "MyList");
                     startActivity(intent);
                 }
@@ -495,14 +494,11 @@ public class MainActivity extends AppCompatActivity {
         if (mProductPrices != null) {
             ProductsDataSource dataSource = new ProductsDataSource(MainActivity.this);
             mTotalCounts = dataSource.readTableGetRecommendedCount();
-            Log.d(TAG, "mTotalCounts after update: " + mTotalCounts);
-            Log.d(TAG, "mNumberOfOnePage after update: " + mNumberOfOnePage);
             ArrayList<ProductPrice> productPrices = dataSource.readTableByRecommendationFlag("Y", mNumberOfOnePage, " ");
             mGridAdapter.updateData(productPrices);
             mProductPrices = productPrices;
             mGridAdapter.notifyDataSetChanged();
             mGridAdapter.setLoaded();
-            Log.d(TAG, "lastIdInPreviousPage after update: " + mProductPrices.get(mProductPrices.size() - 1).getID());
         }
     }
 
@@ -513,7 +509,6 @@ public class MainActivity extends AppCompatActivity {
 
         final String lastIdInPreviousPage = mProductPrices.get(mProductPrices.size() - 1).getID();
 
-        Log.d(TAG, "lastIdInPreviousPage: " + lastIdInPreviousPage);
         productPrices = dataSource.readTableByRecommendationFlag("Y", mNumberOfOnePage, lastIdInPreviousPage);
 
 
